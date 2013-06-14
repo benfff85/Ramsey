@@ -44,14 +44,13 @@ public class test {
 		cayleyGraph = new CayleyGraphOld(this.numOfElements, this.cliqueSize);
 		//cayleyGraph.calculateDistribution();
 		while(notFound){
-		    //q.increment();
-		    //q.maxFirstTreeTracker(cayleyGraph.clique[0]);
-		    if(cayleyGraph.cliqueChecker2(1)){
-		    	//printNegativeCase(cayleyGraph);
+		    q.increment();
+		    q.maxFirstTreeTracker(cayleyGraph.clique[0]);
+		    if(cayleyGraph.cliqueChecker(1)){
+		    	printNegativeCase(cayleyGraph);
 		    } else {
-		    	if(cayleyGraph.cliqueChecker2(0)){
+		    	if(cayleyGraph.cliqueChecker(0)){
 		    		q.maxFirstTreeTracker(cayleyGraph.clique[0]);
-		    		q.increment();
 			    	printNegativeCase(cayleyGraph);
 		    	} else {
 		    		System.out.println("This does NOT contain a complete subgraph of order " + cliqueSize + "!!");
@@ -60,21 +59,40 @@ public class test {
 		    		notFound=false;
 		    	}
 		    }
+		    
+		    
 		//cayleyGraph.generateRandomGraph();
 		//cayleyGraph.mutateGraphRandom(1);
 		cayleyGraph.mutateGraphTargeted();
 		cayleyGraph.calculateDistribution();
 		//cayleyGraph.mutateGraphTargetedDistribution();
+		
+		if (q.getCount()%1000==0){
+			printInterval(cayleyGraph);
+		}
 		}
 	}
 	
 	public void printNegativeCase(CayleyGraphOld cayleyGraph){
     	//System.out.println("This does contain a complete subgraph of order " + cliqueSize);
     	//cayleyGraph.printCayleyGraph();
-    	cayleyGraph.printClique();
+    	//cayleyGraph.printClique();
 		//cayleyGraph.printDistribution();
+		//cayleyGraph.printDistributionSummary();
 		//cayleyGraph.printZeroOneCount();
 		//System.out.println("Count: " + q.count);
+		//System.out.println("Max First Tree Element: " + q.maxFirstTree);
+	}
+	
+	public void printInterval(CayleyGraphOld cayleyGraph){
+    	System.out.println("###############################################################");
+		//System.out.println("This does contain a complete subgraph of order " + cliqueSize);
+    	//cayleyGraph.printCayleyGraph();
+    	//cayleyGraph.printClique();
+		//cayleyGraph.printDistribution();
+		cayleyGraph.printDistributionSummary();
+		//cayleyGraph.printZeroOneCount();
+		System.out.println("Count: " + q.count);
 		//System.out.println("Max First Tree Element: " + q.maxFirstTree);
 	}
 		

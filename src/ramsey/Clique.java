@@ -3,21 +3,21 @@ package ramsey;
 public class Clique {
 
 	Vertex[] cliqueVertexArray;
-	Edge[] cliqueEdgeArray;
-	String color;
 	
-	public Clique(Vertex[] vertices, Edge[] edges){
-		this.cliqueVertexArray = vertices;
-		this.cliqueEdgeArray = edges;
-		this.color = this.cliqueEdgeArray[0].getColor();
+	public Clique(int cliqueSize){
+		this.cliqueVertexArray = new Vertex[cliqueSize];
 	}  
 	
-	public void setColor(String color){
-		this.color = color;
+	public void updateClique(Vertex[] vertices){
+		this.cliqueVertexArray = vertices;		
 	}
 	
 	public String getColor(){
-		return this.color;
+		return this.cliqueVertexArray[0].getEdge(this.cliqueVertexArray[1]).getColor();
+	}
+	
+	public int getCliqueSize(){
+		return this.cliqueVertexArray.length;
 	}
 	
 	

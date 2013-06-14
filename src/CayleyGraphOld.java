@@ -85,8 +85,9 @@ public class CayleyGraphOld {
 			y = generator.nextInt(this.numOfElements);
 		}
 		nonCliqueEdgeX = x;
+		this.minVertexId = Math.min(this.minVertexId, nonCliqueEdgeX);
 		nonCliqueEdgeY = y;		
-
+		this.minVertexId = Math.min(this.minVertexId, nonCliqueEdgeY);
 		
 		this.cayleyGraphArray[cliqueEdgeX][cliqueEdgeY] = this.cayleyGraphArray[cliqueEdgeY][cliqueEdgeX] = this.cayleyGraphArray[nonCliqueEdgeX][nonCliqueEdgeY];
 		this.cayleyGraphArray[nonCliqueEdgeX][nonCliqueEdgeY] = this.cayleyGraphArray[nonCliqueEdgeY][nonCliqueEdgeX] = swap;
@@ -166,8 +167,8 @@ public class CayleyGraphOld {
 		arguments[0]=this.numOfElements + "";
 		arguments[1]=this.cliqueSize + "";
 		arguments[2]=output;
-		//@SuppressWarnings("unused")
-		//SendEmail email = new SendEmail(arguments);
+		@SuppressWarnings("unused")
+		SendEmail email = new SendEmail(arguments);
 	}
 	
 	/*
@@ -319,80 +320,6 @@ public class CayleyGraphOld {
 	
 	
 	/*
-	 * This will analyze the cayley graph and see if it is a example of a graph of order this.numOfElements that does have a complete subgraph of order k (this.cliqueSize)
-	 * in this case k will be equal to 8 for R(8,8)
-	 * If it has a complete subgraph it will return true, else it will return false
-	 */
-	public boolean cliqueChecker2(int lookingFor){
-		int cayleyGraph[][] = this.cayleyGraphArray;
-		int tree[][] = new int[this.cliqueSize][this.numOfElements];				
-		int pointerArray[] = new int[this.cliqueSize];					
-		int pointerArrayIndex=0;
-		int link;
-
-		//Fill first level of tree with all verticies
-		for(int vertex=0; vertex<this.numOfElements; vertex++){
-		    tree[pointerArrayIndex][vertex]=vertex;
-		}
-		
-		
-		if(this.cliqueOneOrZero == lookingFor){
-			pointerArray[0]=this.minVertexId;	
-		}
-		
-		//Main Algorithm
-		while(pointerArray[0]<=((this.numOfElements-this.cliqueSize)+1)){
-		    link=tree[pointerArrayIndex][pointerArray[pointerArrayIndex]];
-		    pointerArray[pointerArrayIndex]++;
-		    pointerArrayIndex++;
-
-		    for(int i=0; i<this.numOfElements; i++){
-		        if(cayleyGraph[link][i]==lookingFor && i>link && prevLevelContains(i,tree[pointerArrayIndex-1])){
-			        tree[pointerArrayIndex][pointerArray[pointerArrayIndex]]=i;	
-			        pointerArray[pointerArrayIndex]++;
-			    }	    
-		    }
-		    
-		   		    
-		    //If at least (this.cliqueSize-Level) elements, then successful row, reset pointer for row and move to next level
-		    if(pointerArray[pointerArrayIndex]>=(this.cliqueSize-pointerArrayIndex)){
-		    	if(pointerArrayIndex==(this.cliqueSize-1)){
-		    		//Store the found clique into the global var
-		    		for(int x=0; x<this.cliqueSize; x++){
-		    			this.clique[x] = tree[x][pointerArray[x]-1];
-
-		    		}
-		    		this.cliqueOneOrZero = lookingFor;
-		    		return true;
-		        }
-		    	pointerArray[pointerArrayIndex]=0;
-		    }
-		    //Otherwise there are not enough elements for a clique, delete row and slide pointer for previous level up one repeat until link-to-be is nonzero
-		    else{
-		    	//printTree(tree);
-		    	for(int i=0; i<this.numOfElements && tree[pointerArrayIndex][i]!=0; i++){
-		        	tree[pointerArrayIndex][i]=0;
-		        }
-		        pointerArray[pointerArrayIndex]=0;	
-		        pointerArrayIndex--;
-		        
-		        while(tree[pointerArrayIndex][pointerArray[pointerArrayIndex]]==0){
-		        	for(int i=0; i<this.numOfElements && tree[pointerArrayIndex][i]!=0; i++){
-			        	tree[pointerArrayIndex][i]=0;
-			        }
-			        pointerArray[pointerArrayIndex]=0;	
-			        pointerArrayIndex--;
-		        }
-		    }
-		}
-		return false;
-	}	
-	
-	
-	
-	
-	
-	/*
 	 * This will determine if the previous level of the tree also contained the element in question
 	 */
 	public boolean prevLevelContains(int element, int[] level){
@@ -485,6 +412,19 @@ public class CayleyGraphOld {
 			
 		}
 	}*/
+	
+	public void printDistributionSummary(){
+		int x = 0;
+		int y = 0;
+		
+		for(int i=0;i<this.numOfElements/2;i++){
+			x += this.distributionArray[i];
+		}
+		for(int i=this.numOfElements/2;i<this.numOfElements;i++){
+			y += this.distributionArray[i];
+		}
+	System.out.println(x + ":" + y);
+	}
 	
 	
 	

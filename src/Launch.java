@@ -43,16 +43,22 @@ class Q {
 	
 	public void increment(){
 		count++;
-		if(count%1==0){
+		/*
+		if(count%1000==0){
 			endTime = System.nanoTime();
 			long duration = endTime - startTime;
 			System.out.println(count + "," + duration + "," + maxFirstTree);
 			startTime = System.nanoTime();
 		}
+		*/
 	}
 	public void maxFirstTreeTracker(int x){
 		if (x > maxFirstTree){
 			maxFirstTree = x;
 		}
+	}
+	
+	public long getCount(){
+		return this.count;
 	}
 }

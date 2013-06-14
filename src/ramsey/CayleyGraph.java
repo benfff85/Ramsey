@@ -8,14 +8,12 @@ public class CayleyGraph {
 	int cliqueSize;
 	Vertex[] cayleyGraphArray;
 	Clique[] clique;
-	int[] distributionArray;
 	
 	public CayleyGraph(int numOfElements, int cliqueSize){
 		this.numOfElements = numOfElements;
 		this.cliqueSize = cliqueSize;
 		this.cayleyGraphArray = new Vertex[numOfElements];
 		this.clique = new Clique[cliqueSize];
-		this.distributionArray = new int[numOfElements];
 	}
 		
 	/*
@@ -85,7 +83,7 @@ public class CayleyGraph {
 			output += "},";
 		}
 		output = output.substring(0,output.length()-1);
-		output += "}, Method -> CircularEmbedding]";
+		output += "}, Method -> SpiralEmbedding]";
 		System.out.println(output);
 		
 		arguments[0]=this.numOfElements + "";
@@ -97,6 +95,7 @@ public class CayleyGraph {
 	
 	/*
 	 * This will print the total count of RED and BLUE edges in the Cayley Graph
+	 * Note: They should always be equal if algorithms are working as expected.
 	 */
 	public void printRedBlueCount(){
 		int countRed = 0;
@@ -112,6 +111,39 @@ public class CayleyGraph {
 		}
 		System.out.println("RED:" + countRed + " BLUE:" + countBlue);
 	}
+	
+	/*
+	 * Will output distribution array for a given color
+	 */
+	public void printDistribution(String color){
+		int count;
+		String output = "[";
+		
+		for(int i=0;i<this.numOfElements;i++){
+			count = this.cayleyGraphArray[i].getEdgeCount(color);
+			output += count + ",";
+		}
+		output = output.substring(0,output.length()-1);
+		System.out.println(output);
+	}
+	
+	public boolean cliqueChecker(){
+		
+		
+		return false;
+	}
+	
+	public void mutateGraphRandom(){
+		
+	}
+	
+	public void mutateGraphTargeted(){
+		
+	}
+	
+	
+	
+	
 	
 	
 }

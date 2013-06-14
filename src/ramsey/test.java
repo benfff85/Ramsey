@@ -13,6 +13,8 @@ public class test {
 		System.out.println(count);
 		cayleyGraph.printCayleyGraph();
 		cayleyGraph.printRedBlueCount();
+		cayleyGraph.printDistribution("RED");
+		cayleyGraph.printDistribution("BLUE");
 		}
 	}
 

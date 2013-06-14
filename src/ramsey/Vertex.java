@@ -34,7 +34,7 @@ public class Vertex {
 	public int getEdgeCount(String color){
 		int count=0;
 		for (int x=0; x < edges.length; x++){
-			if (edges[x].getColor()==color){
+			if (x != this.vertexId && edges[x].getColor()==color){
 				count++;
 			}
 		}
