@@ -95,6 +95,23 @@ public class CayleyGraph {
 		//SendEmail email = new SendEmail(arguments);
 	}
 	
+	/*
+	 * This will print the total count of RED and BLUE edges in the Cayley Graph
+	 */
+	public void printRedBlueCount(){
+		int countRed = 0;
+		int countBlue = 0;
+		for(int i=0;i<this.numOfElements;i++){
+			for(int j=i+1;j<this.numOfElements;j++){
+				if(this.cayleyGraphArray[i].getEdge(this.cayleyGraphArray[j]).getColor() == "RED"){
+					countRed++;
+				}else{
+					countBlue++;
+				}
+			}
+		}
+		System.out.println("RED:" + countRed + " BLUE:" + countBlue);
+	}
 	
 	
 }

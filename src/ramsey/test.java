@@ -12,6 +12,7 @@ public class test {
 		count ++;
 		System.out.println(count);
 		cayleyGraph.printCayleyGraph();
+		cayleyGraph.printRedBlueCount();
 		}
 	}
 
