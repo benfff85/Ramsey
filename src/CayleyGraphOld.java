@@ -3,7 +3,7 @@ import java.util.*;
 import javax.swing.JFileChooser;
 import java.util.Random;
 
-public class CayleyGraph {
+public class CayleyGraphOld {
 	int[][] cayleyGraphArray;
 	int numOfElements;
 	int cliqueSize;
@@ -12,7 +12,7 @@ public class CayleyGraph {
 	int minVertexId;
 	int cliqueOneOrZero;
 
-	public CayleyGraph(int numOfElements, int cliqueSize){
+	public CayleyGraphOld(int numOfElements, int cliqueSize){
 		this.numOfElements = numOfElements;
 		this.cliqueSize = cliqueSize;
 		this.clique = new int[this.cliqueSize];
@@ -166,8 +166,8 @@ public class CayleyGraph {
 		arguments[0]=this.numOfElements + "";
 		arguments[1]=this.cliqueSize + "";
 		arguments[2]=output;
-		@SuppressWarnings("unused")
-		SendEmail email = new SendEmail(arguments);
+		//@SuppressWarnings("unused")
+		//SendEmail email = new SendEmail(arguments);
 	}
 	
 	/*

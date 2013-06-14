@@ -8,7 +8,7 @@ public class test {
 	int cliqueSize = 8;
 	Q q;
 
-	public void main(Q q){
+	public void main(Q q){		
 		this.q = q;
 		continuousSearch();
 	}
@@ -38,18 +38,20 @@ public class test {
 	
 	public void continuousSearch(){
 
-		CayleyGraph cayleyGraph;
+		CayleyGraphOld cayleyGraph;
 		boolean notFound=true;
 		
-		cayleyGraph = new CayleyGraph(this.numOfElements, this.cliqueSize);
+		cayleyGraph = new CayleyGraphOld(this.numOfElements, this.cliqueSize);
 		//cayleyGraph.calculateDistribution();
 		while(notFound){
-		    q.increment();
-		    q.maxFirstTreeTracker(cayleyGraph.clique[0]);
-		    if(cayleyGraph.cliqueChecker(1)){
-		    	printNegativeCase(cayleyGraph);
+		    //q.increment();
+		    //q.maxFirstTreeTracker(cayleyGraph.clique[0]);
+		    if(cayleyGraph.cliqueChecker2(1)){
+		    	//printNegativeCase(cayleyGraph);
 		    } else {
-		    	if(cayleyGraph.cliqueChecker(0)){
+		    	if(cayleyGraph.cliqueChecker2(0)){
+		    		q.maxFirstTreeTracker(cayleyGraph.clique[0]);
+		    		q.increment();
 			    	printNegativeCase(cayleyGraph);
 		    	} else {
 		    		System.out.println("This does NOT contain a complete subgraph of order " + cliqueSize + "!!");
@@ -66,10 +68,10 @@ public class test {
 		}
 	}
 	
-	public void printNegativeCase(CayleyGraph cayleyGraph){
+	public void printNegativeCase(CayleyGraphOld cayleyGraph){
     	//System.out.println("This does contain a complete subgraph of order " + cliqueSize);
     	//cayleyGraph.printCayleyGraph();
-    	//cayleyGraph.printClique();
+    	cayleyGraph.printClique();
 		//cayleyGraph.printDistribution();
 		//cayleyGraph.printZeroOneCount();
 		//System.out.println("Count: " + q.count);

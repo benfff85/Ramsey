@@ -43,7 +43,7 @@ class Q {
 	
 	public void increment(){
 		count++;
-		if(count%1000==0){
+		if(count%1==0){
 			endTime = System.nanoTime();
 			long duration = endTime - startTime;
 			System.out.println(count + "," + duration + "," + maxFirstTree);
