@@ -19,7 +19,7 @@ public class Clique {
 	public int getCliqueSize(){
 		return this.cliqueVertexArray.length;
 	}
-	
+	 
 	
 	
 }

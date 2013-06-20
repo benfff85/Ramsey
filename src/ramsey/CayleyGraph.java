@@ -7,13 +7,13 @@ public class CayleyGraph {
 	int numOfElements;
 	int cliqueSize;
 	Vertex[] cayleyGraphArray;
-	Clique[] clique;
+	Clique clique;
 	
 	public CayleyGraph(int numOfElements, int cliqueSize){
 		this.numOfElements = numOfElements;
 		this.cliqueSize = cliqueSize;
 		this.cayleyGraphArray = new Vertex[numOfElements];
-		this.clique = new Clique[cliqueSize];
+		this.clique = new Clique(cliqueSize);
 	}
 		
 	/*
@@ -127,11 +127,167 @@ public class CayleyGraph {
 		System.out.println(output);
 	}
 	
-	public boolean cliqueChecker(){
+	
+	/*
+	 * This will analyze the cayley graph and see if it is a example of a graph of order this.numOfElements that does have a complete subgraph of order k (this.cliqueSize)
+	 * in this case k will be equal to 8 for R(8,8)
+	 * If it has a complete subgraph it will return true, else it will return false
+	 */
+	public boolean cliqueChecker(String color){
+		Vertex tree[][] = new Vertex[this.clique.getCliqueSize()][this.numOfElements];
+		int pointerArray[] = new int[this.clique.getCliqueSize()];
+		int pointerArrayIndex=0;
+		Vertex prevLevelVertex;
 		
 		
+		// Fill first level of tree with all vertices
+		for(int i=0; i<this.numOfElements; i++){
+		      tree[pointerArrayIndex][i] = this.cayleyGraphArray[i];
+		}
+		
+		// Fill the rest of the tree with dummy vertices with ID of -1
+		for(int i=1; i<this.clique.getCliqueSize(); i++){
+			for(int j=0; j<this.numOfElements; j++){
+				tree[i][j] = new Vertex(-1,1);
+			}
+		}
+		
+		
+		
+		//Main Algorithm
+		while(pointerArray[0]<=((this.numOfElements-this.clique.getCliqueSize())+1)){
+			prevLevelVertex = tree[pointerArrayIndex][pointerArray[pointerArrayIndex]];
+		    pointerArray[pointerArrayIndex]++;
+		    pointerArrayIndex++;
+
+		    for(int i=prevLevelVertex.getId()+1; i<this.numOfElements; i++){
+		        //if(cayleyGraph[link][i]==color && i>linkVertex.getId() && prevLevelContains(i,tree[pointerArrayIndex-1])){
+		    	if(this.cayleyGraphArray[i].getEdge(prevLevelVertex).getColor()==color && isInPrevLevel(this.cayleyGraphArray[i],tree[pointerArrayIndex-1])){
+			        tree[pointerArrayIndex][pointerArray[pointerArrayIndex]] = this.cayleyGraphArray[i];	
+			        pointerArray[pointerArrayIndex]++;
+			    }	    
+		    }	
+		    
+		  //If at least (this.cliqueSize-Level) elements, then successful row, reset pointer for row and move to next level
+		    if(pointerArray[pointerArrayIndex]>=(this.clique.getCliqueSize()-pointerArrayIndex)){
+		    	if(pointerArrayIndex==(this.clique.getCliqueSize()-1)){
+		    		//Store the found clique into the global var
+		    		Vertex[] cliqueVertexArray = new Vertex[this.clique.getCliqueSize()];
+		    		for(int x=0; x<this.clique.getCliqueSize(); x++){
+		    			cliqueVertexArray[x] = tree[x][pointerArray[x]-1];
+		    		}
+		    		this.clique.updateClique(cliqueVertexArray);
+		    		return true;
+		        }
+		    	pointerArray[pointerArrayIndex]=0; 
+		    }
+		    
+		    //Otherwise there are not enough elements for a clique, delete row and slide pointer for previous level up one repeat until link-to-be is non-negative one
+		    else{
+		    	for(int i=0; i<this.numOfElements && tree[pointerArrayIndex][i].getId()!=-1; i++){
+		        	tree[pointerArrayIndex][i]= new Vertex(-1,1);
+		        }
+		        pointerArray[pointerArrayIndex]=0;	
+		        pointerArrayIndex--;
+		        
+		        while(tree[pointerArrayIndex][pointerArray[pointerArrayIndex]].getId()==-1){
+		        	for(int i=0; i<this.numOfElements && tree[pointerArrayIndex][i].getId()!=-1; i++){
+			        	tree[pointerArrayIndex][i]= new Vertex(-1,1);
+			        }
+			        pointerArray[pointerArrayIndex]=0;	
+			        pointerArrayIndex--;
+		        }
+		    }
+		}
 		return false;
 	}
+		    
+	
+	
+	/*
+	 * This will analyze the cayley graph and see if it is a example of a graph of order this.numOfElements that does have a complete subgraph of order k (this.cliqueSize)
+	 * in this case k will be equal to 8 for R(8,8)
+	 * If it has a complete subgraph it will return true, else it will return false
+	 */
+	/*public boolean cliqueChecker(int lookingFor){
+		int cayleyGraph[][] = this.cayleyGraphArray;
+		int tree[][] = new int[this.cliqueSize][this.numOfElements];				
+		int pointerArray[] = new int[this.cliqueSize];					
+		int pointerArrayIndex=0;
+		int link;
+
+		//Fill first level of tree with all verticies
+		for(int vertex=0; vertex<this.numOfElements; vertex++){
+		      tree[pointerArrayIndex][vertex]=vertex;
+		}
+		
+		//Main Algorithm
+		while(pointerArray[0]<=((this.numOfElements-this.cliqueSize)+1)){
+		    link=tree[pointerArrayIndex][pointerArray[pointerArrayIndex]];
+		    pointerArray[pointerArrayIndex]++;
+		    pointerArrayIndex++;
+
+		    for(int i=0; i<this.numOfElements; i++){
+		        if(cayleyGraph[link][i]==lookingFor && i>link && prevLevelContains(i,tree[pointerArrayIndex-1])){
+			        tree[pointerArrayIndex][pointerArray[pointerArrayIndex]]=i;	
+			        pointerArray[pointerArrayIndex]++;
+			    }	    
+		    }
+		    
+		   		    
+		    //If at least (this.cliqueSize-Level) elements, then successful row, reset pointer for row and move to next level
+		    if(pointerArray[pointerArrayIndex]>=(this.cliqueSize-pointerArrayIndex)){
+		    	if(pointerArrayIndex==(this.cliqueSize-1)){
+		    		//Store the found clique into the global var
+		    		for(int x=0; x<this.cliqueSize; x++){
+		    			this.clique[x] = tree[x][pointerArray[x]-1];
+
+		    		}
+		    		return true;
+		        }
+		    	pointerArray[pointerArrayIndex]=0; 
+		    }
+		    //Otherwise there are not enough elements for a clique, delete row and slide pointer for previous level up one repeat until link-to-be is nonzero
+		    else{
+		    	//printTree(tree);
+		    	for(int i=0; i<this.numOfElements && tree[pointerArrayIndex][i]!=0; i++){
+		        	tree[pointerArrayIndex][i]=0;
+		        }
+		        pointerArray[pointerArrayIndex]=0;	
+		        pointerArrayIndex--;
+		        
+		        while(tree[pointerArrayIndex][pointerArray[pointerArrayIndex]]==0){
+		        	for(int i=0; i<this.numOfElements && tree[pointerArrayIndex][i]!=0; i++){
+			        	tree[pointerArrayIndex][i]=0;
+			        }
+			        pointerArray[pointerArrayIndex]=0;	
+			        pointerArrayIndex--;
+		        }
+		    }
+		}
+		return false;
+	}
+	*/
+	
+	/*
+	 * This will determine if the previous level of the tree also contained the element in question
+	 */
+	private boolean isInPrevLevel(Vertex vertex, Vertex[] level){
+		for(int i=0;i<this.numOfElements && level[i].getId()<=vertex.getId();i++){
+			if(level[i] == vertex){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	public void mutateGraphRandom(){
 		

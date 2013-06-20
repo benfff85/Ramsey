@@ -33,12 +33,23 @@ public class Vertex {
 	
 	public int getEdgeCount(String color){
 		int count=0;
-		for (int x=0; x < edges.length; x++){
-			if (x != this.vertexId && edges[x].getColor()==color){
+		for (int x=0; x < this.edges.length; x++){
+			if (x != this.vertexId && this.edges[x].getColor()==color){
 				count++;
 			}
 		}
 		return count;
 	}
 	
+	public Vertex[] getConnectedVertexArray(String color){
+		Vertex[] vertexArray = new Vertex[this.edges.length];
+		int i = 0;
+		for (int x=this.vertexId+1; x < this.edges.length; x++){
+			if (this.edges[x].getColor()==color){
+				vertexArray[i] = this.edges[x].getVertexB();
+				// Always Vertex B???
+			}
+		}
+		return vertexArray;
+	}
 }

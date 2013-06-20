@@ -5,17 +5,15 @@ public class test {
 	public static void main (String [] args){
 		CayleyGraph cayleyGraph;
 		
-		cayleyGraph = new CayleyGraph(288,8);
-		int count = 0;
-		while(true){
+		//cayleyGraph = new CayleyGraph(288,8);
+		cayleyGraph = new CayleyGraph(5,3);
+
 		cayleyGraph.generateRandomGraph();
-		count ++;
-		System.out.println(count);
-		cayleyGraph.printCayleyGraph();
-		cayleyGraph.printRedBlueCount();
-		cayleyGraph.printDistribution("RED");
-		cayleyGraph.printDistribution("BLUE");
+		while(cayleyGraph.cliqueChecker("RED") || cayleyGraph.cliqueChecker("BLUE")){
+			cayleyGraph.generateRandomGraph();
 		}
+		
+		cayleyGraph.printCayleyGraph();
 	}
 
 }
