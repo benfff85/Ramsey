@@ -41,15 +41,4 @@ public class Vertex {
 		return count;
 	}
 	
-	public Vertex[] getConnectedVertexArray(String color){
-		Vertex[] vertexArray = new Vertex[this.edges.length];
-		int i = 0;
-		for (int x=this.vertexId+1; x < this.edges.length; x++){
-			if (this.edges[x].getColor()==color){
-				vertexArray[i] = this.edges[x].getVertexB();
-				// Always Vertex B???
-			}
-		}
-		return vertexArray;
-	}
 }
