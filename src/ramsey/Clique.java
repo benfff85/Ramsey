@@ -20,6 +20,15 @@ public class Clique {
 		return this.cliqueVertexArray.length;
 	}
 	 
-	
+	public String printClique(){
+		String output = "[";
+		for(int i=0; i<this.getCliqueSize(); i++){
+			output += this.cliqueVertexArray[i].getId() + "/";
+		}
+		output = output.substring(0,output.length()-1);
+		output += "]";
+		
+		return output;
+	}
 	
 }

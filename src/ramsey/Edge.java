@@ -30,4 +30,9 @@ public class Edge {
 		return this.color;
 	}
 
+	public String printEdge(){
+		return "[" + this.vertexA.getId() + ":" + this.vertexB.getId() + ":" + this.color + "]";
+	}
+	
+	
 }

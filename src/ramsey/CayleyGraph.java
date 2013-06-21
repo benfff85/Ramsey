@@ -5,13 +5,11 @@ import java.util.Random;
 public class CayleyGraph {
 
 	int numOfElements;
-	int cliqueSize;
 	Vertex[] cayleyGraphArray;
 	Clique clique;
 	
 	public CayleyGraph(int numOfElements, int cliqueSize){
 		this.numOfElements = numOfElements;
-		this.cliqueSize = cliqueSize;
 		this.cayleyGraphArray = new Vertex[numOfElements];
 		this.clique = new Clique(cliqueSize);
 	}
@@ -63,7 +61,7 @@ public class CayleyGraph {
 	/*
 	 * Will output the Cayley Graph in a format compatible with Mathematica
 	 */
-	public void printCayleyGraph(){
+	public String printCayleyGraph(){
 		
 		String output = "";
 		String[] arguments = new String[3];
@@ -83,21 +81,22 @@ public class CayleyGraph {
 			output += "},";
 		}
 		output = output.substring(0,output.length()-1);
-		output += "}, Method -> SpiralEmbedding]";
-		System.out.println(output);
+		output += "}, Method -> CircularEmbedding]";
 		
 		arguments[0]=this.numOfElements + "";
-		arguments[1]=this.cliqueSize + "";
+		arguments[1]=this.clique.getCliqueSize() + "";
 		arguments[2]=output;
 		//@SuppressWarnings("unused")
 		//SendEmail email = new SendEmail(arguments);
+		
+		return output;
 	}
 	
 	/*
 	 * This will print the total count of RED and BLUE edges in the Cayley Graph
 	 * Note: They should always be equal if algorithms are working as expected.
 	 */
-	public void printRedBlueCount(){
+	public String printRedBlueCount(){
 		int countRed = 0;
 		int countBlue = 0;
 		for(int i=0;i<this.numOfElements;i++){
@@ -109,13 +108,13 @@ public class CayleyGraph {
 				}
 			}
 		}
-		System.out.println("RED:" + countRed + " BLUE:" + countBlue);
+		return "[RED:" + countRed + "] [BLUE:" + countBlue + "]";
 	}
 	
 	/*
 	 * Will output distribution array for a given color
 	 */
-	public void printDistribution(String color){
+	public String printDistribution(String color){
 		int count;
 		String output = "[";
 		
@@ -124,7 +123,8 @@ public class CayleyGraph {
 			output += count + ",";
 		}
 		output = output.substring(0,output.length()-1);
-		System.out.println(output);
+		output += "]";
+		return output;
 	}
 	
 	
@@ -217,22 +217,92 @@ public class CayleyGraph {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	public void mutateGraphRandom(){
+	public void mutateGraphRandom(int countOfSwaps){
+		Random generator = new Random();
+		boolean redSelected = false;
+		boolean blueSelected = false;
+		Edge redEdge = null;
+		Edge blueEdge = null;
+		int x,y;
 		
+		for(int i=0;i<countOfSwaps;i++){
+			while(!redSelected || !blueSelected){
+				x = generator.nextInt(this.numOfElements);
+				y = generator.nextInt(this.numOfElements);
+				
+				if(x!=y && !redSelected && this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]).getColor()=="RED"){
+					redEdge = this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]);
+					redSelected = true;
+				}
+				else if(x!=y && !blueSelected && this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]).getColor()=="BLUE"){
+					blueEdge = this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]);
+					blueSelected = true;				
+				}
+			}
+			redEdge.setColor("BLUE");
+			blueEdge.setColor("RED");
+			redSelected = false;
+			blueSelected = false;
+		}	
 	}
+
 	
 	public void mutateGraphTargeted(){
+		Random generator = new Random();
+		boolean redSelected = false;
+		boolean blueSelected = false;
+		Edge redEdge = null;
+		Edge blueEdge = null;
+		int x,y;
 		
+		// Select the edge from clique to swap
+		x = 0;
+		y = 0;
+		while(x == y){
+			y = generator.nextInt(this.clique.getCliqueSize());	
+		}
+		
+		if(this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]).getColor() == "RED"){
+			redEdge = this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]);
+			redSelected = true;
+		}
+		else{
+			blueEdge = this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]);
+			blueSelected = true;
+		}
+		
+		// Select the edge of opposite color to swap as well
+		x = 0;
+		y = 0;
+		while(!blueSelected || !redSelected){
+			x = generator.nextInt(this.numOfElements);
+			y = generator.nextInt(this.numOfElements);
+			if(x!=y){
+				if(!blueSelected && this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]).getColor()=="BLUE"){
+					blueEdge = this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]);
+					blueSelected = true;
+				}
+				else if(!redSelected && this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]).getColor()=="RED"){
+					redEdge = this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]);
+					redSelected = true;
+				}
+			}
+		}		
+		redEdge.setColor("BLUE");
+		blueEdge.setColor("RED");
 	}
 	
+	public Edge getEdgeByVertexIds(int vertexIdA, int vertexIdB){
+		return this.cayleyGraphArray[vertexIdA].getEdge(this.cayleyGraphArray[vertexIdB]);
+	}
 	
+	public Edge getEdgeByVertices(Vertex vertexA, Vertex vertexB){
+		return vertexA.getEdge(vertexB);
+	}
 	
+	public Clique getClique(){
+		return this.clique;
+	}
 	
 	
 	
