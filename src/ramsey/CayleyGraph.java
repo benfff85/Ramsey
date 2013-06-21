@@ -262,12 +262,12 @@ public class CayleyGraph {
 			y = generator.nextInt(this.clique.getCliqueSize());	
 		}
 		
-		if(this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]).getColor() == "RED"){
-			redEdge = this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]);
+		if(this.clique.getCliqueVertexByPosition(x).getEdge(this.clique.getCliqueVertexByPosition(y)).getColor() == "RED"){	
+			redEdge = this.clique.getCliqueVertexByPosition(x).getEdge(this.clique.getCliqueVertexByPosition(y));
 			redSelected = true;
 		}
 		else{
-			blueEdge = this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]);
+			blueEdge = this.clique.getCliqueVertexByPosition(x).getEdge(this.clique.getCliqueVertexByPosition(y));
 			blueSelected = true;
 		}
 		

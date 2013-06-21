@@ -81,7 +81,7 @@ public class test {
 		//cayleyGraph.printDistributionSummary();
 		//cayleyGraph.printZeroOneCount();
 		//System.out.println("Count: " + q.count);
-		//System.out.println("Max First Tree Element: " + q.maxFirstTree);
+		System.out.println("Max First Tree Element: " + q.maxFirstTree);
 	}
 	
 	public void printInterval(CayleyGraphOld cayleyGraph){

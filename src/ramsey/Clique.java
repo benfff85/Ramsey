@@ -19,6 +19,10 @@ public class Clique {
 	public int getCliqueSize(){
 		return this.cliqueVertexArray.length;
 	}
+	
+	public Vertex getCliqueVertexByPosition(int vertexArrayPosition){
+		return this.cliqueVertexArray[vertexArrayPosition];
+	}
 	 
 	public String printClique(){
 		String output = "[";
