@@ -304,6 +304,18 @@ public class CayleyGraph {
 		return this.clique;
 	}
 	
-	
+	public String printDistributionSummary(String color){
+		int firstHalfCount = 0;
+		int secondHalfCount = 0;
+		
+		for (int i=0; i<this.numOfElements/2; i++){
+			firstHalfCount += this.cayleyGraphArray[i].getEdgeCount(color);
+		}
+		for (int i=this.numOfElements/2; i<this.numOfElements; i++){
+			secondHalfCount += this.cayleyGraphArray[i].getEdgeCount(color);
+		}
+		
+		return "[" + firstHalfCount + ":" + secondHalfCount + "]";
+	}
 	
 }

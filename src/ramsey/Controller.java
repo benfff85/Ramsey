@@ -51,6 +51,7 @@ public class Controller {
 		System.out.println("Clique:                " + cg.getClique().printClique());
 		System.out.println("Line Count:            " + cg.printRedBlueCount());
 		System.out.println("Distribution:          " + cg.printDistribution("RED"));
+		System.out.println("Distribution Summary:  " + cg.printDistributionSummary("RED"));
 		System.out.println("Max First Clique ID:   " + l.getMaxFirstCliqueElement());
 		System.out.println("Max Clique Sum:        " + l.getMaxCliqueSum());
 	}
