@@ -59,10 +59,9 @@ public class CayleyGraph {
 	
 	
 	/*
-	 * Will output the Cayley Graph in a format compatible with Mathematica
+	 * This will output a String representing the Cayley Graph in a format compatible with Mathematica
 	 */
 	public String printCayleyGraph(){
-		
 		String output = "";
 		String[] arguments = new String[3];
 		output += "GraphPlot[{";
@@ -92,6 +91,7 @@ public class CayleyGraph {
 		return output;
 	}
 	
+	
 	/*
 	 * This will print the total count of RED and BLUE edges in the Cayley Graph
 	 * Note: They should always be equal if algorithms are working as expected.
@@ -111,6 +111,7 @@ public class CayleyGraph {
 		return "[RED:" + countRed + "] [BLUE:" + countBlue + "]";
 	}
 	
+	
 	/*
 	 * Will output distribution array for a given color
 	 */
@@ -129,7 +130,8 @@ public class CayleyGraph {
 	
 	
 	/*
-	 * This will analyze the cayley graph and see if it is a example of a graph of order this.numOfElements that does have a complete subgraph of order k (this.cliqueSize)
+	 * This will analyze the cayley graph and see if it is a example of a graph of order this.numOfElements 
+	 * that does have a complete subgraph of order k (this.clique.getCliqueSize())
 	 * in this case k will be equal to 8 for R(8,8)
 	 * If it has a complete subgraph it will return true, else it will return false
 	 */
@@ -202,7 +204,6 @@ public class CayleyGraph {
 	}
 		    
 	
-	
 	/*
 	 * This will determine if the previous level of the tree also contained the element in question
 	 */
@@ -216,37 +217,28 @@ public class CayleyGraph {
 	}
 	
 	
-	
+	/*
+	 * Randomly flip countOfSwaps pairs of edges, one edge of each color per pair to maintain balance
+	 */
 	public void mutateGraphRandom(int countOfSwaps){
-		Random generator = new Random();
-		boolean redSelected = false;
-		boolean blueSelected = false;
 		Edge redEdge = null;
 		Edge blueEdge = null;
-		int x,y;
 		
 		for(int i=0;i<countOfSwaps;i++){
-			while(!redSelected || !blueSelected){
-				x = generator.nextInt(this.numOfElements);
-				y = generator.nextInt(this.numOfElements);
-				
-				if(x!=y && !redSelected && this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]).getColor()=="RED"){
-					redEdge = this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]);
-					redSelected = true;
-				}
-				else if(x!=y && !blueSelected && this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]).getColor()=="BLUE"){
-					blueEdge = this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]);
-					blueSelected = true;				
-				}
-			}
+			
+			redEdge = this.getRandomEdge("RED");
+			blueEdge = this.getRandomEdge("BLUE");
+			
 			redEdge.setColor("BLUE");
 			blueEdge.setColor("RED");
-			redSelected = false;
-			blueSelected = false;
+
 		}	
 	}
 
 	
+	/*
+	 * Flip the color of one edge from the clique along with one random edge of opposite color to maintain balance
+	 */
 	public void mutateGraphTargeted(){
 		Random generator = new Random();
 		boolean redSelected = false;
@@ -272,38 +264,40 @@ public class CayleyGraph {
 		}
 		
 		// Select the edge of opposite color to swap as well
-		x = 0;
-		y = 0;
-		while(!blueSelected || !redSelected){
-			x = generator.nextInt(this.numOfElements);
-			y = generator.nextInt(this.numOfElements);
-			if(x!=y){
-				if(!blueSelected && this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]).getColor()=="BLUE"){
-					blueEdge = this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]);
-					blueSelected = true;
-				}
-				else if(!redSelected && this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]).getColor()=="RED"){
-					redEdge = this.cayleyGraphArray[x].getEdge(this.cayleyGraphArray[y]);
-					redSelected = true;
-				}
-			}
-		}		
+		if(redSelected){
+			blueEdge = this.getRandomEdge("BLUE");
+		}
+		else if(blueSelected){
+			redEdge = this.getRandomEdge("RED");
+		}
+		
 		redEdge.setColor("BLUE");
 		blueEdge.setColor("RED");
 	}
+	
 	
 	public Edge getEdgeByVertexIds(int vertexIdA, int vertexIdB){
 		return this.cayleyGraphArray[vertexIdA].getEdge(this.cayleyGraphArray[vertexIdB]);
 	}
 	
+	
 	public Edge getEdgeByVertices(Vertex vertexA, Vertex vertexB){
 		return vertexA.getEdge(vertexB);
 	}
+	
 	
 	public Clique getClique(){
 		return this.clique;
 	}
 	
+	
+	/*
+	 * Prints a distribution summary for a given input color
+	 * 
+	 * Output [x:y]
+	 * x = number of edges of color "color" in the first half of the Cayley Graph
+     * y = number of edges of color "color" in the second half of the Cayley Graph
+	 */
 	public String printDistributionSummary(String color){
 		int firstHalfCount = 0;
 		int secondHalfCount = 0;
@@ -316,6 +310,48 @@ public class CayleyGraph {
 		}
 		
 		return "[" + firstHalfCount + ":" + secondHalfCount + "]";
+	}
+	
+	
+	/*
+	 * Get a random edge object of a given color from the cayleyGraph
+	 */
+	public Edge getRandomEdge(String color){
+		Random generator = new Random();
+		int x = 0;
+		int y = 0;
+		while (x==y || getEdgeByVertexIds(x,y).getColor()!=color){
+			x = generator.nextInt(this.numOfElements);
+			y = generator.nextInt(this.numOfElements);
+		}
+		return getEdgeByVertexIds(x,y);
+	}
+	
+	
+	/*
+	 * Rotate all the vertices by a factor of rotationCount
+	 * Then reassign all vertexIDs
+	 * 
+	 * ISSUE -- Also need to rotate edged within the vertex
+	 */
+	public void rotateCayleyGraph(int rotationCount){
+		Vertex swap;
+		
+		// Shift all vertices
+		for(int count=0; count<rotationCount;count++){
+			swap = this.cayleyGraphArray[0];
+			for(int i=0; i<this.numOfElements-1; i++){
+				this.cayleyGraphArray[i] = this.cayleyGraphArray[i+1];
+				this.cayleyGraphArray[i].rotateEdges();
+			}
+			this.cayleyGraphArray[this.numOfElements-1] = swap;
+			this.cayleyGraphArray[this.numOfElements-1].rotateEdges();
+
+		}
+		// Update IDs so that this.CayleyGraph[x] still has vertexId x
+		for(int i=0; i<this.numOfElements; i++){
+			this.cayleyGraphArray[i].updateId(i);
+		}
 	}
 	
 }

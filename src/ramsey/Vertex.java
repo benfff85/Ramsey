@@ -10,6 +10,10 @@ public class Vertex {
 		this.edges = new Edge[numOfElements];
 	}
 	
+	public void updateId(int ID){
+		this.vertexId = ID;
+	}
+	
 	public int getId(){
 		return this.vertexId;
 	}
@@ -39,6 +43,16 @@ public class Vertex {
 			}
 		}
 		return count;
+	}
+	
+	public void rotateEdges(){
+		Edge swap;
+
+		swap = this.edges[0];
+		for(int i=0; i<this.edges.length-1; i++){
+			this.edges[i] = this.edges[i+1];
+		}
+		this.edges[this.edges.length-1] = swap;
 	}
 	
 }
