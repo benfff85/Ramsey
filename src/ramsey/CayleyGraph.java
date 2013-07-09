@@ -1,6 +1,14 @@
 package ramsey;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Random;
+import java.util.StringTokenizer;
+import javax.swing.JFileChooser;
  
 public class CayleyGraph {
 
@@ -39,8 +47,8 @@ public class CayleyGraph {
 				else if (blueCount == 0){
 					Edge edge = new Edge(this.cayleyGraphArray[i],this.cayleyGraphArray[j],"RED");
 					this.cayleyGraphArray[i].setEdge(edge);
-					this.cayleyGraphArray[j].setEdge(edge); 				}
-				else{
+					this.cayleyGraphArray[j].setEdge(edge); 				
+				} else {
 					if(generator.nextBoolean() == false){
 						Edge edge = new Edge(this.cayleyGraphArray[i],this.cayleyGraphArray[j],"BLUE");
 						this.cayleyGraphArray[i].setEdge(edge);
@@ -61,9 +69,8 @@ public class CayleyGraph {
 	/*
 	 * This will output a String representing the Cayley Graph in a format compatible with Mathematica
 	 */
-	public String printCayleyGraph(){
+	public String printCayleyGraphMathematica(){
 		String output = "";
-		String[] arguments = new String[3];
 		output += "GraphPlot[{";
 		
 		for(int i=0;i<this.numOfElements;i++){
@@ -82,13 +89,42 @@ public class CayleyGraph {
 		output = output.substring(0,output.length()-1);
 		output += "}, Method -> CircularEmbedding]";
 		
-		arguments[0]=this.numOfElements + "";
-		arguments[1]=this.clique.getCliqueSize() + "";
-		arguments[2]=output;
-		//@SuppressWarnings("unused")
-		//SendEmail email = new SendEmail(arguments);
-		
 		return output;
+	}
+	
+	
+	/*
+	 * This will output a String representing the Cayley Graph in a format compatible with Mathematica
+	 */
+	public String printCayleyGraphBasic(){
+		String output = "";
+		
+		for(int i=0;i<this.numOfElements;i++){
+			output += "";
+			for(int j=0;j<this.numOfElements;j++){
+				
+				if(i != j && this.cayleyGraphArray[i].getEdge(this.cayleyGraphArray[j]).getColor() == "RED"){
+					output += "1,";
+				}else{
+					output += "0,";
+				}
+			}
+			output = output.substring(0,output.length()-1);
+			output += "\n";
+		}
+
+		return output;
+	}
+	
+	
+	public void emailCayleyGraph(){
+		String[] arguments = new String[3];
+		
+		arguments[0] = "Ramsey Solution found to R[" + this.numOfElements + "," + this.numOfElements + "]";
+		arguments[1] = this.printCayleyGraphMathematica();
+		
+		@SuppressWarnings("unused")
+		SendEmail email = new SendEmail(arguments);
 	}
 	
 	
@@ -202,7 +238,7 @@ public class CayleyGraph {
 		}
 		return false;
 	}
-		    
+	
 	
 	/*
 	 * This will determine if the previous level of the tree also contained the element in question
@@ -251,6 +287,7 @@ public class CayleyGraph {
 		x = 0;
 		y = 0;
 		while(x == y){
+			x = generator.nextInt(this.clique.getCliqueSize());	
 			y = generator.nextInt(this.clique.getCliqueSize());	
 		}
 		
@@ -331,8 +368,6 @@ public class CayleyGraph {
 	/*
 	 * Rotate all the vertices by a factor of rotationCount
 	 * Then reassign all vertexIDs
-	 * 
-	 * ISSUE -- Also need to rotate edged within the vertex
 	 */
 	public void rotateCayleyGraph(int rotationCount){
 		Vertex swap;
@@ -342,10 +377,50 @@ public class CayleyGraph {
 			swap = this.cayleyGraphArray[0];
 			for(int i=0; i<this.numOfElements-1; i++){
 				this.cayleyGraphArray[i] = this.cayleyGraphArray[i+1];
-				this.cayleyGraphArray[i].rotateEdges();
 			}
 			this.cayleyGraphArray[this.numOfElements-1] = swap;
-			this.cayleyGraphArray[this.numOfElements-1].rotateEdges();
+			
+			for(int i=0; i<this.numOfElements; i++){
+				this.cayleyGraphArray[i].rotateEdges();
+			}
+		}
+		// Update IDs so that this.CayleyGraph[x] still has vertexId x
+		for(int i=0; i<this.numOfElements; i++){
+			this.cayleyGraphArray[i].updateId(i);
+		}
+	}
+	
+	
+	/*
+	 * Rotate all the vertices by a factor of rotationCount
+	 * Then reassign all vertexIDs
+	 */
+	public void rotateCayleyGraphParallel(int rotationCount){
+		Vertex swap;
+		RotateEdgeThread[] threads = new RotateEdgeThread[this.numOfElements];
+
+		
+		// Shift all vertices
+		for(int count=0; count<rotationCount;count++){
+			swap = this.cayleyGraphArray[0];
+			for(int i=0; i<this.numOfElements-1; i++){
+				this.cayleyGraphArray[i] = this.cayleyGraphArray[i+1];
+			}
+			this.cayleyGraphArray[this.numOfElements-1] = swap;
+			
+			// Shift all edges for each vertex
+			for(int i=0; i<this.numOfElements; i++){
+				threads[i] = new RotateEdgeThread(this.cayleyGraphArray[i]);
+			}				
+			
+			// Sync up threads
+			for(int i=0; i<this.numOfElements; i++){
+				try{
+					threads[i].join();
+				}  
+				catch (Exception e){}
+			}
+			
 
 		}
 		// Update IDs so that this.CayleyGraph[x] still has vertexId x
@@ -353,5 +428,96 @@ public class CayleyGraph {
 			this.cayleyGraphArray[i].updateId(i);
 		}
 	}
+	
+	class RotateEdgeThread extends Thread{
+		Vertex vertex;
+		
+		RotateEdgeThread(Vertex vertex){
+			this.vertex = vertex;
+			start();
+		}
+		
+		public void run(){
+			vertex.rotateEdges();
+		}
+	}
+	
+	public void writeToFile(String filePath, String fileName){
+		File file;
+		FileWriter fw;
+		BufferedWriter bw;
+		
+		String content = this.printCayleyGraphBasic();
+		// Compile string "content" to write to file
+		
+		// Write the "content" string to file
+		try {
+			file = new File(filePath + fileName + "");
+			fw = new FileWriter(file.getAbsoluteFile());
+			bw = new BufferedWriter(fw);
+			
+			bw.write(content);
+			
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/*
+	 * This method will initialize the cayleyGraph from a checkpoint file assuming the data in the checkpoint file
+	 * is formatted as defined in the printCayleyGraphBasic method in this Class.
+	 */
+	public void loadFromFile(){
+		String inputLine;
+		StringTokenizer st;
+		JFileChooser chooser = new JFileChooser();	
+		int retval;
+		
+		// Initialize all vertices with valid IDs
+		for (int i=0;i<this.numOfElements;i++){
+			this.cayleyGraphArray[i] = new Vertex(i,this.numOfElements);
+		}
+		
+		// Select a file
+		retval = chooser.showOpenDialog(null);
+		
+		if (retval == JFileChooser.APPROVE_OPTION){
+			File file = chooser.getSelectedFile();
+			BufferedReader buffRead;
+			try {
+				buffRead = new BufferedReader(new FileReader(file));
+
+			
+				for(int i=0;i<this.numOfElements;i++){
+					inputLine = buffRead.readLine();
+					st=new StringTokenizer(inputLine,",");
+				
+					for(int j=(i+1);j<this.numOfElements;j++){
+						if (Integer.parseInt(st.nextToken()) == 0){
+							Edge edge = new Edge(this.cayleyGraphArray[i],this.cayleyGraphArray[j],"BLUE");
+							this.cayleyGraphArray[i].setEdge(edge);
+							this.cayleyGraphArray[j].setEdge(edge); 
+						} 
+						else { 
+							Edge edge = new Edge(this.cayleyGraphArray[i],this.cayleyGraphArray[j],"RED");
+							this.cayleyGraphArray[i].setEdge(edge);
+							this.cayleyGraphArray[j].setEdge(edge); 
+						}
+					}	
+				}
+				buffRead.close();
+			}
+			catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println("IO Error, returning null");
+			}
+			
+		}
+	}
+	
+	
 	
 }

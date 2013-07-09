@@ -19,14 +19,13 @@ public class SendEmail {
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.port", "465");
 		
-		String numOfElements = arguments[0];
-		String cliqueSize = arguments[1];
-		String table = arguments[2];
+		String subject = arguments[0];
+		String body = arguments[1];
  
 		Session session = Session.getDefaultInstance(props,
 			new javax.mail.Authenticator() {
 				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication("ben.ferenchak","qazxsw1200"); 
+					return new PasswordAuthentication("ben.ferenchak","xxx"); 
 				}
 			});
  
@@ -36,15 +35,11 @@ public class SendEmail {
 			message.setFrom(new InternetAddress("ben.ferenchak@gmail.com"));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse("ben.ferenchak@gmail.com"));
-			message.setSubject("Ramsey Solution Found");
-			message.setText("Number of Elements: " + numOfElements + "\n"
-					       + "Clique Size: " + cliqueSize + "\n"
-					       + "Caylee Table:\n" + table );
+			message.setSubject(subject);
+			message.setText(body);
  
 			Transport.send(message);
- 
-			System.out.println("Done");
- 
+  
 		} catch (MessagingException e) {
 			throw new RuntimeException(e);
 		}
