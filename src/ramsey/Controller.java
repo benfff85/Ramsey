@@ -10,6 +10,7 @@ public class Controller {
 
 		cayleyGraph.generateRandomGraph();
 		//cayleyGraph.loadFromFile();
+		
 		timer.newTimeSet("MUTATE");
 		timer.newTimeSet("LOGGER");
 		timer.newTimeSet("CLIQUE");
@@ -59,9 +60,10 @@ public class Controller {
 	
 	
 	public static CayleyGraph setSize(){
-		//return new CayleyGraph(288,8);
-		//return new CayleyGraph(14,4);
-		return new CayleyGraph(5,3);
+		return new CayleyGraph(288,8);//      Target - Very Hard
+		//return new CayleyGraph(16,4); //      
+		//return new CayleyGraph(14,4); //      Quick Find R(4) = 18
+		//return new CayleyGraph(5,3);  // Very Quick Find R(3) = 6
 	}
 
 	
@@ -100,9 +102,9 @@ public class Controller {
 	
 	public static void printPositiveCase(CayleyGraph cg, Logger l){
 		System.out.println(cg.printCayleyGraphMathematica());
-		cg.emailCayleyGraph();
-		cg.writeToFile("D:\\", "Ramsey.sol");
+		//cg.emailCayleyGraph();
 		l.writeToLogFile("SOLUTION:\n" + cg.printCayleyGraphMathematica());
+		cg.writeToFile("D:\\", "Ramsey.sol");
 	}
 
 }

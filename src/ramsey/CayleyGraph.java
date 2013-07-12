@@ -183,12 +183,13 @@ public class CayleyGraph {
 		      tree[pointerArrayIndex][i] = this.cayleyGraphArray[i];
 		}
 		
+		/*
 		// Fill the rest of the tree with dummy vertices with ID of -1
 		for(int i=1; i<this.clique.getCliqueSize(); i++){
 			for(int j=0; j<this.numOfElements; j++){
 				tree[i][j] = new Vertex(-1,1);
 			}
-		}
+		}*/
 		
 		
 		
@@ -221,15 +222,20 @@ public class CayleyGraph {
 		    
 		    //Otherwise there are not enough elements for a clique, delete row and slide pointer for previous level up one repeat until link-to-be is non-negative one
 		    else{
-		    	for(int i=0; i<this.numOfElements && tree[pointerArrayIndex][i].getId()!=-1; i++){
-		        	tree[pointerArrayIndex][i]= new Vertex(-1,1);
+		    	//for(int i=0; i<this.numOfElements && tree[pointerArrayIndex][i].getId()!=-1; i++){
+		    	for(int i=0; i<this.numOfElements && tree[pointerArrayIndex][i]!=null; i++){
+		        	//tree[pointerArrayIndex][i] = new Vertex(-1,1);
+		        	tree[pointerArrayIndex][i]=null;
 		        }
 		        pointerArray[pointerArrayIndex]=0;	
 		        pointerArrayIndex--;
 		        
-		        while(tree[pointerArrayIndex][pointerArray[pointerArrayIndex]].getId()==-1){
-		        	for(int i=0; i<this.numOfElements && tree[pointerArrayIndex][i].getId()!=-1; i++){
-			        	tree[pointerArrayIndex][i]= new Vertex(-1,1);
+		        //while(tree[pointerArrayIndex][pointerArray[pointerArrayIndex]].getId()==-1){
+		        while(tree[pointerArrayIndex][pointerArray[pointerArrayIndex]]==null){
+		        	//for(int i=0; i<this.numOfElements && tree[pointerArrayIndex][i].getId()!=-1; i++){
+		        	for(int i=0; i<this.numOfElements && tree[pointerArrayIndex][i]!=null; i++){
+			        	//tree[pointerArrayIndex][i]= new Vertex(-1,1);
+			        	tree[pointerArrayIndex][i] = null;
 			        }
 			        pointerArray[pointerArrayIndex]=0;	
 			        pointerArrayIndex--;
@@ -244,7 +250,8 @@ public class CayleyGraph {
 	 * This will determine if the previous level of the tree also contained the element in question
 	 */
 	private boolean isInPrevLevel(Vertex vertex, Vertex[] level){
-		for(int i=0;i<this.numOfElements && level[i].getId()<=vertex.getId();i++){
+		//for(int i=0;i<this.numOfElements && level[i].getId()<=vertex.getId();i++){
+		for(int i=0;i<this.numOfElements && level[i] != null && level[i].getId()<=vertex.getId();i++){
 			if(level[i] == vertex){
 				return true;
 			}
@@ -474,6 +481,7 @@ public class CayleyGraph {
 		StringTokenizer st;
 		JFileChooser chooser = new JFileChooser();	
 		int retval;
+		int nextInt;
 		
 		// Initialize all vertices with valid IDs
 		for (int i=0;i<this.numOfElements;i++){
@@ -489,21 +497,24 @@ public class CayleyGraph {
 			try {
 				buffRead = new BufferedReader(new FileReader(file));
 
-			
+				// Loop through file creating edges as we go
 				for(int i=0;i<this.numOfElements;i++){
 					inputLine = buffRead.readLine();
 					st=new StringTokenizer(inputLine,",");
 				
-					for(int j=(i+1);j<this.numOfElements;j++){
-						if (Integer.parseInt(st.nextToken()) == 0){
-							Edge edge = new Edge(this.cayleyGraphArray[i],this.cayleyGraphArray[j],"BLUE");
-							this.cayleyGraphArray[i].setEdge(edge);
-							this.cayleyGraphArray[j].setEdge(edge); 
-						} 
-						else { 
-							Edge edge = new Edge(this.cayleyGraphArray[i],this.cayleyGraphArray[j],"RED");
-							this.cayleyGraphArray[i].setEdge(edge);
-							this.cayleyGraphArray[j].setEdge(edge); 
+					for(int j=0;j<this.numOfElements;j++){
+						nextInt = Integer.parseInt(st.nextToken());
+						if (j>i){
+							if (nextInt == 0){
+								Edge edge = new Edge(this.cayleyGraphArray[i],this.cayleyGraphArray[j],"BLUE");
+								this.cayleyGraphArray[i].setEdge(edge);
+								this.cayleyGraphArray[j].setEdge(edge); 
+							} 
+							else { 
+								Edge edge = new Edge(this.cayleyGraphArray[i],this.cayleyGraphArray[j],"RED");
+								this.cayleyGraphArray[i].setEdge(edge);
+								this.cayleyGraphArray[j].setEdge(edge); 
+							}	
 						}
 					}	
 				}
@@ -514,7 +525,6 @@ public class CayleyGraph {
 				e.printStackTrace();
 				System.out.println("IO Error, returning null");
 			}
-			
 		}
 	}
 	

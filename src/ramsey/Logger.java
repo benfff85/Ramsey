@@ -4,6 +4,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Logger {
 
@@ -20,12 +23,15 @@ public class Logger {
 		this.maxFirstCliqueElement = 0;
 		this.analyzedGraphCount = 0;
 		
+		DateFormat df = new SimpleDateFormat("MMddyyyyHHmmss");
+		String formattedDate = df.format(new Date()); 
+		String fileName = "D:\\Ramsey_" + formattedDate + ".log";
+		
 		try {
-			this.file = new File("D:\\Ramsey.log");
+			this.file = new File(fileName);
 			this.fw = new FileWriter(file.getAbsoluteFile());
 			this.bw = new BufferedWriter(fw);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -68,7 +74,6 @@ public class Logger {
 	
 	public void writeToLogFile(String content){
 		try {
-			//String content = "This is the content to write into file";
 			bw.append(content);
 		} catch (IOException e) {
 			e.printStackTrace();
