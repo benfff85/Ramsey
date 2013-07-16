@@ -22,18 +22,6 @@ public class Logger {
 		this.maxCliqueSum = 0;
 		this.maxFirstCliqueElement = 0;
 		this.analyzedGraphCount = 0;
-		
-		DateFormat df = new SimpleDateFormat("MMddyyyyHHmmss");
-		String formattedDate = df.format(new Date()); 
-		String fileName = "D:\\Ramsey_" + formattedDate + ".log";
-		
-		try {
-			this.file = new File(fileName);
-			this.fw = new FileWriter(file.getAbsoluteFile());
-			this.bw = new BufferedWriter(fw);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	public void parseCayleyGraph(CayleyGraph cayleyGraph){
@@ -73,6 +61,10 @@ public class Logger {
 	}
 	
 	public void writeToLogFile(String content){
+		if (this.file == null){
+			openLogFile();
+		}
+		
 		try {
 			bw.append(content);
 		} catch (IOException e) {
@@ -84,7 +76,20 @@ public class Logger {
 		try {
 			this.bw.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void openLogFile(){
+		DateFormat df = new SimpleDateFormat("MMddyyyyHHmmss");
+		String formattedDate = df.format(new Date()); 
+		String fileName = "D:\\Ramsey_" + formattedDate + ".log";
+		
+		try {
+			this.file = new File(fileName);
+			this.fw = new FileWriter(file.getAbsoluteFile());
+			this.bw = new BufferedWriter(fw);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

@@ -293,7 +293,7 @@ public class CayleyGraph {
 		
 		// Select the edge of opposite color to swap as well
 		if(redSelected){
-			blueEdge = this.getRandomEdge("BLUE");
+			blueEdge = this.getRandomEdge("BLUE"); 
 		}
 		else if(blueSelected){
 			redEdge = this.getRandomEdge("RED");
@@ -402,7 +402,12 @@ public class CayleyGraph {
 			// Shift all edges for each vertex
 			for(int i=0; i<this.numOfElements; i++){
 				threads[i] = new RotateEdgeThread(this.cayleyGraphArray[i]);
-			}				
+			}		
+			
+			// Start threads
+			for(int i=0; i<this.numOfElements; i++){
+				threads[i].start();
+			}
 			
 			// Sync up threads
 			for(int i=0; i<this.numOfElements; i++){
@@ -410,8 +415,7 @@ public class CayleyGraph {
 					threads[i].join();
 				}  
 				catch (Exception e){}
-			}
-			
+			}	
 
 		}
 		// Update IDs so that this.CayleyGraph[x] still has vertexId x
@@ -420,12 +424,67 @@ public class CayleyGraph {
 		}
 	}
 	
+	/*
+	 * Rotate all the vertices by a factor of rotationCount
+	 * Then reassign all vertexIDs
+	 */
+	public void rotateCayleyGraphParallel(int rotationCount, int maxThreads){
+		Vertex swap;
+		RotateEdgeThread[] threads = new RotateEdgeThread[maxThreads];
+
+		
+		// Shift all vertices
+		for(int count=0; count<rotationCount;count++){
+			swap = this.cayleyGraphArray[0];
+			for(int i=0; i<this.numOfElements-1; i++){
+				this.cayleyGraphArray[i] = this.cayleyGraphArray[i+1];
+			}
+			this.cayleyGraphArray[this.numOfElements-1] = swap;
+			
+			// Shift all edges for each vertex
+			int iterations = (int) Math.ceil( (double) this.numOfElements / maxThreads);
+			int vertexId;
+			
+			//for(int i=0; i<this.numOfElements; i++){
+			for(int i=0; i<iterations; i++){
+				
+				// Initialize Threads
+				for (int j=0; j<maxThreads; j++){
+					vertexId = (i*maxThreads)+j;
+					if (vertexId < this.numOfElements){
+						threads[j] = new RotateEdgeThread(this.cayleyGraphArray[vertexId]);
+					}
+				}
+				
+				// Start threads
+				for (int j=0; j<maxThreads; j++){
+					threads[j].start();
+				}
+				
+				
+				// Sync up threads
+				for(int j=0; j<maxThreads; j++){
+					try{
+						threads[j].join();
+					}  
+					catch (Exception e){
+						e.printStackTrace();
+					}
+				}					
+			}				
+		
+			// Update IDs so that this.CayleyGraph[x] still has vertexId x
+			for(int i=0; i<this.numOfElements; i++){
+				this.cayleyGraphArray[i].updateId(i);
+			}
+		}
+	}
+	
 	class RotateEdgeThread extends Thread{
 		Vertex vertex;
 		
 		RotateEdgeThread(Vertex vertex){
 			this.vertex = vertex;
-			start();
 		}
 		
 		public void run(){
@@ -504,11 +563,29 @@ public class CayleyGraph {
 				buffRead.close();
 			}
 			catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				System.out.println("IO Error, returning null");
 			}
 		}
+	}
+	
+	
+	/**
+	 * This will check if the cayleyGraph is still symmetric as expected. 
+	 * This is to say the Edge connecting Vertex A to Vertex B should be the same Edge which is connecting Vertex B to Vertex A.
+	 * This will be used for debugging only.
+	 * 
+	 * @return This will return a True/False value indicating if the graph is symmetric as expected.
+	 */
+	public boolean isSymmetric(){
+		for(int i=0; i<this.numOfElements; i++){
+			for(int j=i+1; j<this.numOfElements; j++){
+				if(this.cayleyGraphArray[i].edges[j] != this.cayleyGraphArray[j].edges[i]){
+					return false;					
+				}
+			}
+		}
+		return true;
 	}
 	
 	

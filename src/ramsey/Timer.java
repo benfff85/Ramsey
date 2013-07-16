@@ -1,5 +1,6 @@
 package ramsey;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,15 +35,26 @@ public class Timer {
 	}
 	
 	public String printDuration(String label){
-		return this.timerArray.get(label).duration + "";
+		double duration = this.timerArray.get(label).duration/1000000000.0; 
+		duration = round(duration,2,BigDecimal.ROUND_HALF_UP);
+		return duration + "";
 	}
 	
 	public String printCumulativeDuration(String label){
-		return this.timerArray.get(label).cumulativeDuration + "";
+		double duration = this.timerArray.get(label).cumulativeDuration/1000000000.0; 
+		duration = round(duration,2,BigDecimal.ROUND_HALF_UP);
+		return duration + "";
 	}
 	
 	public void clearCumulativeDuration(String label){
 		this.timerArray.get(label).cumulativeDuration = 0;
+	}
+	
+	private static double round(double unrounded, int precision, int roundingMode)
+	{
+	    BigDecimal bd = new BigDecimal(unrounded);
+	    BigDecimal rounded = bd.setScale(precision, roundingMode);
+	    return rounded.doubleValue();
 	}
 	
 }
