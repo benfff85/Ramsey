@@ -54,7 +54,7 @@ public class Controller {
 			logger.parseCayleyGraph(cayleyGraph);
 			timer.endTimer("LOGGER");
 
-			if (logger.getAnalyzedGraphCount() % 100000 == 0) {
+			if (logger.getAnalyzedGraphCount() % 1000000 == 0) {
 				printNegativeCase(cayleyGraph, logger, timer, "BOTH");
 				timer.clearCumulativeDuration("MUTATE");
 				timer.clearCumulativeDuration("LOGGER");
@@ -81,9 +81,8 @@ public class Controller {
 	 * @return void
 	 */
 	private static void rotate(CayleyGraph cg) {
-		 cg.rotateCayleyGraph(1);
-		// cg.rotateCayleyGraphParallel(1);
-		// cg.rotateCayleyGraphParallel(1,1);
+		cg.rotateCayleyGraph(1);
+		//cg.rotateCayleyGraphParallel(1,2);
 	}
 
 	/**
@@ -181,7 +180,7 @@ public class Controller {
 	private static void printPositiveCase(CayleyGraph cg, Logger l) {
 		System.out.println(cg.printCayleyGraphMathematica());
 		l.writeToLogFile("SOLUTION:\n" + cg.printCayleyGraphMathematica());
-		cg.writeToFile("D:\\", "Ramsey.sol");
+		cg.writeToFile("X:\\", "Ramsey.sol");
 		cg.emailCayleyGraph();
 	}
 }

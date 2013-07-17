@@ -147,12 +147,15 @@ public class Vertex {
 	 */
 	public void rotateEdges() {
 		Edge swap;
+		Edge[] tempEdgeArray = new Edge[this.edges.length];
 
 		swap = this.edges[0];
-		for (int i = 0; i < this.edges.length - 1; i++) {
-			this.edges[i] = this.edges[i + 1];
-		}
-		this.edges[this.edges.length - 1] = swap;
+
+		System.arraycopy(this.edges, 1, tempEdgeArray, 0, this.edges.length - 1);
+		tempEdgeArray[this.edges.length - 1] = swap;
+
+		this.edges = tempEdgeArray;
+
 	}
 
 	/**

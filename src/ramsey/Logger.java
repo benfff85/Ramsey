@@ -49,7 +49,7 @@ public class Logger {
 		this.analyzedGraphCount++;
 		updateMaxCliqueSum(cayleyGraph.getClique());
 		if(updateMaxWeightedCliqueSum(cayleyGraph.getClique(), cayleyGraph.numOfElements)){
-			cayleyGraph.writeToFile("D:\\", "Ramsey.chk");
+			cayleyGraph.writeToFile("X:\\", "Ramsey.chk");
 		}
 		updateMaxFirstCliqueElement(cayleyGraph.getClique());
 	}
@@ -196,7 +196,7 @@ public class Logger {
 	private void openLogFile() {
 		DateFormat df = new SimpleDateFormat("MMddyyyyHHmmss");
 		String formattedDate = df.format(new Date());
-		String fileName = "D:\\Ramsey_" + formattedDate + ".log";
+		String fileName = "X:\\Ramsey_" + formattedDate + ".log";
 
 		try {
 			this.file = new File(fileName);
