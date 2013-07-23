@@ -11,7 +11,7 @@ package ramsey;
  */
 public class Clique {
 
-	Vertex[] cliqueVertexArray;
+	private Vertex[] cliqueVertexArray;
 
 	/**
 	 * This is the main constructor class for the Clique. It will initialize the

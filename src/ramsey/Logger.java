@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,24 +18,27 @@ import java.util.Date;
  */
 public class Logger {
 
-	int maxCliqueSum;
-	long maxWeightedCliqueSum;
-	int maxFirstCliqueElement;
-	long analyzedGraphCount;
-
-	File file;
-	FileWriter fw;
-	BufferedWriter bw;
+	private int maxCliqueSum;
+	private BigInteger maxWeightedCliqueSum;
+	private int maxFirstCliqueElement;
+	private long analyzedGraphCount;
+	private File file;
+	private FileWriter fw;
+	private BufferedWriter bw;
+	private String formattedDate;
 
 	/**
-	 * This is the main logger constructor which will initialize tracked values
+	 * This is the main Logger constructor which will initialize tracked values
 	 * to 0.
 	 */
 	public Logger() {
 		this.maxCliqueSum = 0;
-		this.maxWeightedCliqueSum = 0;
+		this.maxWeightedCliqueSum = new BigInteger("0");
 		this.maxFirstCliqueElement = 0;
 		this.analyzedGraphCount = 0;
+		
+		DateFormat df = new SimpleDateFormat("MMddyyyyHHmmss");
+		this.formattedDate = df.format(new Date());
 	}
 
 	/**
@@ -48,8 +52,8 @@ public class Logger {
 	public void parseCayleyGraph(CayleyGraph cayleyGraph) {
 		this.analyzedGraphCount++;
 		updateMaxCliqueSum(cayleyGraph.getClique());
-		if(updateMaxWeightedCliqueSum(cayleyGraph.getClique(), cayleyGraph.numOfElements)){
-			cayleyGraph.writeToFile("X:\\", "Ramsey.chk");
+		if(updateMaxWeightedCliqueSum(cayleyGraph.getClique(), cayleyGraph.getNumOfElements())){
+			cayleyGraph.writeToFile("X:\\", "Ramsey_" + this.formattedDate + ".chk");
 		}
 		updateMaxFirstCliqueElement(cayleyGraph.getClique());
 	}
@@ -88,12 +92,15 @@ public class Logger {
 	 * @return True if this clique has the new largest weighted clique sum, otherwise false.
 	 */
 	private boolean updateMaxWeightedCliqueSum(Clique clique, int numOfElements) {
-		long cliqueSum = 0;
+		BigInteger cliqueSum = new BigInteger("0");
+		long elementSum = 0;
+		
 		for (int i = 0; i < clique.getCliqueSize(); i++) {
-			cliqueSum += (Math.pow(numOfElements, clique.getCliqueSize() - (i + 1)) * clique.getCliqueVertexByPosition(i).getId());
+			elementSum = (long)Math.pow(numOfElements, clique.getCliqueSize() - (i + 1)) * clique.getCliqueVertexByPosition(i).getId();
+			cliqueSum = cliqueSum.add(BigInteger.valueOf(elementSum));
 		}
 
-		if (cliqueSum > this.maxWeightedCliqueSum) {
+		if (cliqueSum.compareTo(this.maxWeightedCliqueSum) > 0) {
 			this.maxWeightedCliqueSum = cliqueSum;
 			return true;
 		}
@@ -130,7 +137,7 @@ public class Logger {
 	 * 
 	 * @return The maximum weighted sum of Vertex IDs in an identified clique.
 	 */
-	public long getMaxWeightedCliqueSum() {
+	public BigInteger getMaxWeightedCliqueSum() {
 		return this.maxWeightedCliqueSum;
 	}
 	
@@ -194,10 +201,7 @@ public class Logger {
 	 * @return void
 	 */
 	private void openLogFile() {
-		DateFormat df = new SimpleDateFormat("MMddyyyyHHmmss");
-		String formattedDate = df.format(new Date());
-		String fileName = "X:\\Ramsey_" + formattedDate + ".log";
-
+		String fileName = "X:\\Ramsey_" + this.formattedDate + ".log";
 		try {
 			this.file = new File(fileName);
 			this.fw = new FileWriter(file.getAbsoluteFile());

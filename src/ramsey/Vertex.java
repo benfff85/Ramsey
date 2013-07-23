@@ -56,9 +56,9 @@ public class Vertex {
 	public void setEdge(Edge edge) {
 
 		if (edge.getVertexA() == this) {
-			this.edges[edge.vertexB.vertexId] = edge;
+			this.edges[edge.getVertexB().getId()] = edge;
 		} else if (edge.getVertexB() == this) {
-			this.edges[edge.vertexA.vertexId] = edge;
+			this.edges[edge.getVertexA().getId()] = edge;
 		}
 	}
 
@@ -147,15 +147,10 @@ public class Vertex {
 	 */
 	public void rotateEdges() {
 		Edge swap;
-		Edge[] tempEdgeArray = new Edge[this.edges.length];
-
+		
 		swap = this.edges[0];
-
-		System.arraycopy(this.edges, 1, tempEdgeArray, 0, this.edges.length - 1);
-		tempEdgeArray[this.edges.length - 1] = swap;
-
-		this.edges = tempEdgeArray;
-
+		System.arraycopy(this.edges, 1, this.edges, 0, this.edges.length - 1);
+		this.edges[this.edges.length - 1] = swap;
 	}
 
 	/**

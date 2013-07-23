@@ -8,9 +8,9 @@ package ramsey;
  */
 public class Edge {
 
-	Vertex vertexA;
-	Vertex vertexB;
-	String color;
+	private Vertex vertexA;
+	private Vertex vertexB;
+	private String color;
 
 	/**
 	 * This is the main constructor for the Edge Class. It will set the vertices

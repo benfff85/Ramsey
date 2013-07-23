@@ -42,7 +42,8 @@ public class Controller {
 		while (!counterExampleFound) {
 
 			timer.startTimer("CLIQUE");
-			if (!cayleyGraph.cliqueChecker("RED") && !cayleyGraph.cliqueChecker("BLUE")) {
+			if (!cayleyGraph.checkForClique("RED") && !cayleyGraph.checkForClique("BLUE")) {
+
 				counterExampleFound = true;
 				printPositiveCase(cayleyGraph, logger);
 				logger.closeLogFile();
@@ -60,6 +61,7 @@ public class Controller {
 				timer.clearCumulativeDuration("LOGGER");
 				timer.clearCumulativeDuration("CLIQUE");
 				timer.clearCumulativeDuration("ROTATE");
+				//System.gc();
 			}
 
 			timer.startTimer("MUTATE");
@@ -82,7 +84,7 @@ public class Controller {
 	 */
 	private static void rotate(CayleyGraph cg) {
 		cg.rotateCayleyGraph(1);
-		//cg.rotateCayleyGraphParallel(1,2);
+		//cg.rotateCayleyGraphParallel(1,8);
 	}
 
 	/**
@@ -147,7 +149,7 @@ public class Controller {
 						"Distribution:         " + cg.printDistribution("RED") + "\n" +
 						"Distribution Summary: " + cg.printDistributionSummary("RED") + "\n" +
 						"Max First Clique ID:  " + l.getMaxFirstCliqueElement() + "\n" +
-						"Max Clique Sum:       " + l.getMaxCliqueSum() + "\n" +
+						"Max Clique Sum:       " + l.getMaxCliqueSum() + "\n" + 
 						"Weighted Clique Sum   " + l.getMaxWeightedCliqueSum() + "\n" +
 						"Time Mutate:          " + t.printCumulativeDuration("MUTATE") + "\n" +
 						"Time Logger:          " + t.printCumulativeDuration("LOGGER") + "\n" +

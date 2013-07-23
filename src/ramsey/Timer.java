@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class Timer {
 
-	Map<String, TimeSet> timerArray = new HashMap<String, TimeSet>();
+	private Map<String, TimeSet> timerArray = new HashMap<String, TimeSet>();
 
 	class TimeSet {
 		long startTime;
