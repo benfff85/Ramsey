@@ -27,6 +27,9 @@ public class CayleyGraph {
 	private Vertex[] cayleyGraphArray;
 	private Clique clique;
 	private CliqueChecker cliqueChecker;
+	private int cliqueSize;
+	private Config config = new Config();
+
 	
 	/**
 	 * This is the main constructor for the CayleyGraph. It will initialize all
@@ -37,11 +40,13 @@ public class CayleyGraph {
 	 * @param cliqueSize The number of elements (vertices) in the complete
 	 *        subgraph (clique) we will be searching for.
 	 */
-	public CayleyGraph(int numOfElements, int cliqueSize) {
-		this.numOfElements = numOfElements;
+	public CayleyGraph() {
+		this.numOfElements = config.NUM_OF_ELEMENTS;
+		this.cliqueSize = config.CLIQUE_SIZE;
 		this.cayleyGraphArray = new Vertex[numOfElements];
 		this.clique = new Clique(cliqueSize);
 		this.cliqueChecker = new CliqueChecker(cliqueSize, numOfElements);
+		initialize();
 	}
 	
 	/**
@@ -78,6 +83,20 @@ public class CayleyGraph {
 		return cliqueChecker.findClique(this, color);
 	}
 
+	/**
+	 * This will initialize the vertices and edges of the CayleyGraph based on
+	 * the LAUNCH_METHOD specified in the config class.
+	 * 
+	 * @return void
+	 */
+	public void initialize() {
+		if (config.LAUNCH_METHOD == LAUNCH_TYPE.GENERATE_RANDOM) {
+			generateRandomGraph();
+		} else if (config.LAUNCH_METHOD == LAUNCH_TYPE.OPEN_FROM_FILE) {
+			loadFromFile();
+		}
+	}
+	
 	/**
 	 * This will Generate a random CayleyGraph where the total number of edges
 	 * of each color will be equal. This is generally only done once at the
@@ -249,69 +268,7 @@ public class CayleyGraph {
 		return output;
 	}
 		
-	/**
-	 * Randomly flip countOfSwaps pairs of edges, one edge of each color per
-	 * pair to maintain balance.
-	 * 
-	 * @return void
-	 */
-	public void mutateGraphRandom(int countOfSwaps) {
-		Edge redEdge = null;
-		Edge blueEdge = null;
-
-		for (int i = 0; i < countOfSwaps; i++) {
-
-			redEdge = this.getRandomEdge("RED");
-			blueEdge = this.getRandomEdge("BLUE");
-
-			redEdge.setColor("BLUE");
-			blueEdge.setColor("RED");
-		}
-	}
-
-	/**
-	 * This will flip the color of one edge from the identified clique along
-	 * with one random edge of the opposite color to maintain balance.
-	 * 
-	 * @return void
-	 */
-	public void mutateGraphTargeted() {
-		Random generator = new Random();
-		boolean redSelected = false;
-		boolean blueSelected = false;
-		Edge redEdge = null;
-		Edge blueEdge = null;
-		int x, y;
-
-		// Select the edge from clique to swap
-		x = 0;
-		y = 0;
-		while (x == y) {
-			x = generator.nextInt(this.clique.getCliqueSize());
-			y = generator.nextInt(this.clique.getCliqueSize());
-		}
-
-		if (this.clique.getCliqueVertexByPosition(x).getEdge(this.clique.getCliqueVertexByPosition(y)).getColor() == "RED") {
-			redEdge = this.clique.getCliqueVertexByPosition(x).getEdge(this.clique.getCliqueVertexByPosition(y));
-			redSelected = true;
-		}
-		else {
-			blueEdge = this.clique.getCliqueVertexByPosition(x).getEdge(this.clique.getCliqueVertexByPosition(y));
-			blueSelected = true;
-		}
-
-		// Select the edge of opposite color to swap as well
-		if (redSelected) {
-			blueEdge = this.getRandomEdge("BLUE");
-		}
-		else if (blueSelected) {
-			redEdge = this.getRandomEdge("RED");
-		}
-
-		redEdge.setColor("BLUE");
-		blueEdge.setColor("RED");
-	}
-	
+		
 	/**
 	 * This will return an edge from this CayleyGraph based on the vertex IDs of
 	 * the two vertices it connects.
@@ -396,27 +353,22 @@ public class CayleyGraph {
 	}
 	
 	/**
-	 * Rotate all the vertices by a factor of rotationCount then reassign all
-	 * vertexIDs. This will be done serially
+	 * Rotate all the vertices then reassign all vertexIDs. This will be done serially
 	 * 
-	 * @param rotationCount This is the number of times each Vertex will be
-	 *        shifted. Generally this is just 1.
 	 * @return void
 	 */
-	public void rotateCayleyGraph(int rotationCount) {
+	public void rotateCayleyGraph() {
 		Vertex swap;
-		
-		// Shift all vertices
-		for (int count = 0; count < rotationCount; count++) {
-			
-			swap = this.cayleyGraphArray[0];
-			System.arraycopy(this.cayleyGraphArray, 1, this.cayleyGraphArray, 0, this.numOfElements - 1);
-			this.cayleyGraphArray[this.numOfElements - 1] = swap;
 
-			for (int i = 0; i < this.numOfElements; i++) {
-				this.cayleyGraphArray[i].rotateEdges();
-			}
+		// Shift all vertices
+		swap = this.cayleyGraphArray[0];
+		System.arraycopy(this.cayleyGraphArray, 1, this.cayleyGraphArray, 0, this.numOfElements - 1);
+		this.cayleyGraphArray[this.numOfElements - 1] = swap;
+
+		for (int i = 0; i < this.numOfElements; i++) {
+			this.cayleyGraphArray[i].rotateEdges();
 		}
+
 		// Update IDs so that this.CayleyGraph[x] still has vertexId x
 		for (int i = 0; i < this.numOfElements; i++) {
 			this.cayleyGraphArray[i].updateId(i);
@@ -424,45 +376,41 @@ public class CayleyGraph {
 	}
 	
 	/**
-	 * Rotate all the vertices by a factor of rotationCount then reassign all
-	 * vertexIDs. This will be done in parallel with the number of concurrent
-	 * threads being defined by the input maxThreads variable.
+	 * Rotate all the vertices then reassign all vertexIDs. This will be done in
+	 * parallel with the number of concurrent threads being defined by the input
+	 * maxThreads variable.
 	 * 
-	 * @param rotationCount This is the number of times each Vertex will be
-	 *        shifted. Generally this is just 1.
 	 * @param maxThreads This is the number of threads that will execute the
 	 *        rotation concurrently.
 	 * @return void
 	 */
-	public void rotateCayleyGraphParallel(int rotationCount, int maxThreads) {
+	public void rotateCayleyGraphParallel(int maxThreads) {
 		Vertex swap;
 		RotateEdgeThread[] threads = new RotateEdgeThread[maxThreads];
 
 		// Shift all vertices
-		for (int count = 0; count < rotationCount; count++) {
-			swap = this.cayleyGraphArray[0];
-			System.arraycopy(this.cayleyGraphArray, 1, this.cayleyGraphArray, 0, this.numOfElements - 1);
-			this.cayleyGraphArray[this.numOfElements - 1] = swap;
+		swap = this.cayleyGraphArray[0];
+		System.arraycopy(this.cayleyGraphArray, 1, this.cayleyGraphArray, 0, this.numOfElements - 1);
+		this.cayleyGraphArray[this.numOfElements - 1] = swap;
 
-			// Shift all edges for each vertex
-			// Initialize Threads
-			for (int j = 0; j < maxThreads; j++) {
-				threads[j] = new RotateEdgeThread(this.cayleyGraphArray, j, maxThreads);
-			}
+		// Shift all edges for each vertex
+		// Initialize Threads
+		for (int j = 0; j < maxThreads; j++) {
+			threads[j] = new RotateEdgeThread(this.cayleyGraphArray, j, maxThreads);
+		}
 
-			// Sync up threads
-			for (int j = 0; j < maxThreads; j++) {
-				try {
-					threads[j].join();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+		// Sync up threads
+		for (int j = 0; j < maxThreads; j++) {
+			try {
+				threads[j].join();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+		}
 
-			// Update IDs so that this.CayleyGraph[x] still has vertexId x
-			for (int i = 0; i < this.numOfElements; i++) {
-				this.cayleyGraphArray[i].updateId(i);
-			}
+		// Update IDs so that this.CayleyGraph[x] still has vertexId x
+		for (int i = 0; i < this.numOfElements; i++) {
+			this.cayleyGraphArray[i].updateId(i);
 		}
 	}
 	
@@ -590,4 +538,21 @@ public class CayleyGraph {
 		}
 		return true;
 	}
+	
+	public void clearClique(){
+		//TO-DO check if this is causing any memory issues since it is non-essential
+		this.clique = new Clique(cliqueSize);
+	}
+
+	public void rotate() {
+		for (int count = 0; count < config.ROTATION_COUNT; count++) {
+			
+			if (config.ROTATION_METHOD == ROTATION_TYPE.SERIAL) {
+				rotateCayleyGraph();
+			} else if (config.ROTATION_METHOD == ROTATION_TYPE.PARALLEL) {
+				rotateCayleyGraphParallel(config.ROTATION_THREAD_COUNT);
+			}
+		}
+	}
+	
 }

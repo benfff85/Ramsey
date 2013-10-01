@@ -10,7 +10,6 @@ import javax.mail.internet.MimeMessage;
  
 public class SendEmail {
 	public SendEmail(String[] arguments) {
-		// TODO Auto-generated constructor stub
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
 		props.put("mail.smtp.socketFactory.port", "465");
@@ -21,20 +20,21 @@ public class SendEmail {
 		
 		String subject = arguments[0];
 		String body = arguments[1];
- 
+		final Config config = new Config();
+		
 		Session session = Session.getDefaultInstance(props,
 			new javax.mail.Authenticator() {
 				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication("ben.ferenchak","xxx"); 
+					return new PasswordAuthentication(config.EMAIL_USER_ID,config.EMAIL_PASSWORD); 
 				}
 			});
  
 		try {
  
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("ben.ferenchak@gmail.com"));
+			message.setFrom(new InternetAddress(config.EMAIL_ADDRESS));
 			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse("ben.ferenchak@gmail.com"));
+					InternetAddress.parse(config.EMAIL_ADDRESS));
 			message.setSubject(subject);
 			message.setText(body);
  
