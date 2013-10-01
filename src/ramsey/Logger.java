@@ -192,23 +192,23 @@ public class Logger {
 			cayleyGraph.writeToFile(config.CHKPT_FILE_PATH, config.CHKPT_FILE_MASK + this.formattedDate + ".chk");
 		}
 		
-		String content =
-				"#######################################################################\n" +
-						"Graph Count:          " + this.analyzedGraphCount + "\n" +
-						"Clique Color:         " + cayleyGraph.getClique().getColor() + "\n" +
-						"Clique:               " + cayleyGraph.getClique().printClique() + "\n" +
-						"Line Count:           " + cayleyGraph.printRedBlueCount() + "\n" +
-						"Distribution:         " + cayleyGraph.printDistribution("RED") + "\n" +
-						"Distribution Summary: " + cayleyGraph.printDistributionSummary("RED") + "\n" +
-						"Max First Clique ID:  " + this.maxFirstCliqueElement + "\n" +
-						"Max Clique Sum:       " + this.maxCliqueSum + "\n" + 
-						"Weighted Clique Sum   " + this.maxWeightedCliqueSum + "\n" +
-						"Time Mutate:          " + timer.printCumulativeDuration("MUTATE") + "\n" +
-						"Time Logger:          " + timer.printCumulativeDuration("LOGGER") + "\n" +
-						"Time CliqueCheck:     " + timer.printCumulativeDuration("CLIQUE") + "\n" +
-						"Time Rotate:          " + timer.printCumulativeDuration("ROTATE") + "\n";
-		
 		if (this.analyzedGraphCount % config.LOG_INTERVAL == 0) {
+			String content =
+					"#######################################################################\n" +
+							"Graph Count:          " + this.analyzedGraphCount + "\n" +
+							"Clique Color:         " + cayleyGraph.getClique().getColor() + "\n" +
+							"Clique:               " + cayleyGraph.getClique().printClique() + "\n" +
+							"Line Count:           " + cayleyGraph.printRedBlueCount() + "\n" +
+							"Distribution:         " + cayleyGraph.printDistribution("RED") + "\n" +
+							"Distribution Summary: " + cayleyGraph.printDistributionSummary("RED") + "\n" +
+							"Max First Clique ID:  " + this.maxFirstCliqueElement + "\n" +
+							"Max Clique Sum:       " + this.maxCliqueSum + "\n" + 
+							"Weighted Clique Sum   " + this.maxWeightedCliqueSum + "\n" +
+							"Time Mutate:          " + timer.printCumulativeDuration("MUTATE") + "\n" +
+							"Time Logger:          " + timer.printCumulativeDuration("LOGGER") + "\n" +
+							"Time CliqueCheck:     " + timer.printCumulativeDuration("CLIQUE") + "\n" +
+							"Time Rotate:          " + timer.printCumulativeDuration("ROTATE") + "\n";
+			
 			writeToLog(content);
 			timer.clearCumulativeDuration("MUTATE");
 			timer.clearCumulativeDuration("LOGGER");
