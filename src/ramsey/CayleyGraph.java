@@ -1,10 +1,8 @@
 package ramsey;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -432,36 +430,7 @@ public class CayleyGraph {
 			}
 		}
 	}
-	
-	/**
-	 * This will output the cayleyGraph to a file which can later be loaded. The
-	 * file will be comma separated values as defined by printCayleyGraphBasic()
-	 * 
-	 * @param filePath This is the file path where the file should be saved.
-	 * @param fileName This is the desired name of the file.
-	 * @return void
-	 */
-	public void writeToFile(String filePath, String fileName) {
-		File file;
-		FileWriter fw;
-		BufferedWriter bw;
-
-		String content = this.printCayleyGraphBasic();
-
-		// Write the "content" string to file
-		try {
-			file = new File(filePath + fileName + "");
-			fw = new FileWriter(file.getAbsoluteFile());
-			bw = new BufferedWriter(fw);
-
-			bw.write(content);
-
-			bw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
+		
 	/**
 	 * This method will initialize the cayleyGraph from a checkpoint file
 	 * assuming the data in the checkpoint file is formatted as defined in the
@@ -538,15 +507,26 @@ public class CayleyGraph {
 		}
 		return true;
 	}
-	
-	public void clearClique(){
-		//TO-DO check if this is causing any memory issues since it is non-essential
+
+	/**
+	 * This will clear the clique once it is no longer relevant after mutation.
+	 * 
+	 * @return void
+	 */
+	public void clearClique() {
+		// TO-DO check if this is causing any memory issues since it is non-essential
 		this.clique = new Clique(cliqueSize);
 	}
 
+	/**
+	 * This is the publically exposed rotate method which determines which type
+	 * of rotation to use and calls the appropriate method.
+	 * 
+	 * @return void
+	 */
 	public void rotate() {
 		for (int count = 0; count < config.ROTATION_COUNT; count++) {
-			
+
 			if (config.ROTATION_METHOD == ROTATION_TYPE.SERIAL) {
 				rotateCayleyGraph();
 			} else if (config.ROTATION_METHOD == ROTATION_TYPE.PARALLEL) {

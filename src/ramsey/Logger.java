@@ -22,8 +22,8 @@ public class Logger {
 	private BigInteger maxWeightedCliqueSum;
 	private int maxFirstCliqueElement;
 	private long analyzedGraphCount;
-	private BufferedWriter bw;
-	private String formattedDate;
+	private BufferedWriter bufferedLogWriter;
+	private String formattedLogDate;
 	private Config config = new Config();
 
 	/**
@@ -35,9 +35,7 @@ public class Logger {
 		this.maxWeightedCliqueSum = new BigInteger("0");
 		this.maxFirstCliqueElement = 0;
 		this.analyzedGraphCount = 0;
-		
-		DateFormat df = new SimpleDateFormat("MMddyyyyHHmmss");
-		this.formattedDate = df.format(new Date());
+		this.formattedLogDate = getDateTimeStamp();
 	}
 
 	/**
@@ -113,13 +111,13 @@ public class Logger {
 	 * @param content The String content which will be written to the log file.
 	 * @return void
 	 */
-	public void writeToLogFile(String content) {
-		if (this.bw == null) {
+	private void writeToLogFile(String content) {
+		if (this.bufferedLogWriter == null) {
 			openLogFile();
 		}
 
 		try {
-			bw.append(content);
+			bufferedLogWriter.append(content);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -132,7 +130,7 @@ public class Logger {
 	 */
 	public void closeLogFile() {
 		try {
-			this.bw.close();
+			this.bufferedLogWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -145,11 +143,11 @@ public class Logger {
 	 * @return void
 	 */
 	private void openLogFile() {
-		String fileName = config.LOG_FILE_PATH + config.LOG_FILE_MASK + this.formattedDate + ".log";
+		String fileName = config.LOG_FILE_PATH + config.LOG_FILE_MASK + this.formattedLogDate + ".log";
 		try {
 			File file = new File(fileName);
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-			this.bw = new BufferedWriter(fw);
+			this.bufferedLogWriter = new BufferedWriter(fw);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -167,10 +165,10 @@ public class Logger {
 	 *        Example)
 	 * @return void
 	 */
-	public void printPositiveCase(CayleyGraph cayleyGraph) {
+	public void processPositiveCase(CayleyGraph cayleyGraph) {
 		System.out.println(cayleyGraph.printCayleyGraphMathematica());
 		writeToLogFile("SOLUTION:\n" + cayleyGraph.printCayleyGraphMathematica());
-		cayleyGraph.writeToFile(config.SOLUTION_FILE_PATH, config.SOLUTION_FILE_MASK + this.formattedDate + ".sol");
+		writeGraphFile(cayleyGraph,config.SOLUTION_FILE_PATH + config.SOLUTION_FILE_MASK + getDateTimeStamp() +".sol");
 		cayleyGraph.emailCayleyGraph();
 	}
 	
@@ -189,9 +187,10 @@ public class Logger {
 		updateMaxFirstCliqueElement(cayleyGraph.getClique());
 		updateMaxCliqueSum(cayleyGraph.getClique());
 		if(updateMaxWeightedCliqueSum(cayleyGraph.getClique(), cayleyGraph.getNumOfElements())){
-			cayleyGraph.writeToFile(config.CHKPT_FILE_PATH, config.CHKPT_FILE_MASK + this.formattedDate + ".chk");
+			writeGraphFile(cayleyGraph,config.CHKPT_FILE_PATH + config.CHKPT_FILE_MASK + getDateTimeStamp() +".chk");
 		}
 		
+		// Write to log if appropriate
 		if (this.analyzedGraphCount % config.LOG_INTERVAL == 0) {
 			String content =
 					"#######################################################################\n" +
@@ -214,18 +213,49 @@ public class Logger {
 			timer.clearCumulativeDuration("LOGGER");
 			timer.clearCumulativeDuration("CLIQUE");
 			timer.clearCumulativeDuration("ROTATE");
-			//System.gc();
 		}
 	}
 		
+	
 	private void writeToLog(String content){
 		if (config.LOG_METHOD == LOG_TYPE.FILE || config.LOG_METHOD == LOG_TYPE.BOTH) {
 			writeToLogFile(content);
 		}
-
-		if (config.LOG_METHOD == LOG_TYPE.FILE || config.LOG_METHOD == LOG_TYPE.BOTH) {
+		if (config.LOG_METHOD == LOG_TYPE.CONSOLE || config.LOG_METHOD == LOG_TYPE.BOTH) {
 			System.out.println(content);
 		}
+	}
+	
+	/**
+	 * This is used to write a basic representation of an input CayleyGraph to a
+	 * given file which can later be loaded into this program.
+	 * 
+	 * @param cayleyGraph The CayleyGraph to be written to a file.
+	 * @param qualifiedFileName The file path and name where the CayleyGraph
+	 *        representation is to be written.
+	 */
+	private void writeGraphFile(CayleyGraph cayleyGraph, String qualifiedFileName) {
+		String content = cayleyGraph.printCayleyGraphBasic();
+
+		// Write the "content" string to file
+		try {
+			File file = new File(qualifiedFileName);
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			fw.write(content);
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * This is used for generating the date time stamps in file names.
+	 * 
+	 * @return String value of the current date time.
+	 */
+	private String getDateTimeStamp(){
+		DateFormat df = new SimpleDateFormat("MMddyyyyHHmmss");
+		return df.format(new Date());
 	}
 
 }

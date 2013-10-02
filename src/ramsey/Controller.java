@@ -44,7 +44,7 @@ public class Controller {
 			timer.startTimer("CLIQUE");
 			if (!cayleyGraph.checkForClique("RED") && !cayleyGraph.checkForClique("BLUE")) {
 				counterExampleFound = true;
-				logger.printPositiveCase(cayleyGraph);
+				logger.processPositiveCase(cayleyGraph);
 				logger.closeLogFile();
 				break;
 			}

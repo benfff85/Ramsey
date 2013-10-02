@@ -17,11 +17,11 @@ public class Config {
 	public final LOG_TYPE LOG_METHOD = LOG_TYPE.BOTH;
 	public final int LOG_INTERVAL = 1000000;
 	public final String CHKPT_FILE_PATH = "D:\\";
-	public final String CHKPT_FILE_MASK = "Ramsey_Checkpoint_";
+	public final String CHKPT_FILE_MASK = "Ramsey_";
 	public final String LOG_FILE_PATH = "X:\\";
-	public final String LOG_FILE_MASK = "Ramsey_Log_";
+	public final String LOG_FILE_MASK = "Ramsey_";
 	public final String SOLUTION_FILE_PATH = "D:\\";
-	public final String SOLUTION_FILE_MASK = "Ramsey_Solution_";
+	public final String SOLUTION_FILE_MASK = "Ramsey_";
 	
 	public final boolean EMAIL_SOLUTION_IND = true;
 	public final String EMAIL_ADDRESS = "ben.ferenchak@gmail.com";
