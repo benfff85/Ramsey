@@ -30,6 +30,7 @@ public class Controller {
 		Logger logger = new Logger();
 		Timer timer = new Timer();
 		GraphMutator mutator = new GraphMutator();
+		GraphRotator rotator = new GraphRotator();
 		boolean counterExampleFound = false;
 
 		CayleyGraph cayleyGraph = new CayleyGraph();
@@ -59,7 +60,7 @@ public class Controller {
 			timer.endTimer("MUTATE");
 
 			timer.startTimer("ROTATE");
-			cayleyGraph.rotate();
+			rotator.rotate(cayleyGraph);
 			timer.endTimer("ROTATE");
 		}
 	}

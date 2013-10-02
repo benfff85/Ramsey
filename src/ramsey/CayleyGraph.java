@@ -348,88 +348,7 @@ public class CayleyGraph {
 			y = generator.nextInt(this.numOfElements);
 		}
 		return getEdgeByVertexIds(x, y);
-	}
-	
-	/**
-	 * Rotate all the vertices then reassign all vertexIDs. This will be done serially
-	 * 
-	 * @return void
-	 */
-	public void rotateCayleyGraph() {
-		Vertex swap;
-
-		// Shift all vertices
-		swap = this.cayleyGraphArray[0];
-		System.arraycopy(this.cayleyGraphArray, 1, this.cayleyGraphArray, 0, this.numOfElements - 1);
-		this.cayleyGraphArray[this.numOfElements - 1] = swap;
-
-		for (int i = 0; i < this.numOfElements; i++) {
-			this.cayleyGraphArray[i].rotateEdges();
-		}
-
-		// Update IDs so that this.CayleyGraph[x] still has vertexId x
-		for (int i = 0; i < this.numOfElements; i++) {
-			this.cayleyGraphArray[i].updateId(i);
-		}
-	}
-	
-	/**
-	 * Rotate all the vertices then reassign all vertexIDs. This will be done in
-	 * parallel with the number of concurrent threads being defined by the input
-	 * maxThreads variable.
-	 * 
-	 * @param maxThreads This is the number of threads that will execute the
-	 *        rotation concurrently.
-	 * @return void
-	 */
-	public void rotateCayleyGraphParallel(int maxThreads) {
-		Vertex swap;
-		RotateEdgeThread[] threads = new RotateEdgeThread[maxThreads];
-
-		// Shift all vertices
-		swap = this.cayleyGraphArray[0];
-		System.arraycopy(this.cayleyGraphArray, 1, this.cayleyGraphArray, 0, this.numOfElements - 1);
-		this.cayleyGraphArray[this.numOfElements - 1] = swap;
-
-		// Shift all edges for each vertex
-		// Initialize Threads
-		for (int j = 0; j < maxThreads; j++) {
-			threads[j] = new RotateEdgeThread(this.cayleyGraphArray, j, maxThreads);
-		}
-
-		// Sync up threads
-		for (int j = 0; j < maxThreads; j++) {
-			try {
-				threads[j].join();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		// Update IDs so that this.CayleyGraph[x] still has vertexId x
-		for (int i = 0; i < this.numOfElements; i++) {
-			this.cayleyGraphArray[i].updateId(i);
-		}
-	}
-	
-	class RotateEdgeThread extends Thread{
-		int threadId;
-		int maxThreads;
-		Vertex[] vertexArray;
-		
-		RotateEdgeThread(Vertex[] vertexArray, int threadId, int maxThreads){
-			this.threadId = threadId;
-			this.maxThreads = maxThreads;
-			this.vertexArray = vertexArray;
-			start();
-		}
-		
-		public void run() {
-			for (int i = this.threadId; i < vertexArray.length; i += this.maxThreads) {
-				this.vertexArray[i].rotateEdges();
-			}
-		}
-	}
+	}	
 		
 	/**
 	 * This method will initialize the cayleyGraph from a checkpoint file
@@ -517,22 +436,4 @@ public class CayleyGraph {
 		// TO-DO check if this is causing any memory issues since it is non-essential
 		this.clique = new Clique(cliqueSize);
 	}
-
-	/**
-	 * This is the publically exposed rotate method which determines which type
-	 * of rotation to use and calls the appropriate method.
-	 * 
-	 * @return void
-	 */
-	public void rotate() {
-		for (int count = 0; count < config.ROTATION_COUNT; count++) {
-
-			if (config.ROTATION_METHOD == ROTATION_TYPE.SERIAL) {
-				rotateCayleyGraph();
-			} else if (config.ROTATION_METHOD == ROTATION_TYPE.PARALLEL) {
-				rotateCayleyGraphParallel(config.ROTATION_THREAD_COUNT);
-			}
-		}
-	}
-	
 }

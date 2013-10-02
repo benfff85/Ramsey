@@ -71,12 +71,12 @@ public class Logger {
 	 *        Clique sum logged till now.
 	 * @return True if this clique has the new largest weighted clique sum, otherwise false.
 	 */
-	private boolean updateMaxWeightedCliqueSum(Clique clique, int numOfElements) {
+	private boolean updateMaxWeightedCliqueSum(Clique clique) {
 		BigInteger cliqueSum = new BigInteger("0");
 		long elementSum = 0;
 		
-		for (int i = 0; i < clique.getCliqueSize(); i++) {
-			elementSum = (long)Math.pow(numOfElements, clique.getCliqueSize() - (i + 1)) * clique.getCliqueVertexByPosition(i).getId();
+		for (int i = 0; i < config.CLIQUE_SIZE; i++) {
+			elementSum = (long)Math.pow(config.NUM_OF_ELEMENTS, config.CLIQUE_SIZE - (i + 1)) * clique.getCliqueVertexByPosition(i).getId();
 			cliqueSum = cliqueSum.add(BigInteger.valueOf(elementSum));
 		}
 
@@ -186,7 +186,7 @@ public class Logger {
 		this.analyzedGraphCount++;
 		updateMaxFirstCliqueElement(cayleyGraph.getClique());
 		updateMaxCliqueSum(cayleyGraph.getClique());
-		if(updateMaxWeightedCliqueSum(cayleyGraph.getClique(), cayleyGraph.getNumOfElements())){
+		if(updateMaxWeightedCliqueSum(cayleyGraph.getClique())){
 			writeGraphFile(cayleyGraph,config.CHKPT_FILE_PATH + config.CHKPT_FILE_MASK + getDateTimeStamp() +".chk");
 		}
 		
@@ -235,7 +235,7 @@ public class Logger {
 	 *        representation is to be written.
 	 */
 	private void writeGraphFile(CayleyGraph cayleyGraph, String qualifiedFileName) {
-		String content = cayleyGraph.printCayleyGraphBasic();
+		String content = cayleyGraph.printCayleyGraphBasic() + "<" + this.maxWeightedCliqueSum + ">\n";
 
 		// Write the "content" string to file
 		try {
