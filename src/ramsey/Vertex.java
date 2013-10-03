@@ -132,7 +132,7 @@ public class Vertex {
 	public int getEdgeCount(String color) {
 		int count = 0;
 		for (int i = 0; i < this.edges.length; i++) {
-			if (i != this.vertexId && this.getEdge(i).getColor() == color) {
+			if (i != this.vertexId && this.getEdge(i).getColor().equals(color)) {
 				count++;
 			}
 		}

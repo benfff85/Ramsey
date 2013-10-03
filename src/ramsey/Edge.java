@@ -75,5 +75,21 @@ public class Edge {
 	public String printEdge() {
 		return "[" + this.vertexA.getId() + ":" + this.vertexB.getId() + ":" + this.color + "]";
 	}
+	
+	public Vertex getOtherVertex(Vertex vertex) {
+		if (this.vertexA == vertex) {
+			return this.vertexB;
+		} else {
+			return this.vertexA;
+		}
+	}
+
+	public void flipColor() {
+		if (getColor().equals("RED")) {
+			setColor("BLUE");
+		} else if (getColor().equals("BLUE")) {
+			setColor("RED");
+		}
+	}
 
 }

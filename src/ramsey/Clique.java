@@ -102,5 +102,31 @@ public class Clique {
 
 		return output;
 	}
-
+	
+	/**
+	 * This will output a String representing an edge level breakdown of the
+	 * clique in human readable form.
+	 * 
+	 * @return Edge level representation of this Clique in human readable form.
+	 */
+	public String printDetailedClique() {
+		String output = "\n";
+		String color;
+		for (int a = 0; a < this.getCliqueSize(); a++) {
+			for (int b = 0; b < this.getCliqueSize(); b++) {
+				if (a != b) {
+					if (cliqueVertexArray[a].getEdge(cliqueVertexArray[b]).getColor().equals("RED")) {
+						color = "RED ";
+					} else {
+						color = "BLUE";
+					}
+					output += String.format("%03d", cliqueVertexArray[a].getId()) + "," + String.format("%03d", cliqueVertexArray[b].getId()) + " " + color + " ";
+				} else {
+					output += String.format("%03d", cliqueVertexArray[a].getId()) + "," + String.format("%03d", cliqueVertexArray[b].getId()) + " N/A  ";
+				}
+			}
+			output += "\n";
+		}
+		return output;
+	}
 }

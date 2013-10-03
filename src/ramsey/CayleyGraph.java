@@ -230,7 +230,7 @@ public class CayleyGraph {
 		int countBlue = 0;
 		for (int i = 0; i < this.numOfElements; i++) {
 			for (int j = i + 1; j < this.numOfElements; j++) {
-				if (this.cayleyGraphArray[i].getEdge(this.cayleyGraphArray[j]).getColor() == "RED") {
+				if (this.cayleyGraphArray[i].getEdge(this.cayleyGraphArray[j]).getColor().equals("RED")) {
 					countRed++;
 				} else {
 					countBlue++;
@@ -343,7 +343,7 @@ public class CayleyGraph {
 		Random generator = new Random();
 		int x = 0;
 		int y = 0;
-		while (x == y || getEdgeByVertexIds(x, y).getColor() != color) {
+		while (x == y || !getEdgeByVertexIds(x, y).getColor().equals(color)) {
 			x = generator.nextInt(this.numOfElements);
 			y = generator.nextInt(this.numOfElements);
 		}

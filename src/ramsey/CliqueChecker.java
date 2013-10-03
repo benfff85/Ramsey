@@ -13,7 +13,9 @@ public class CliqueChecker {
 	private int pointerArrayIndex;
 	private Vertex prevLevelVertex;
 	private Vertex[] cliqueVertexArray;
-
+	private Config config = new Config();
+	private Vertex[] cayleyGraphArray;
+	private String color;
 	/**
 	 * This is the main constructor for the CliqueChecker class. It will
 	 * initialize the necessary global variables. Variables will be sized
@@ -26,10 +28,10 @@ public class CliqueChecker {
 	 * @param numOfElements The number of elements in the CayleyGraph.
 	 */
 	public CliqueChecker(int cliqueSize, int numOfElements) {
-		this.tree = new Vertex[cliqueSize][numOfElements];
-		this.pointerArray = new int[cliqueSize];
+		this.tree = new Vertex[config.CLIQUE_SIZE][config.NUM_OF_ELEMENTS];
+		this.pointerArray = new int[config.CLIQUE_SIZE];
 		this.pointerArrayIndex = 0;
-		this.cliqueVertexArray = new Vertex[cliqueSize];
+		this.cliqueVertexArray = new Vertex[config.CLIQUE_SIZE];
 	}
 
 	/**
@@ -44,34 +46,37 @@ public class CliqueChecker {
 	 *         subgraph otherwise it will return false.
 	 */
 	public boolean findClique(CayleyGraph cg, String color) {
-		Vertex[] cayleyGraphArray = cg.getCayleyGraphArray();
+		this.cayleyGraphArray = cg.getCayleyGraphArray();
+		this.color = color;
 
 		// Fill first level of tree with all vertices
-		for (int i = 0; i < cg.getNumOfElements(); i++) {
+		for (int i = 0; i < config.NUM_OF_ELEMENTS; i++) {
 			tree[pointerArrayIndex][i] = cayleyGraphArray[i];
 		}
 
 		// Main Algorithm
-		while (pointerArray[0] <= ((cg.getNumOfElements() - cg.getClique().getCliqueSize()) + 1)) {
+		while (pointerArray[0] <= ((config.NUM_OF_ELEMENTS - config.CLIQUE_SIZE) + 1)) {
 			prevLevelVertex = tree[pointerArrayIndex][pointerArray[pointerArrayIndex]];
 			pointerArray[pointerArrayIndex]++;
 			pointerArrayIndex++;
 
-			for (int i = prevLevelVertex.getId() + 1; i < cg.getNumOfElements(); i++) {
-				if (cayleyGraphArray[i].getEdge(prevLevelVertex).getColor() == color && isInPrevLevel(cayleyGraphArray[i], tree[pointerArrayIndex - 1])) {
+			// Fill tree level with all vertices connected to the previous levels vertex with an edge of the specified color
+			for (int i = prevLevelVertex.getId() + 1; i < config.NUM_OF_ELEMENTS; i++) {
+				//if (cayleyGraphArray[i].getEdge(prevLevelVertex).getColor().equals(color) && isInPrevLevel(cayleyGraphArray[i], tree[pointerArrayIndex - 1]) && isConnected(i)) {
+				if (isConnected(i)) {
 					tree[pointerArrayIndex][pointerArray[pointerArrayIndex]] = cayleyGraphArray[i];
 					pointerArray[pointerArrayIndex]++;
 				}
 			}
 
 			// If at least (this.cliqueSize-Level) elements, then successful row, reset pointer for row and move to next level
-			if (pointerArray[pointerArrayIndex] >= (cg.getClique().getCliqueSize() - pointerArrayIndex)) {
-				if (pointerArrayIndex == (cg.getClique().getCliqueSize() - 1)) {
+			if (pointerArray[pointerArrayIndex] >= (config.CLIQUE_SIZE - pointerArrayIndex)) {
+				if (pointerArrayIndex == (config.CLIQUE_SIZE - 1)) {
 					// Store the found clique into the global variable
-					for (int x = 0; x < cg.getClique().getCliqueSize(); x++) {
+					for (int x = 0; x < config.CLIQUE_SIZE; x++) {
 						cliqueVertexArray[x] = tree[x][pointerArray[x] - 1];
 					}
-					cg.getClique().updateClique(cliqueVertexArray);
+					cg.getClique().updateClique(cliqueVertexArray.clone());
 					clearGlobalVars();
 					return true;
 				}
@@ -80,14 +85,14 @@ public class CliqueChecker {
 
 			// Otherwise there are not enough elements for a clique, delete row and slide pointer for previous level up one repeat until link-to-be is non-negative one
 			else {
-				for (int i = 0; i < cg.getNumOfElements() && tree[pointerArrayIndex][i] != null; i++) {
+				for (int i = 0; i < config.NUM_OF_ELEMENTS && tree[pointerArrayIndex][i] != null; i++) {
 					tree[pointerArrayIndex][i] = null;
 				}
 				pointerArray[pointerArrayIndex] = 0;
 				pointerArrayIndex--;
 
 				while (tree[pointerArrayIndex][pointerArray[pointerArrayIndex]] == null) {
-					for (int i = 0; i < cg.getNumOfElements() && tree[pointerArrayIndex][i] != null; i++) {
+					for (int i = 0; i < config.NUM_OF_ELEMENTS && tree[pointerArrayIndex][i] != null; i++) {
 						tree[pointerArrayIndex][i] = null;
 					}
 					pointerArray[pointerArrayIndex] = 0;
@@ -106,10 +111,26 @@ public class CliqueChecker {
 	 * @return void
 	 */
 	private void clearGlobalVars() {
-		for (int i = 0; i < pointerArray.length; i++) {
+		for (int i = 0; i < config.CLIQUE_SIZE; i++) {
 			pointerArray[i] = 0;
 		}
 		pointerArrayIndex = 0;
+		
+		for (int i=0; i<config.CLIQUE_SIZE; i++){
+			for (int j=0; j<config.NUM_OF_ELEMENTS; j++){
+				tree[i][j] = null;
+			}
+		}
+		
+		prevLevelVertex = null;
+		
+		for (int i=0; i<config.CLIQUE_SIZE; i++){
+			cliqueVertexArray[i] = null;
+		}
+		
+		cayleyGraphArray = null;
+		
+		color = null;
 	}
 
 	/**
@@ -131,5 +152,22 @@ public class CliqueChecker {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Checks for a given input vertexID if it is connected to the elements in
+	 * all previous levels of the tree with an edge of specified color.
+	 * 
+	 * @param vertexID Vertex ID to be checked for connectivity.
+	 * @return True if connected to all previous elements in the potential
+	 *         clique with edges of the specified color, otherwise false.
+	 */
+	private boolean isConnected(int vertexID) {
+		for (int i = 0; i < pointerArrayIndex; i++) {
+			if (!cayleyGraphArray[vertexID].getEdge(tree[i][pointerArray[i] - 1]).getColor().equals(this.color)) {
+				return false;
+			}
+		}
+		return true;
 	}
 }
