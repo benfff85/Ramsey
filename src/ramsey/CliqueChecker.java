@@ -62,7 +62,6 @@ public class CliqueChecker {
 
 			// Fill tree level with all vertices connected to the previous levels vertex with an edge of the specified color
 			for (int i = prevLevelVertex.getId() + 1; i < config.NUM_OF_ELEMENTS; i++) {
-				//if (cayleyGraphArray[i].getEdge(prevLevelVertex).getColor().equals(color) && isInPrevLevel(cayleyGraphArray[i], tree[pointerArrayIndex - 1]) && isConnected(i)) {
 				if (isConnected(i)) {
 					tree[pointerArrayIndex][pointerArray[pointerArrayIndex]] = cayleyGraphArray[i];
 					pointerArray[pointerArrayIndex]++;
@@ -131,27 +130,6 @@ public class CliqueChecker {
 		cayleyGraphArray = null;
 		
 		color = null;
-	}
-
-	/**
-	 * This is a helper method for the cliqueChecker. This will determine if the
-	 * previous level of the tree also contained the element in question which
-	 * is provided as input.
-	 * 
-	 * @param vertex Vertex to be checked to see if it is in the previous level
-	 *        of the tree.
-	 * @param level The previous level of the tree. This is the level which will
-	 *        be searched for the input element.
-	 * @return Boolean value which will be true if the previous level does
-	 *         contain the input element and false otherwise.
-	 */
-	private boolean isInPrevLevel(Vertex vertex, Vertex[] level) {
-		for (int i = 0; i < tree[0].length && level[i] != null && level[i].getId() <= vertex.getId(); i++) {
-			if (level[i] == vertex) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	/**

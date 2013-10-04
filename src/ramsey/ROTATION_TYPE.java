@@ -2,7 +2,8 @@ package ramsey;
 
 public enum ROTATION_TYPE {
     SERIAL("S"),
-    PARALLEL("P")
+    PARALLEL("P"),
+    NONE("N")
     ;
     
     private ROTATION_TYPE(final String text) {

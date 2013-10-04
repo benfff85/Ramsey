@@ -5,7 +5,7 @@ public class GraphRotator {
 	private Config config = new Config();
 	
 	/**
-	 * This is the publically exposed rotate method which determines which type
+	 * This is the publicly exposed rotate method which determines which type
 	 * of rotation to use and calls the appropriate method.
 	 * 
 	 * @return void
@@ -18,6 +18,8 @@ public class GraphRotator {
 				rotateSerial();
 			} else if (config.ROTATION_METHOD == ROTATION_TYPE.PARALLEL) {
 				rotateParallel();
+			} else if (config.ROTATION_METHOD == ROTATION_TYPE.NONE) {
+				return;
 			}
 		}
 	}

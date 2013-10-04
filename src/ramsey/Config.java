@@ -10,12 +10,12 @@ public class Config {
 	public final MUTATION_TYPE MUTATE_METHOD = MUTATION_TYPE.BALANCED;
 	public final int MUTATE_COUNT = 1;
 	
-	public final ROTATION_TYPE ROTATION_METHOD = ROTATION_TYPE.SERIAL;
+	public final ROTATION_TYPE ROTATION_METHOD = ROTATION_TYPE.NONE;
 	public final int ROTATION_THREAD_COUNT = 1;
 	public final int ROTATION_COUNT = 1;
 	
 	public final LOG_TYPE LOG_METHOD = LOG_TYPE.BOTH;
-	public final int LOG_INTERVAL = 1000;
+	public final int LOG_INTERVAL = 1;
 	public final String CHKPT_FILE_PATH = "D:\\";
 	public final String CHKPT_FILE_MASK = "Ramsey_";
 	public final String LOG_FILE_PATH = "X:\\";
