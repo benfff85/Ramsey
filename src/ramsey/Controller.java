@@ -1,5 +1,7 @@
 package ramsey;
 
+import ui.GenericFrame;
+
 /**
  * This is the main Controller Class where the program will initiate. It handles
  * the outermost loop of logic which encompasses a framework for the entire
@@ -26,7 +28,6 @@ public class Controller {
 	 * @return void
 	 */
 	public static void main(String[] args) {
-		Config config = new Config();
 		Logger logger = new Logger();
 		Timer timer = new Timer();
 		GraphMutator mutator = new GraphMutator();
@@ -34,7 +35,11 @@ public class Controller {
 		boolean counterExampleFound = false;
 
 		CayleyGraph cayleyGraph = new CayleyGraph();
-
+		
+		GenericFrame f = new GenericFrame(cayleyGraph,logger,timer);
+		f.setVisible(true);
+		
+		
 		timer.newTimeSet("MUTATE");
 		timer.newTimeSet("LOGGER");
 		timer.newTimeSet("CLIQUE");
@@ -56,12 +61,14 @@ public class Controller {
 			timer.endTimer("LOGGER");
 
 			timer.startTimer("MUTATE");
-			mutator.mutateGraph(config.MUTATE_METHOD, cayleyGraph,config.MUTATE_COUNT);
+			mutator.mutateGraph(cayleyGraph);
 			timer.endTimer("MUTATE");
 
 			timer.startTimer("ROTATE");
 			rotator.rotate(cayleyGraph);
 			timer.endTimer("ROTATE");
+			
+			f.refreshData();
 		}
 	}
 }

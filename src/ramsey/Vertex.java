@@ -145,13 +145,28 @@ public class Vertex {
 	 * 
 	 * @return void
 	 */
-	public void rotateEdges() {
+	public void rotateEdgesLeft() {
 		Edge swap;
 		
 		swap = this.edges[0];
 		System.arraycopy(this.edges, 1, this.edges, 0, this.edges.length - 1);
 		this.edges[this.edges.length - 1] = swap;
 	}
+
+	/**
+	 * This method will rotate all Edges in this vertex's Edge array to the right
+	 * one position. Also moving the right most Edge to the left most position.
+	 * 
+	 * @return void
+	 */
+	public void rotateEdgesRight() {
+		Edge swap;
+		
+		swap = this.edges[this.edges.length - 1];
+		System.arraycopy(this.edges, 0, this.edges, 1, this.edges.length - 1);
+		this.edges[0] = swap;
+	}
+
 
 	/**
 	 * This will return true if all of the edges in the edge array have

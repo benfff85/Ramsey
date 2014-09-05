@@ -15,7 +15,12 @@ public class GraphRotator {
 		for (int count = 0; count < config.ROTATION_COUNT; count++) {
 
 			if (config.ROTATION_METHOD == ROTATION_TYPE.SERIAL) {
-				rotateSerial();
+				if (config.ROTATION_DIRECTION == DIRECTION.LEFT) {
+					rotateSerialLeft();
+				}
+				else if (config.ROTATION_DIRECTION == DIRECTION.RIGHT) {
+					rotateSerialRight();	
+				}
 			} else if (config.ROTATION_METHOD == ROTATION_TYPE.PARALLEL) {
 				rotateParallel();
 			} else if (config.ROTATION_METHOD == ROTATION_TYPE.NONE) {
@@ -23,13 +28,14 @@ public class GraphRotator {
 			}
 		}
 	}
-		
+			
 	/**
-	 * Rotate all the vertices then reassign all vertexIDs. This will be done serially
+	 * Rotate all the vertices then reassign all vertexIDs. This will be done
+	 * serially, all vertices will be shifted to the right one position.
 	 * 
 	 * @return void
 	 */
-	private void rotateSerial() {
+	private void rotateSerialLeft() {
 		Vertex swap;
 
 		// Shift all vertices
@@ -38,7 +44,31 @@ public class GraphRotator {
 		this.cayleyGraphArray[config.NUM_OF_ELEMENTS - 1] = swap;
 
 		for (int i = 0; i < config.NUM_OF_ELEMENTS; i++) {
-			this.cayleyGraphArray[i].rotateEdges();
+			this.cayleyGraphArray[i].rotateEdgesLeft();
+		}
+
+		// Update IDs so that this.CayleyGraph[x] still has vertexId x
+		for (int i = 0; i < config.NUM_OF_ELEMENTS; i++) {
+			this.cayleyGraphArray[i].updateId(i);
+		}
+	}
+	
+	/**
+	 * Rotate all the vertices then reassign all vertexIDs. This will be done
+	 * serially, all vertices will be shifted to the right one position.
+	 * 
+	 * @return void
+	 */
+	private void rotateSerialRight() {
+		Vertex swap;
+
+		// Shift all vertices
+		swap = this.cayleyGraphArray[config.NUM_OF_ELEMENTS - 1];
+		System.arraycopy(this.cayleyGraphArray, 0, this.cayleyGraphArray, 1, config.NUM_OF_ELEMENTS - 1);
+		this.cayleyGraphArray[0] = swap;
+
+		for (int i = 0; i < config.NUM_OF_ELEMENTS; i++) {
+			this.cayleyGraphArray[i].rotateEdgesRight();
 		}
 
 		// Update IDs so that this.CayleyGraph[x] still has vertexId x
@@ -100,7 +130,7 @@ public class GraphRotator {
 		
 		public void run() {
 			for (int i = this.threadId; i < vertexArray.length; i += this.maxThreads) {
-				this.vertexArray[i].rotateEdges();
+				this.vertexArray[i].rotateEdgesLeft();
 			}
 		}
 	}

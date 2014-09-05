@@ -7,34 +7,52 @@ public class GraphMutator {
 	
 	private Config config = new Config();
 	private CayleyGraph cayleyGraph;
+	int count = 0;
+	
 	
 	/**
-	 * Randomly flip countOfSwaps pairs of edges, one edge of each color per
-	 * pair to maintain balance.
+	 * This is the publicly exposed mutation method.
 	 * 
-	 * @return void
+	 * @param cayleyGraph The CayleyGraph object to be mutated.
 	 */
-	public void mutateGraph(MUTATION_TYPE mutateType, CayleyGraph cayleyGraph, int countOfSwaps) {
-		this.cayleyGraph = cayleyGraph; 
-		for (int i = 0; i < countOfSwaps; i++) {
-			mutateGraph(mutateType);
+	public void mutateGraph(CayleyGraph cayleyGraph) {
+		this.cayleyGraph = cayleyGraph;
+		for (int i = 0; i < config.MUTATE_COUNT; i++) {
+			mutateGraph(selectMutationType());
 		}
 		cayleyGraph.clearClique();
 	}
 
 	/**
+	 * This will return the MUTATION_TYPE for this particular mutation. This
+	 * allows both primary and secondary mutation types to be leveraged.
 	 * 
-	 * @param mutateType
+	 * @return The MUTATION_TYPE to use for this mutation.
 	 */
-	public void mutateGraph(MUTATION_TYPE mutateType){
+	private MUTATION_TYPE selectMutationType() {
+		count++;
+		if (count % (config.MUTATE_INTERVAL + 1) == 0) {
+			count = 0;
+			return config.MUTATE_METHOD_SECONDARY;
+		}
+		return config.MUTATE_METHOD_PRIMARY;
+	}
 		
-		if(mutateType == MUTATION_TYPE.RANDOM){
+	/**
+	 * This will call the appropriate mutation method based on which
+	 * MUTATION_TYPE is needed for this particular mutation.
+	 * 
+	 * @param mutateType The type of mutation to be used this mutation.
+	 * @return void
+	 */
+	private void mutateGraph(MUTATION_TYPE mutateType) {
+		if (mutateType == MUTATION_TYPE.RANDOM) {
 			mutateGraphRandom();
-		} else if(mutateType == MUTATION_TYPE.TARGETED){
+		} else if (mutateType == MUTATION_TYPE.TARGETED) {
 			mutateGraphTargeted();
-		} else if(mutateType == MUTATION_TYPE.BALANCED){
+		} else if (mutateType == MUTATION_TYPE.BALANCED) {
 			mutateGraphBalanced();
-		}	
+		}
 	}
 	
 	/**
@@ -65,6 +83,8 @@ public class GraphMutator {
 		Edge blueEdge = null;
 		int x, y;
 
+		Debug.write("Beginning mutateGraphTargeted method. Clique Color is " + cayleyGraph.getClique().getColor());
+		
 		// Select the edge from clique to swap
 		x = 0;
 		y = 0;
@@ -76,22 +96,30 @@ public class GraphMutator {
 		if (cayleyGraph.getClique().getCliqueVertexByPosition(x).getEdge(cayleyGraph.getClique().getCliqueVertexByPosition(y)).getColor() == "RED") {
 			redEdge = cayleyGraph.getClique().getCliqueVertexByPosition(x).getEdge(cayleyGraph.getClique().getCliqueVertexByPosition(y));
 			redSelected = true;
+			Debug.write("Clique edge selected [" + redEdge.getVertexA().getId() + "," + redEdge.getVertexB().getId() + ",RED].");
 		}
 		else {
 			blueEdge = cayleyGraph.getClique().getCliqueVertexByPosition(x).getEdge(cayleyGraph.getClique().getCliqueVertexByPosition(y));
 			blueSelected = true;
+			Debug.write("Clique edge selected [" + blueEdge.getVertexA().getId() + "," + blueEdge.getVertexB().getId() + ",BLUE].");
 		}
 
 		// Select the edge of opposite color to swap as well
 		if (redSelected) {
 			blueEdge = cayleyGraph.getRandomEdge("BLUE");
+			Debug.write("Non-clique edge selected [" + blueEdge.getVertexA().getId() + "," + blueEdge.getVertexB().getId() + ",BLUE].");
+
 		}
 		else if (blueSelected) {
 			redEdge = cayleyGraph.getRandomEdge("RED");
+			Debug.write("Non-clique edge selected [" + redEdge.getVertexA().getId() + "," + redEdge.getVertexB().getId() + ",RED].");
+
 		}
 
 		redEdge.flipColor();
 		blueEdge.flipColor();
+		Debug.write("Edges Flipped, exiting mutateGraphTargeted");
+
 	}
 	
 	/**
@@ -101,6 +129,7 @@ public class GraphMutator {
 	 * 
 	 * @return void
 	 */
+	@SuppressWarnings("unchecked")
 	private void mutateGraphBalanced() {
 		Edge cliqueEdge = null;
 		Edge nonCliqueEdge = null;
@@ -114,6 +143,8 @@ public class GraphMutator {
 		Vertex vertexA = null;
 		Vertex vertexB = null;
 		
+		Debug.write("Beginning mutateGraphBalanced method. Clique Color is " + cayleyGraph.getClique().getColor());
+
 		// Select the edge from the clique which is attached to the two vertices
 		// with the greatest count of edges matching the color of the clique
 		for (int i = 0; i < config.CLIQUE_SIZE; i++) {
@@ -132,9 +163,10 @@ public class GraphMutator {
 			}
 		}
 
-		
 		vertexPair = getRandomVertices(vertexListA, vertexListB);
 		cliqueEdge = cayleyGraph.getEdgeByVertices(vertexPair.vertexA, vertexPair.vertexB);
+		Debug.write("Clique edge selected [" + cliqueEdge.getVertexA().getId() + "," + cliqueEdge.getVertexB().getId() + "," + cliqueEdge.getColor() + "].");
+
 
 		// Clear variables
 		vertexListA.clear();
@@ -175,11 +207,15 @@ public class GraphMutator {
 		}
 			
 		vertexB = getRandomVertex(vertexListB);
-
+		
 		nonCliqueEdge = cayleyGraph.getEdgeByVertices(vertexA, vertexB);
+		Debug.write("Non-clique edge selected [" + nonCliqueEdge.getVertexA().getId() + "," + nonCliqueEdge.getVertexB().getId() + "," + nonCliqueEdge.getColor() + "].");
+
 
 		cliqueEdge.flipColor();
 		nonCliqueEdge.flipColor();
+		Debug.write("Edges Flipped, exiting mutateGraphBalanced");
+
 	}
 	
 		

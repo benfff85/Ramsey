@@ -73,11 +73,9 @@ public class Logger {
 	 */
 	private boolean updateMaxWeightedCliqueSum(Clique clique) {
 		BigInteger cliqueSum = new BigInteger("0");
-		long elementSum = 0;
-		
+
 		for (int i = 0; i < config.CLIQUE_SIZE; i++) {
-			elementSum = (long)Math.pow(config.NUM_OF_ELEMENTS, config.CLIQUE_SIZE - (i + 1)) * clique.getCliqueVertexByPosition(i).getId();
-			cliqueSum = cliqueSum.add(BigInteger.valueOf(elementSum));
+			cliqueSum = cliqueSum.add(BigInteger.valueOf(config.NUM_OF_ELEMENTS).pow(config.CLIQUE_SIZE - (i + 1)).multiply(BigInteger.valueOf(clique.getCliqueVertexByPosition(i).getId())));
 		}
 
 		if (cliqueSum.compareTo(this.maxWeightedCliqueSum) > 0) {
@@ -186,27 +184,14 @@ public class Logger {
 		this.analyzedGraphCount++;
 		updateMaxFirstCliqueElement(cayleyGraph.getClique());
 		updateMaxCliqueSum(cayleyGraph.getClique());
-		if(updateMaxWeightedCliqueSum(cayleyGraph.getClique())){
+		if(updateMaxWeightedCliqueSum(cayleyGraph.getClique()) && analyzedGraphCount > 1){
 			writeGraphFile(cayleyGraph,config.CHKPT_FILE_PATH + config.CHKPT_FILE_MASK + getDateTimeStamp() +".chk");
 		}
 		
 		// Write to log if appropriate
 		if (this.analyzedGraphCount % config.LOG_INTERVAL == 0) {
 			String content =
-					"#######################################################################\n" +
-							"Graph Count:          " + this.analyzedGraphCount + "\n" +
-							"Clique Color:         " + cayleyGraph.getClique().getColor() + "\n" +
-							"Clique:               " + cayleyGraph.getClique().printClique() + "\n" +
-							"Line Count:           " + cayleyGraph.printRedBlueCount() + "\n" +
-							"Distribution:         " + cayleyGraph.printDistribution("RED") + "\n" +
-							"Distribution Summary: " + cayleyGraph.printDistributionSummary("RED") + "\n" +
-							"Max First Clique ID:  " + this.maxFirstCliqueElement + "\n" +
-							"Max Clique Sum:       " + this.maxCliqueSum + "\n" + 
-							"Weighted Clique Sum   " + this.maxWeightedCliqueSum + "\n" +
-							"Time Mutate:          " + timer.printCumulativeDuration("MUTATE") + "\n" +
-							"Time Logger:          " + timer.printCumulativeDuration("LOGGER") + "\n" +
-							"Time CliqueCheck:     " + timer.printCumulativeDuration("CLIQUE") + "\n" +
-							"Time Rotate:          " + timer.printCumulativeDuration("ROTATE") + "\n";
+					"#######################################################################\n" + printSummaryInfo(cayleyGraph) + printSummaryInfo(timer);
 			
 			writeToLog(content);
 			timer.clearCumulativeDuration("MUTATE");
@@ -215,7 +200,30 @@ public class Logger {
 			timer.clearCumulativeDuration("ROTATE");
 		}
 	}
+	
+	private String printSummaryInfo(CayleyGraph cayleyGraph){
+		String content = "Graph Count:          " + this.analyzedGraphCount + "\n" +
+						 "Clique Color:         " + cayleyGraph.getClique().getColor() + "\n" +
+						 "Clique:               " + cayleyGraph.getClique().printClique() + "\n" +
+						 "Line Count:           " + cayleyGraph.printRedBlueCount() + "\n" +
+						 "Max First Clique ID:  " + this.maxFirstCliqueElement + "\n" +
+						 "Max Clique Sum:       " + this.maxCliqueSum + "\n" + 
+						 "Weighted Clique Sum:  " + this.maxWeightedCliqueSum + "\n" +
+						 "Distribution Summary: " + cayleyGraph.printDistributionSummary("RED") + "\n" +
+						 "Distribution:         " + cayleyGraph.printDistribution("RED") + "\n";
 		
+		return content;
+	}
+
+	private String printSummaryInfo(Timer timer){
+		String content = "Time Mutate:          " + timer.printCumulativeDuration("MUTATE") + "\n" +
+				         "Time Logger:          " + timer.printCumulativeDuration("LOGGER") + "\n" +
+				         "Time CliqueCheck:     " + timer.printCumulativeDuration("CLIQUE") + "\n" +
+				         "Time Rotate:          " + timer.printCumulativeDuration("ROTATE") + "\n";
+		
+		return content;
+	}	
+	
 	
 	private void writeToLog(String content){
 		if (config.LOG_METHOD == LOG_TYPE.FILE || config.LOG_METHOD == LOG_TYPE.BOTH) {
@@ -235,7 +243,7 @@ public class Logger {
 	 *        representation is to be written.
 	 */
 	private void writeGraphFile(CayleyGraph cayleyGraph, String qualifiedFileName) {
-		String content = cayleyGraph.printCayleyGraphBasic() + "<" + this.maxWeightedCliqueSum + ">\n";
+		String content = cayleyGraph.printCayleyGraphBasic() + printSummaryInfo(cayleyGraph);
 
 		// Write the "content" string to file
 		try {
@@ -256,6 +264,10 @@ public class Logger {
 	private String getDateTimeStamp(){
 		DateFormat df = new SimpleDateFormat("MMddyyyyHHmmss");
 		return df.format(new Date());
+	}
+	
+	public long getAnalyzedGraphCount(){
+		return this.analyzedGraphCount;
 	}
 
 }
