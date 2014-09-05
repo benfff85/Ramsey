@@ -6,18 +6,28 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
 import java.awt.Window.Type;
+
 import ramsey.CayleyGraph;
 import ramsey.Logger;
 import ramsey.Timer;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.AbstractAction;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.Action;
 
 public class GenericFrame extends JFrame {
 	
 	private JLabel l_count;
 	private Logger logger;
 	private JPanel contentPane;
+
 
 	/**
 	 * Launch the application.
@@ -47,9 +57,14 @@ public class GenericFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.setBounds(5, 234, 424, 23);
-		contentPane.add(btnNewButton);
+		JButton printButton = new JButton("Print");
+		printButton.addActionListener(new ActionListener() {
+		         public void actionPerformed(ActionEvent e) {
+		            System.out.println("XXX");
+		         }          
+		});
+		printButton.setBounds(5, 234, 424, 23);
+		contentPane.add(printButton);
 		
 	    l_count = new JLabel("");
 		l_count.setText(String.valueOf(logger.getAnalyzedGraphCount()));
@@ -60,5 +75,6 @@ public class GenericFrame extends JFrame {
 	public void refreshData(){
 		l_count.setText("Count: " + String.valueOf(logger.getAnalyzedGraphCount()));
 	}
+
 
 }

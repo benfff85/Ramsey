@@ -71,4 +71,8 @@ public class Controller {
 			f.refreshData();
 		}
 	}
+	
+	public void executeSearch(){
+		System.out.println("TEST");
+	}
 }
