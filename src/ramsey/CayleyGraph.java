@@ -24,9 +24,7 @@ public class CayleyGraph {
 	private int numOfElements;
 	private Vertex[] cayleyGraphArray;
 	private Clique clique;
-	private CliqueChecker cliqueChecker;
 	private int cliqueSize;
-	private Config config = new Config();
 
 	
 	/**
@@ -39,11 +37,10 @@ public class CayleyGraph {
 	 *        subgraph (clique) we will be searching for.
 	 */
 	public CayleyGraph() {
-		this.numOfElements = config.NUM_OF_ELEMENTS;
-		this.cliqueSize = config.CLIQUE_SIZE;
+		this.numOfElements = Config.NUM_OF_ELEMENTS;
+		this.cliqueSize = Config.CLIQUE_SIZE;
 		this.cayleyGraphArray = new Vertex[numOfElements];
 		this.clique = new Clique(cliqueSize);
-		this.cliqueChecker = new CliqueChecker(cliqueSize, numOfElements);
 		initialize();
 	}
 	
@@ -67,30 +64,15 @@ public class CayleyGraph {
 	}
 	
 	/**
-	 * This will leverage the cliqueChecker object to check this CayleyGraph for
-	 * a complete subgraph of a given color. Clique size is determined by
-	 * this.clique which was created during the initialization of this
-	 * CayleyGraph.
-	 * 
-	 * @param color This is the color of the subgraph cliqueChecker will be
-	 *        looking for.
-	 * @return This method will return true if a complete subgraph of the input
-	 *         color was found. Otherwise it will return false.
-	 */
-	public boolean checkForClique(String color) {
-		return cliqueChecker.findClique(this, color);
-	}
-
-	/**
 	 * This will initialize the vertices and edges of the CayleyGraph based on
-	 * the LAUNCH_METHOD specified in the config class.
+	 * the LAUNCH_METHOD specified in the Config class.
 	 * 
 	 * @return void
 	 */
 	public void initialize() {
-		if (config.LAUNCH_METHOD == LAUNCH_TYPE.GENERATE_RANDOM) {
+		if (Config.LAUNCH_METHOD == LAUNCH_TYPE.GENERATE_RANDOM) {
 			generateRandomGraph();
-		} else if (config.LAUNCH_METHOD == LAUNCH_TYPE.OPEN_FROM_FILE) {
+		} else if (Config.LAUNCH_METHOD == LAUNCH_TYPE.OPEN_FROM_FILE) {
 			loadFromFile();
 		}
 	}

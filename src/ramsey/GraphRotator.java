@@ -2,7 +2,6 @@ package ramsey;
 
 public class GraphRotator {
 	private Vertex[] cayleyGraphArray;
-	private Config config = new Config();
 	
 	/**
 	 * This is the publicly exposed rotate method which determines which type
@@ -12,18 +11,18 @@ public class GraphRotator {
 	 */
 	public void rotate(CayleyGraph cayleyGraph) {
 		this.cayleyGraphArray = cayleyGraph.getCayleyGraphArray();
-		for (int count = 0; count < config.ROTATION_COUNT; count++) {
+		for (int count = 0; count < Config.ROTATION_COUNT; count++) {
 
-			if (config.ROTATION_METHOD == ROTATION_TYPE.SERIAL) {
-				if (config.ROTATION_DIRECTION == DIRECTION.LEFT) {
+			if (Config.ROTATION_METHOD == ROTATION_TYPE.SERIAL) {
+				if (Config.ROTATION_DIRECTION == DIRECTION.LEFT) {
 					rotateSerialLeft();
 				}
-				else if (config.ROTATION_DIRECTION == DIRECTION.RIGHT) {
+				else if (Config.ROTATION_DIRECTION == DIRECTION.RIGHT) {
 					rotateSerialRight();	
 				}
-			} else if (config.ROTATION_METHOD == ROTATION_TYPE.PARALLEL) {
+			} else if (Config.ROTATION_METHOD == ROTATION_TYPE.PARALLEL) {
 				rotateParallel();
-			} else if (config.ROTATION_METHOD == ROTATION_TYPE.NONE) {
+			} else if (Config.ROTATION_METHOD == ROTATION_TYPE.NONE) {
 				return;
 			}
 		}
@@ -40,15 +39,15 @@ public class GraphRotator {
 
 		// Shift all vertices
 		swap = this.cayleyGraphArray[0];
-		System.arraycopy(this.cayleyGraphArray, 1, this.cayleyGraphArray, 0, config.NUM_OF_ELEMENTS - 1);
-		this.cayleyGraphArray[config.NUM_OF_ELEMENTS - 1] = swap;
+		System.arraycopy(this.cayleyGraphArray, 1, this.cayleyGraphArray, 0, Config.NUM_OF_ELEMENTS - 1);
+		this.cayleyGraphArray[Config.NUM_OF_ELEMENTS - 1] = swap;
 
-		for (int i = 0; i < config.NUM_OF_ELEMENTS; i++) {
+		for (int i = 0; i < Config.NUM_OF_ELEMENTS; i++) {
 			this.cayleyGraphArray[i].rotateEdgesLeft();
 		}
 
 		// Update IDs so that this.CayleyGraph[x] still has vertexId x
-		for (int i = 0; i < config.NUM_OF_ELEMENTS; i++) {
+		for (int i = 0; i < Config.NUM_OF_ELEMENTS; i++) {
 			this.cayleyGraphArray[i].updateId(i);
 		}
 	}
@@ -63,16 +62,16 @@ public class GraphRotator {
 		Vertex swap;
 
 		// Shift all vertices
-		swap = this.cayleyGraphArray[config.NUM_OF_ELEMENTS - 1];
-		System.arraycopy(this.cayleyGraphArray, 0, this.cayleyGraphArray, 1, config.NUM_OF_ELEMENTS - 1);
+		swap = this.cayleyGraphArray[Config.NUM_OF_ELEMENTS - 1];
+		System.arraycopy(this.cayleyGraphArray, 0, this.cayleyGraphArray, 1, Config.NUM_OF_ELEMENTS - 1);
 		this.cayleyGraphArray[0] = swap;
 
-		for (int i = 0; i < config.NUM_OF_ELEMENTS; i++) {
+		for (int i = 0; i < Config.NUM_OF_ELEMENTS; i++) {
 			this.cayleyGraphArray[i].rotateEdgesRight();
 		}
 
 		// Update IDs so that this.CayleyGraph[x] still has vertexId x
-		for (int i = 0; i < config.NUM_OF_ELEMENTS; i++) {
+		for (int i = 0; i < Config.NUM_OF_ELEMENTS; i++) {
 			this.cayleyGraphArray[i].updateId(i);
 		}
 	}
@@ -88,21 +87,21 @@ public class GraphRotator {
 	 */
 	private void rotateParallel() {
 		Vertex swap;
-		RotateEdgeThread[] threads = new RotateEdgeThread[config.ROTATION_THREAD_COUNT];
+		RotateEdgeThread[] threads = new RotateEdgeThread[Config.ROTATION_THREAD_COUNT];
 
 		// Shift all vertices
 		swap = this.cayleyGraphArray[0];
-		System.arraycopy(this.cayleyGraphArray, 1, this.cayleyGraphArray, 0, config.NUM_OF_ELEMENTS - 1);
-		this.cayleyGraphArray[config.NUM_OF_ELEMENTS - 1] = swap;
+		System.arraycopy(this.cayleyGraphArray, 1, this.cayleyGraphArray, 0, Config.NUM_OF_ELEMENTS - 1);
+		this.cayleyGraphArray[Config.NUM_OF_ELEMENTS - 1] = swap;
 
 		// Shift all edges for each vertex
 		// Initialize Threads
-		for (int j = 0; j < config.ROTATION_THREAD_COUNT; j++) {
-			threads[j] = new RotateEdgeThread(this.cayleyGraphArray, j, config.ROTATION_THREAD_COUNT);
+		for (int j = 0; j < Config.ROTATION_THREAD_COUNT; j++) {
+			threads[j] = new RotateEdgeThread(this.cayleyGraphArray, j, Config.ROTATION_THREAD_COUNT);
 		}
 
 		// Sync up threads
-		for (int j = 0; j < config.ROTATION_THREAD_COUNT; j++) {
+		for (int j = 0; j < Config.ROTATION_THREAD_COUNT; j++) {
 			try {
 				threads[j].join();
 			} catch (Exception e) {
@@ -111,7 +110,7 @@ public class GraphRotator {
 		}
 
 		// Update IDs so that this.CayleyGraph[x] still has vertexId x
-		for (int i = 0; i < config.NUM_OF_ELEMENTS; i++) {
+		for (int i = 0; i < Config.NUM_OF_ELEMENTS; i++) {
 			this.cayleyGraphArray[i].updateId(i);
 		}
 	}

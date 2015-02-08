@@ -20,21 +20,20 @@ public class SendEmail {
 		
 		String subject = arguments[0];
 		String body = arguments[1];
-		final Config config = new Config();
 		
 		Session session = Session.getDefaultInstance(props,
 			new javax.mail.Authenticator() {
 				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication(config.EMAIL_USER_ID,config.EMAIL_PASSWORD); 
+					return new PasswordAuthentication(Config.EMAIL_USER_ID,Config.EMAIL_PASSWORD); 
 				}
 			});
  
 		try {
  
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(config.EMAIL_ADDRESS));
+			message.setFrom(new InternetAddress(Config.EMAIL_ADDRESS));
 			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(config.EMAIL_ADDRESS));
+					InternetAddress.parse(Config.EMAIL_ADDRESS));
 			message.setSubject(subject);
 			message.setText(body);
  

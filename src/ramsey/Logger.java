@@ -24,7 +24,6 @@ public class Logger {
 	private long analyzedGraphCount;
 	private BufferedWriter bufferedLogWriter;
 	private String formattedLogDate;
-	private Config config = new Config();
 
 	/**
 	 * This is the main Logger constructor which will initialize tracked values
@@ -74,8 +73,8 @@ public class Logger {
 	private boolean updateMaxWeightedCliqueSum(Clique clique) {
 		BigInteger cliqueSum = new BigInteger("0");
 
-		for (int i = 0; i < config.CLIQUE_SIZE; i++) {
-			cliqueSum = cliqueSum.add(BigInteger.valueOf(config.NUM_OF_ELEMENTS).pow(config.CLIQUE_SIZE - (i + 1)).multiply(BigInteger.valueOf(clique.getCliqueVertexByPosition(i).getId())));
+		for (int i = 0; i < Config.CLIQUE_SIZE; i++) {
+			cliqueSum = cliqueSum.add(BigInteger.valueOf(Config.NUM_OF_ELEMENTS).pow(Config.CLIQUE_SIZE - (i + 1)).multiply(BigInteger.valueOf(clique.getCliqueVertexByPosition(i).getId())));
 		}
 
 		if (cliqueSum.compareTo(this.maxWeightedCliqueSum) > 0) {
@@ -141,7 +140,7 @@ public class Logger {
 	 * @return void
 	 */
 	private void openLogFile() {
-		String fileName = config.LOG_FILE_PATH + config.LOG_FILE_MASK + this.formattedLogDate + ".log";
+		String fileName = Config.LOG_FILE_PATH + Config.LOG_FILE_MASK + this.formattedLogDate + ".log";
 		try {
 			File file = new File(fileName);
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
@@ -166,8 +165,8 @@ public class Logger {
 	public void processPositiveCase(CayleyGraph cayleyGraph) {
 		System.out.println(cayleyGraph.printCayleyGraphMathematica());
 		writeToLogFile("SOLUTION:\n" + cayleyGraph.printCayleyGraphMathematica());
-		writeGraphFile(cayleyGraph,config.SOLUTION_FILE_PATH + config.SOLUTION_FILE_MASK + getDateTimeStamp() +".sol");
-		cayleyGraph.emailCayleyGraph();
+		writeGraphFile(cayleyGraph,Config.SOLUTION_FILE_PATH + Config.SOLUTION_FILE_MASK + getDateTimeStamp() +".sol");
+		//cayleyGraph.emailCayleyGraph();
 	}
 	
 	/**
@@ -185,11 +184,11 @@ public class Logger {
 		updateMaxFirstCliqueElement(cayleyGraph.getClique());
 		updateMaxCliqueSum(cayleyGraph.getClique());
 		if(updateMaxWeightedCliqueSum(cayleyGraph.getClique()) && analyzedGraphCount > 1){
-			writeGraphFile(cayleyGraph,config.CHKPT_FILE_PATH + config.CHKPT_FILE_MASK + getDateTimeStamp() +".chk");
+			writeGraphFile(cayleyGraph,Config.CHKPT_FILE_PATH + Config.CHKPT_FILE_MASK + getDateTimeStamp() +".chk");
 		}
 		
 		// Write to log if appropriate
-		if (this.analyzedGraphCount % config.LOG_INTERVAL == 0) {
+		if (this.analyzedGraphCount % Config.LOG_INTERVAL == 0) {
 			String content =
 					"#######################################################################\n" + printSummaryInfo(cayleyGraph) + printSummaryInfo(timer);
 			
@@ -226,10 +225,10 @@ public class Logger {
 	
 	
 	private void writeToLog(String content){
-		if (config.LOG_METHOD == LOG_TYPE.FILE || config.LOG_METHOD == LOG_TYPE.BOTH) {
+		if (Config.LOG_METHOD == LOG_TYPE.FILE || Config.LOG_METHOD == LOG_TYPE.BOTH) {
 			writeToLogFile(content);
 		}
-		if (config.LOG_METHOD == LOG_TYPE.CONSOLE || config.LOG_METHOD == LOG_TYPE.BOTH) {
+		if (Config.LOG_METHOD == LOG_TYPE.CONSOLE || Config.LOG_METHOD == LOG_TYPE.BOTH) {
 			System.out.println(content);
 		}
 	}

@@ -7,10 +7,9 @@ import java.util.Date;
 public class Debug {
 
 	public static void write(String inputString) {
-		Config config = new Config();
 		String debugString;
 		
-		if (config.DEBUG_MODE) {
+		if (Config.DEBUG_MODE) {
 			debugString = "[" + getDateTimeStamp() + "] " + getMethodName(3) + ": " + inputString;
 			System.out.println(debugString);
 		}

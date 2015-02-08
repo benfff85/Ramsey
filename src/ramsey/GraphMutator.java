@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class GraphMutator {
-	
-	private Config config = new Config();
+
 	private CayleyGraph cayleyGraph;
 	int count = 0;
 	
@@ -17,10 +16,10 @@ public class GraphMutator {
 	 */
 	public void mutateGraph(CayleyGraph cayleyGraph) {
 		this.cayleyGraph = cayleyGraph;
-		for (int i = 0; i < config.MUTATE_COUNT; i++) {
+		for (int i = 0; i < Config.MUTATE_COUNT; i++) {
 			mutateGraph(selectMutationType());
 		}
-		cayleyGraph.clearClique();
+		//cayleyGraph.clearClique();
 	}
 
 	/**
@@ -31,11 +30,11 @@ public class GraphMutator {
 	 */
 	private MUTATION_TYPE selectMutationType() {
 		count++;
-		if (count % (config.MUTATE_INTERVAL + 1) == 0) {
+		if (count % (Config.MUTATE_INTERVAL + 1) == 0) {
 			count = 0;
-			return config.MUTATE_METHOD_SECONDARY;
+			return Config.MUTATE_METHOD_SECONDARY;
 		}
-		return config.MUTATE_METHOD_PRIMARY;
+		return Config.MUTATE_METHOD_PRIMARY;
 	}
 		
 	/**
@@ -147,7 +146,7 @@ public class GraphMutator {
 
 		// Select the edge from the clique which is attached to the two vertices
 		// with the greatest count of edges matching the color of the clique
-		for (int i = 0; i < config.CLIQUE_SIZE; i++) {
+		for (int i = 0; i < Config.CLIQUE_SIZE; i++) {
 			if (this.cayleyGraph.getClique().getCliqueVertexByPosition(i).getEdgeCount(cliqueColor) > connectedEdgeCountA) {
 				vertexListB.clear();
 				vertexListB = (ArrayList<Vertex>) vertexListA.clone();
@@ -182,7 +181,7 @@ public class GraphMutator {
 			nonCliqueColor = "BLUE";
 		}
 
-		for (int i = 0; i < config.NUM_OF_ELEMENTS; i++) {
+		for (int i = 0; i < Config.NUM_OF_ELEMENTS; i++) {
 			if (this.cayleyGraph.getCayleyGraphArray()[i].getEdgeCount(nonCliqueColor) > connectedEdgeCountA) {
 				vertexListA.clear();
 				connectedEdgeCountA = this.cayleyGraph.getCayleyGraphArray()[i].getEdgeCount(nonCliqueColor);
@@ -194,7 +193,7 @@ public class GraphMutator {
 		
 		vertexA = getRandomVertex(vertexListA);
 
-		for (int i = 0; i < config.NUM_OF_ELEMENTS; i++) {
+		for (int i = 0; i < Config.NUM_OF_ELEMENTS; i++) {
 			if (vertexA.getEdge(i).getColor().equals(nonCliqueColor)) {
 				if (vertexA.getEdge(i).getOtherVertex(vertexA).getEdgeCount(nonCliqueColor) > connectedEdgeCountB) {
 					vertexListB.clear();
