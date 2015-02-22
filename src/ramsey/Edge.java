@@ -6,8 +6,9 @@ package ramsey;
  * @author Ben Ferenchak
  * @version 1.0
  */
-public class Edge {
+public class Edge implements java.io.Serializable {
 
+	private static final long serialVersionUID = -6733335734314818893L;
 	private Vertex vertexA;
 	private Vertex vertexB;
 	private String color;

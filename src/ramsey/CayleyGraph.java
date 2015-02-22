@@ -11,7 +11,7 @@ import javax.swing.JFileChooser;
  
 /**
  * This class represents the cayley graph which is a graph comprised of
- * numOfElements elements. Each elements (also referred to as vertex) is
+ * getNumOfElements() elements. Each elements (also referred to as vertex) is
  * connected to every other element via an edge. The CayleyGraph will be able to
  * initialize itself, check itself for complete subgraphs, mutate itself and
  * write itself to files which can be loaded later.
@@ -19,28 +19,27 @@ import javax.swing.JFileChooser;
  * @author Ben Ferenchak
  * @version 1.0
  */
-public class CayleyGraph {
+public class CayleyGraph implements java.io.Serializable {
 
+	private static final long serialVersionUID = 2142391538509023095L;
 	private int numOfElements;
 	private Vertex[] cayleyGraphArray;
-	private Clique clique;
-	private int cliqueSize;
+	private CliqueCollection cliqueCollection;
 
 	
 	/**
 	 * This is the main constructor for the CayleyGraph. It will initialize all
 	 * global variables given.
 	 * 
-	 * @param numOfElements The total number of elements (vertices) comprising
+	 * @param getNumOfElements() The total number of elements (vertices) comprising
 	 *        the CayleyGraph.
 	 * @param cliqueSize The number of elements (vertices) in the complete
 	 *        subgraph (clique) we will be searching for.
 	 */
 	public CayleyGraph() {
-		this.numOfElements = Config.NUM_OF_ELEMENTS;
-		this.cliqueSize = Config.CLIQUE_SIZE;
-		this.cayleyGraphArray = new Vertex[numOfElements];
-		this.clique = new Clique(cliqueSize);
+		numOfElements = Config.NUM_OF_ELEMENTS;
+		cayleyGraphArray = new Vertex[getNumOfElements()];
+		cliqueCollection = new CliqueCollection();
 		initialize();
 	}
 	
@@ -51,7 +50,7 @@ public class CayleyGraph {
 	 * @return The number of elements comprising this CayleyGraph.
 	 */
 	public int getNumOfElements() {
-		return this.numOfElements;
+		return numOfElements;
 	}
 	
 	/**
@@ -60,7 +59,7 @@ public class CayleyGraph {
 	 * @return The Vertex array of all vertices in this CayleyGraph.
 	 */
 	public Vertex[] getCayleyGraphArray() {
-		return this.cayleyGraphArray;
+		return cayleyGraphArray;
 	}
 	
 	/**
@@ -72,7 +71,8 @@ public class CayleyGraph {
 	public void initialize() {
 		if (Config.LAUNCH_METHOD == LAUNCH_TYPE.GENERATE_RANDOM) {
 			generateRandomGraph();
-		} else if (Config.LAUNCH_METHOD == LAUNCH_TYPE.OPEN_FROM_FILE) {
+		} 
+		else if (Config.LAUNCH_METHOD == LAUNCH_TYPE.OPEN_FROM_FILE) {
 			loadFromFile();
 		}
 	}
@@ -86,36 +86,36 @@ public class CayleyGraph {
 	 * @return void
 	 */
 	public void generateRandomGraph() {
-		int redCount = ((this.numOfElements) * (this.numOfElements - 1)) / 4;
+		int redCount = ((getNumOfElements()) * (getNumOfElements() - 1)) / 4;
 		int blueCount = redCount;
 
 		// Initialize all vertices with valid IDs
-		for (int i = 0; i < this.numOfElements; i++) {
-			this.cayleyGraphArray[i] = new Vertex(i, this.numOfElements);
+		for (int i = 0; i < getNumOfElements(); i++) {
+			cayleyGraphArray[i] = new Vertex(i, getNumOfElements());
 		}
 
 		Random generator = new Random();
-		for (int i = 0; i < this.numOfElements; i++) {
-			for (int j = (i + 1); j < this.numOfElements; j++) {
+		for (int i = 0; i < getNumOfElements(); i++) {
+			for (int j = (i + 1); j < getNumOfElements(); j++) {
 				if (redCount == 0) {
-					Edge edge = new Edge(this.cayleyGraphArray[i], this.cayleyGraphArray[j], "BLUE");
-					this.cayleyGraphArray[i].setEdge(edge);
-					this.cayleyGraphArray[j].setEdge(edge);
+					Edge edge = new Edge(cayleyGraphArray[i], cayleyGraphArray[j], "BLUE");
+					cayleyGraphArray[i].setEdge(edge);
+					cayleyGraphArray[j].setEdge(edge);
 				}
 				else if (blueCount == 0) {
-					Edge edge = new Edge(this.cayleyGraphArray[i], this.cayleyGraphArray[j], "RED");
-					this.cayleyGraphArray[i].setEdge(edge);
-					this.cayleyGraphArray[j].setEdge(edge);
+					Edge edge = new Edge(cayleyGraphArray[i], cayleyGraphArray[j], "RED");
+					cayleyGraphArray[i].setEdge(edge);
+					cayleyGraphArray[j].setEdge(edge);
 				} else {
 					if (generator.nextBoolean() == false) {
-						Edge edge = new Edge(this.cayleyGraphArray[i], this.cayleyGraphArray[j], "BLUE");
-						this.cayleyGraphArray[i].setEdge(edge);
-						this.cayleyGraphArray[j].setEdge(edge);
+						Edge edge = new Edge(cayleyGraphArray[i], cayleyGraphArray[j], "BLUE");
+						cayleyGraphArray[i].setEdge(edge);
+						cayleyGraphArray[j].setEdge(edge);
 						blueCount--;
 					} else {
-						Edge edge = new Edge(this.cayleyGraphArray[i], this.cayleyGraphArray[j], "RED");
-						this.cayleyGraphArray[i].setEdge(edge);
-						this.cayleyGraphArray[j].setEdge(edge);
+						Edge edge = new Edge(cayleyGraphArray[i], cayleyGraphArray[j], "RED");
+						cayleyGraphArray[i].setEdge(edge);
+						cayleyGraphArray[j].setEdge(edge);
 						redCount--;
 					}
 				}
@@ -135,11 +135,11 @@ public class CayleyGraph {
 		String output = "";
 		output += "GraphPlot[{";
 
-		for (int i = 0; i < this.numOfElements; i++) {
+		for (int i = 0; i < getNumOfElements(); i++) {
 			output += "{";
-			for (int j = 0; j < this.numOfElements; j++) {
+			for (int j = 0; j < getNumOfElements(); j++) {
 
-				if (i != j && this.cayleyGraphArray[i].getEdge(this.cayleyGraphArray[j]).getColor() == "RED") {
+				if (i != j && cayleyGraphArray[i].getEdge(cayleyGraphArray[j]).getColor() == "RED") {
 					output += "1, ";
 				} else {
 					output += "0, ";
@@ -163,11 +163,11 @@ public class CayleyGraph {
 	public String printCayleyGraphBasic() {
 		String output = "";
 
-		for (int i = 0; i < this.numOfElements; i++) {
+		for (int i = 0; i < getNumOfElements(); i++) {
 			output += "";
-			for (int j = 0; j < this.numOfElements; j++) {
+			for (int j = 0; j < getNumOfElements(); j++) {
 
-				if (i != j && this.cayleyGraphArray[i].getEdge(this.cayleyGraphArray[j]).getColor() == "RED") {
+				if (i != j && cayleyGraphArray[i].getEdge(cayleyGraphArray[j]).getColor() == "RED") {
 					output += "1,";
 				} else {
 					output += "0,";
@@ -189,8 +189,8 @@ public class CayleyGraph {
 	public void emailCayleyGraph() {
 		String[] arguments = new String[3];
 
-		arguments[0] = "Ramsey Solution found to R[" + this.numOfElements + "," + this.numOfElements + "]";
-		arguments[1] = this.printCayleyGraphMathematica();
+		arguments[0] = "Ramsey Solution found to R[" + getNumOfElements() + "," + getNumOfElements() + "]";
+		arguments[1] = printCayleyGraphMathematica();
 
 		@SuppressWarnings("unused")
 		SendEmail email = new SendEmail(arguments);
@@ -210,9 +210,9 @@ public class CayleyGraph {
 	public String printRedBlueCount() {
 		int countRed = 0;
 		int countBlue = 0;
-		for (int i = 0; i < this.numOfElements; i++) {
-			for (int j = i + 1; j < this.numOfElements; j++) {
-				if (this.cayleyGraphArray[i].getEdge(this.cayleyGraphArray[j]).getColor().equals("RED")) {
+		for (int i = 0; i < getNumOfElements(); i++) {
+			for (int j = i + 1; j < getNumOfElements(); j++) {
+				if (cayleyGraphArray[i].getEdge(cayleyGraphArray[j]).getColor().equals("RED")) {
 					countRed++;
 				} else {
 					countBlue++;
@@ -224,7 +224,7 @@ public class CayleyGraph {
 	
 	/**
 	 * This Will a human readable string representing the color distribution of
-	 * this CayleyGraph. The color distribution will consist of numOfElements
+	 * this CayleyGraph. The color distribution will consist of getNumOfElements()
 	 * integers each one representing the number of Edges of a given color
 	 * connected to each Vertex.<p>
 	 * The formatting of the output will be in the form of:<br>
@@ -239,8 +239,8 @@ public class CayleyGraph {
 		int count;
 		String output = "[";
 
-		for (int i = 0; i < this.numOfElements; i++) {
-			count = this.cayleyGraphArray[i].getEdgeCount(color);
+		for (int i = 0; i < getNumOfElements(); i++) {
+			count = cayleyGraphArray[i].getEdgeCount(color);
 			output += count + ",";
 		}
 		output = output.substring(0, output.length() - 1);
@@ -261,7 +261,7 @@ public class CayleyGraph {
 	 *         given as input.
 	 */
 	public Edge getEdgeByVertexIds(int vertexIdA, int vertexIdB) {
-		return this.cayleyGraphArray[vertexIdA].getEdge(vertexIdB);
+		return cayleyGraphArray[vertexIdA].getEdge(vertexIdB);
 	}
 
 	/**
@@ -279,14 +279,38 @@ public class CayleyGraph {
 	}
 
 	/**
-	 * This will return the Clique identified for this CayleyGraph.
+	 * This will return the Clique identified for this CayleyGraph. This method
+	 * serves as a wrapper, when no clique to be returned is specified it will
+	 * return the first Clique in the CliqueCollection.
 	 * 
-	 * @return The Clique for this CayleyGraph
+	 * @return The first Clique for this CayleyGraph.
 	 */
 	public Clique getClique() {
-		return this.clique;
+		return getClique(0);
 	}
 
+	/**
+	 * This will return the Clique identified for this CayleyGraph located at
+	 * the given position in the CliqueCollection.
+	 * 
+	 * @param index The position of the Clique in the CliqueCollection to be
+	 *        returned.
+	 * @return The Clique for this CayleyGraph located at the given position in
+	 *         the CliqueCollection.
+	 */
+	public Clique getClique(int index) {
+		return  cliqueCollection.getCliqueByIndex(index);
+	}
+
+	/**
+	 * Standard get method for the CayleyGraphs CliqueCollection object.
+	 * 
+	 * @return The CliqueCollection for this CayleyGraph.
+	 */
+	public CliqueCollection getCliqueCollection(){
+		return cliqueCollection;
+	}
+	
 	/**
 	 * Prints a distribution summary for a given input color. The distribution
 	 * summary will describe how many edges of a given color are connected to
@@ -305,11 +329,11 @@ public class CayleyGraph {
 		int firstHalfCount = 0;
 		int secondHalfCount = 0;
 
-		for (int i = 0; i < this.numOfElements / 2; i++) {
-			firstHalfCount += this.cayleyGraphArray[i].getEdgeCount(color);
+		for (int i = 0; i < getNumOfElements() / 2; i++) {
+			firstHalfCount += cayleyGraphArray[i].getEdgeCount(color);
 		}
-		for (int i = this.numOfElements / 2; i < this.numOfElements; i++) {
-			secondHalfCount += this.cayleyGraphArray[i].getEdgeCount(color);
+		for (int i = getNumOfElements() / 2; i < getNumOfElements(); i++) {
+			secondHalfCount += cayleyGraphArray[i].getEdgeCount(color);
 		}
 
 		return "[" + firstHalfCount + ":" + secondHalfCount + "]";
@@ -326,8 +350,8 @@ public class CayleyGraph {
 		int x = 0;
 		int y = 0;
 		while (x == y || !getEdgeByVertexIds(x, y).getColor().equals(color)) {
-			x = generator.nextInt(this.numOfElements);
-			y = generator.nextInt(this.numOfElements);
+			x = generator.nextInt(getNumOfElements());
+			y = generator.nextInt(getNumOfElements());
 		}
 		return getEdgeByVertexIds(x, y);
 	}	
@@ -347,8 +371,8 @@ public class CayleyGraph {
 		int nextInt;
 
 		// Initialize all vertices with valid IDs
-		for (int i = 0; i < this.numOfElements; i++) {
-			this.cayleyGraphArray[i] = new Vertex(i, this.numOfElements);
+		for (int i = 0; i < getNumOfElements(); i++) {
+			cayleyGraphArray[i] = new Vertex(i, getNumOfElements());
 		}
 
 		// Select a file
@@ -361,22 +385,22 @@ public class CayleyGraph {
 				buffRead = new BufferedReader(new FileReader(file));
 
 				// Loop through file creating edges as we go
-				for (int i = 0; i < this.numOfElements; i++) {
+				for (int i = 0; i < getNumOfElements(); i++) {
 					inputLine = buffRead.readLine();
 					st = new StringTokenizer(inputLine, ",");
 
-					for (int j = 0; j < this.numOfElements; j++) {
+					for (int j = 0; j < getNumOfElements(); j++) {
 						nextInt = Integer.parseInt(st.nextToken());
 						if (j > i) {
 							if (nextInt == 0) {
-								Edge edge = new Edge(this.cayleyGraphArray[i], this.cayleyGraphArray[j], "BLUE");
-								this.cayleyGraphArray[i].setEdge(edge);
-								this.cayleyGraphArray[j].setEdge(edge);
+								Edge edge = new Edge(cayleyGraphArray[i], cayleyGraphArray[j], "BLUE");
+								cayleyGraphArray[i].setEdge(edge);
+								cayleyGraphArray[j].setEdge(edge);
 							}
 							else {
-								Edge edge = new Edge(this.cayleyGraphArray[i], this.cayleyGraphArray[j], "RED");
-								this.cayleyGraphArray[i].setEdge(edge);
-								this.cayleyGraphArray[j].setEdge(edge);
+								Edge edge = new Edge(cayleyGraphArray[i], cayleyGraphArray[j], "RED");
+								cayleyGraphArray[i].setEdge(edge);
+								cayleyGraphArray[j].setEdge(edge);
 							}
 						}
 					}
@@ -399,9 +423,9 @@ public class CayleyGraph {
 	 *         symmetric as expected.
 	 */
 	public boolean isSymmetric() {
-		for (int i = 0; i < this.numOfElements; i++) {
-			for (int j = i + 1; j < this.numOfElements; j++) {
-				if (this.cayleyGraphArray[i].edges[j] != this.cayleyGraphArray[j].edges[i]) {
+		for (int i = 0; i < getNumOfElements(); i++) {
+			for (int j = i + 1; j < getNumOfElements(); j++) {
+				if (cayleyGraphArray[i].edges[j] != cayleyGraphArray[j].edges[i]) {
 					return false;
 				}
 			}
@@ -410,12 +434,37 @@ public class CayleyGraph {
 	}
 
 	/**
-	 * This will clear the clique once it is no longer relevant after mutation.
+	 * This will clear the cliqueCollection once it is no longer relevant after mutation.
 	 * 
 	 * @return void
 	 */
 	public void clearClique() {
-		// TO-DO check if this is causing any memory issues since it is non-essential
-		this.clique = new Clique(cliqueSize);
+		getCliqueCollection().clear();
+	}
+	
+	/**
+	 * Will return boolean value signifying if at least one clique has been
+	 * identified for this CayleyGraph.
+	 * 
+	 * @return This will return true if at least one clique has been identified,
+	 *         otherwise it will return false.
+	 */
+	public boolean isCliqueIdentified() {
+		if (getCliqueCollection().getCliqueCount() > 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * This will return the Vertex with Vertex ID matching the provided ID.
+	 * 
+	 * @param id Vertex ID of the requested Vertex to be returned
+	 * @return Vertex object of the requested in the CayleyGraph with Vertex ID
+	 *         matching the provided ID.
+	 */
+	public Vertex getVertexById(int id) {
+		// TODO throw exception if vertex id doesn't match position.
+		return cayleyGraphArray[id];
 	}
 }

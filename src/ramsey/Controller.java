@@ -1,6 +1,6 @@
 package ramsey;
 
-import ui.GenericFrame;
+//import ui.GenericFrame;
 
 /**
  * This is the main Controller Class where the program will initiate. It handles
@@ -39,9 +39,9 @@ public class Controller {
 	 */
 	public Controller(){
 		cayleyGraph = new CayleyGraph();
-		logger = new Logger();
 		timer = new Timer();
-		cliqueChecker = new CliqueChecker(cayleyGraph);
+		logger = new Logger(cayleyGraph, timer);
+		cliqueChecker = new CliqueChecker(cayleyGraph, Config.CLIQUE_SIZE);
 		mutator = new GraphMutator();
 		rotator = new GraphRotator();
 		counterExampleFound = false;
@@ -55,21 +55,23 @@ public class Controller {
 		timer.newTimeSet("ROTATE");
 	}
 	
-	public void runSearch(){
+	public void runSearch() throws Exception{
 		
 		while (!counterExampleFound) {
 
 			timer.startTimer("CLIQUE");
-			if (!cliqueChecker.findClique("RED") && !cliqueChecker.findClique("BLUE")) {
+			cliqueChecker.findCliqueParallel(Config.CLIQUE_SEARCH_THREAD_COUNT,"RED");
+			cliqueChecker.findCliqueParallel(Config.CLIQUE_SEARCH_THREAD_COUNT,"BLUE");
+			if (!cayleyGraph.isCliqueIdentified()) {
 				counterExampleFound = true;
 				logger.processPositiveCase(cayleyGraph);
 				logger.closeLogFile();
 				break;
 			}
 			timer.endTimer("CLIQUE");
-
+		
 			timer.startTimer("LOGGER");
-			logger.processNegativeCase(cayleyGraph, timer);
+			logger.processNegativeCase();
 			timer.endTimer("LOGGER");
 
 			//frame.refreshData();
@@ -84,9 +86,11 @@ public class Controller {
 		}
 	}
 	
-	public void runOneIteration(){
+	public void runOneIteration() throws Exception{
 		timer.startTimer("CLIQUE");
-		if (!cliqueChecker.findClique("RED") && !cliqueChecker.findClique("BLUE")) {
+		cliqueChecker.findClique("RED");
+		cliqueChecker.findClique("BLUE");
+		if (!cayleyGraph.isCliqueIdentified()) {			
 			counterExampleFound = true;
 			logger.processPositiveCase(cayleyGraph);
 			logger.closeLogFile();
@@ -95,7 +99,7 @@ public class Controller {
 		timer.endTimer("CLIQUE");
 
 		timer.startTimer("LOGGER");
-		logger.processNegativeCase(cayleyGraph, timer);
+		logger.processNegativeCase();
 		timer.endTimer("LOGGER");
 
 		//frame.refreshData();

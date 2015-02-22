@@ -6,8 +6,9 @@ package ramsey;
  * @author Ben Ferenchak
  * @version 1.0
  */
-public class Vertex {
+public class Vertex implements java.io.Serializable {
 
+	private static final long serialVersionUID = -8018799200612785856L;
 	int vertexId;
 	Edge[] edges;
 

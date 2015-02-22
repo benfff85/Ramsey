@@ -19,7 +19,7 @@ public class GraphMutator {
 		for (int i = 0; i < Config.MUTATE_COUNT; i++) {
 			mutateGraph(selectMutationType());
 		}
-		//cayleyGraph.clearClique();
+		cayleyGraph.getCliqueCollection().clear();
 	}
 
 	/**
@@ -147,18 +147,18 @@ public class GraphMutator {
 		// Select the edge from the clique which is attached to the two vertices
 		// with the greatest count of edges matching the color of the clique
 		for (int i = 0; i < Config.CLIQUE_SIZE; i++) {
-			if (this.cayleyGraph.getClique().getCliqueVertexByPosition(i).getEdgeCount(cliqueColor) > connectedEdgeCountA) {
+			if (cayleyGraph.getClique().getCliqueVertexByPosition(i).getEdgeCount(cliqueColor) > connectedEdgeCountA) {
 				vertexListB.clear();
 				vertexListB = (ArrayList<Vertex>) vertexListA.clone();
-				connectedEdgeCountA = this.cayleyGraph.getClique().getCliqueVertexByPosition(i).getEdgeCount(cliqueColor);
+				connectedEdgeCountA = cayleyGraph.getClique().getCliqueVertexByPosition(i).getEdgeCount(cliqueColor);
 				vertexListA.clear();
-				vertexListA.add(this.cayleyGraph.getClique().getCliqueVertexByPosition(i));
-			} else if (this.cayleyGraph.getClique().getCliqueVertexByPosition(i).getEdgeCount(cliqueColor) > connectedEdgeCountB) {
+				vertexListA.add(cayleyGraph.getClique().getCliqueVertexByPosition(i));
+			} else if (cayleyGraph.getClique().getCliqueVertexByPosition(i).getEdgeCount(cliqueColor) > connectedEdgeCountB) {
 				vertexListB.clear();
-				connectedEdgeCountB = this.cayleyGraph.getClique().getCliqueVertexByPosition(i).getEdgeCount(cliqueColor);
-				vertexListB.add(this.cayleyGraph.getClique().getCliqueVertexByPosition(i));
-			} else if (this.cayleyGraph.getClique().getCliqueVertexByPosition(i).getEdgeCount(cliqueColor) == connectedEdgeCountB) {
-				vertexListB.add(this.cayleyGraph.getClique().getCliqueVertexByPosition(i));
+				connectedEdgeCountB = cayleyGraph.getClique().getCliqueVertexByPosition(i).getEdgeCount(cliqueColor);
+				vertexListB.add(cayleyGraph.getClique().getCliqueVertexByPosition(i));
+			} else if (cayleyGraph.getClique().getCliqueVertexByPosition(i).getEdgeCount(cliqueColor) == connectedEdgeCountB) {
+				vertexListB.add(cayleyGraph.getClique().getCliqueVertexByPosition(i));
 			}
 		}
 
@@ -182,12 +182,12 @@ public class GraphMutator {
 		}
 
 		for (int i = 0; i < Config.NUM_OF_ELEMENTS; i++) {
-			if (this.cayleyGraph.getCayleyGraphArray()[i].getEdgeCount(nonCliqueColor) > connectedEdgeCountA) {
+			if (cayleyGraph.getVertexById(i).getEdgeCount(nonCliqueColor) > connectedEdgeCountA) {
 				vertexListA.clear();
-				connectedEdgeCountA = this.cayleyGraph.getCayleyGraphArray()[i].getEdgeCount(nonCliqueColor);
-				vertexListA.add(this.cayleyGraph.getCayleyGraphArray()[i]);
-			} else if (this.cayleyGraph.getCayleyGraphArray()[i].getEdgeCount(nonCliqueColor) >= connectedEdgeCountA){
-				vertexListA.add(this.cayleyGraph.getCayleyGraphArray()[i]);
+				connectedEdgeCountA = cayleyGraph.getVertexById(i).getEdgeCount(nonCliqueColor);
+				vertexListA.add(cayleyGraph.getVertexById(i));
+			} else if (cayleyGraph.getVertexById(i).getEdgeCount(nonCliqueColor) >= connectedEdgeCountA){
+				vertexListA.add(cayleyGraph.getVertexById(i));
 			}
 		}
 		
@@ -218,7 +218,6 @@ public class GraphMutator {
 	}
 	
 		
-		
 	private VertexPair getRandomVertices(ArrayList<Vertex> vertexListA, ArrayList<Vertex> vertexListB){
 		Vertex vertexA;
 		Vertex vertexB;		
@@ -233,6 +232,15 @@ public class GraphMutator {
 		return new VertexPair(vertexA,vertexB); 
 	}
 	
+	
+	/**
+	 * This function uses a random number generator to return a random vertex
+	 * from an input Vertex ArrayList.
+	 * 
+	 * @param vertexList Vertex ArrayList from which a vertex will be returned
+	 *        at random.
+	 * @return A random Vertex from the input Vertex ArrayList.
+	 */
 	private Vertex getRandomVertex(ArrayList<Vertex> vertexList){
 		Random generator = new Random();
 		Vertex vertex;

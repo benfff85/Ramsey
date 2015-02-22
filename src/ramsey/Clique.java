@@ -1,5 +1,7 @@
 package ramsey;
 
+import java.util.ArrayList;
+
 /**
  * This graph represents a clique or complete subgraph identified within a given
  * CayleyGraph. This complete subgraph indicates we cannot raise the lower bound
@@ -9,20 +11,85 @@ package ramsey;
  * @author Ben Ferenchak
  * @version 1.0
  */
-public class Clique {
+public class Clique implements java.io.Serializable {
 
+	private static final long serialVersionUID = -98883802433600863L;
+	private static final Exception CliqueNotCompleteSubgraph = null;
+	private static final Exception InvalidCliqueSize = null;
 	private Vertex[] cliqueVertexArray;
+	private String color;
 
 	/**
-	 * This is the main constructor class for the Clique. It will initialize the
-	 * vertex array representing the clique with the size being defined by the
-	 * input.
+	 * Class constructor for the Clique. It will initialize the vertex array
+	 * representing the clique with the Vertex array received as input.
 	 * 
-	 * @param cliqueSize This is the size of the clique.
+	 * @param vertices The array of vertices representing the clique.
 	 * @return void
+	 * @throws Exception
 	 */
-	public Clique(int cliqueSize) {
-		this.cliqueVertexArray = new Vertex[cliqueSize];
+	public Clique(Vertex[] vertices) throws Exception {
+		try {
+			if (vertices.length != Config.CLIQUE_SIZE) {
+				throw InvalidCliqueSize;
+			}
+			cliqueVertexArray = vertices;
+			setColor();
+			if (validateClique() == false) {
+				throw CliqueNotCompleteSubgraph;
+			}
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	/**
+	 * Class constructor for the Clique. It will initialize the vertex array
+	 * representing the clique with the Vertex ArrayList received as input.
+	 * 
+	 * @param vertices The array of vertices representing the clique.
+	 * @return void
+	 * @throws Exception
+	 */
+	public Clique(ArrayList<Vertex> vertices) throws Exception {
+		try {
+			if (vertices.size() != Config.CLIQUE_SIZE) {
+				throw InvalidCliqueSize;
+			}
+			cliqueVertexArray = new Vertex[vertices.size()];
+			for (int i = 0; i < getCliqueSize(); i++){
+				cliqueVertexArray[i] = vertices.get(i);
+			}
+			setColor();
+			if (validateClique() == false) {
+				throw CliqueNotCompleteSubgraph;
+			}
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	/**
+	 * This will validate if the clique is a complete subgraph or now.
+	 * 
+	 * @return True is the Clique is a complete subgraph otherwise false.
+	 */
+	public boolean validateClique() {
+		for (int i = 0; i < getCliqueSize(); i++) {
+			for (int j = i + 1; j < getCliqueSize(); j++) {
+				if (getCliqueVertexByPosition(i).getEdge(getCliqueVertexByPosition(j)).getColor() != getColor()) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public void setColor() {
+		color = this.cliqueVertexArray[0].getEdge(this.cliqueVertexArray[1]).getColor();
 	}
 
 	/**
@@ -34,7 +101,7 @@ public class Clique {
 	 * @return void
 	 */
 	public void updateClique(Vertex[] vertices) {
-		this.cliqueVertexArray = vertices;
+		cliqueVertexArray = vertices;
 	}
 
 	/**
@@ -43,7 +110,7 @@ public class Clique {
 	 * @return A String value representing the color of this Clique.
 	 */
 	public String getColor() {
-		return this.cliqueVertexArray[0].getEdge(this.cliqueVertexArray[1]).getColor();
+		return color;
 	}
 
 	/**
@@ -52,7 +119,7 @@ public class Clique {
 	 * @return Integer representing the number of elements in this Clique.
 	 */
 	public int getCliqueSize() {
-		return this.cliqueVertexArray.length;
+		return cliqueVertexArray.length;
 	}
 
 	/**
@@ -65,7 +132,7 @@ public class Clique {
 	 *         input to this method.
 	 */
 	public Vertex getCliqueVertexByPosition(int vertexArrayPosition) {
-		return this.cliqueVertexArray[vertexArrayPosition];
+		return cliqueVertexArray[vertexArrayPosition];
 	}
 
 	/**

@@ -23,6 +23,10 @@ public class Timer {
 		long endTime;
 		long duration;
 		long cumulativeDuration;
+		
+		public void clearCumulativeDuration() {
+			cumulativeDuration = 0;
+		}
 	}
 
 	/**
@@ -34,7 +38,7 @@ public class Timer {
 	 * @return void
 	 */
 	public void newTimeSet(String label) {
-		this.timerArray.put(label, new TimeSet());
+		timerArray.put(label, new TimeSet());
 	}
 
 	/**
@@ -45,9 +49,9 @@ public class Timer {
 	 * @return void
 	 */
 	public void startTimer(String label) {
-		this.timerArray.get(label).startTime = System.nanoTime();
-		this.timerArray.get(label).endTime = 0;
-		this.timerArray.get(label).duration = 0;
+		timerArray.get(label).startTime = System.nanoTime();
+		timerArray.get(label).endTime = 0;
+		timerArray.get(label).duration = 0;
 	}
 
 	/**
@@ -59,9 +63,9 @@ public class Timer {
 	 * @return void
 	 */
 	public void endTimer(String label) {
-		this.timerArray.get(label).endTime = System.nanoTime();
-		this.timerArray.get(label).duration = this.timerArray.get(label).endTime - this.timerArray.get(label).startTime;
-		this.timerArray.get(label).cumulativeDuration += this.timerArray.get(label).duration;
+		timerArray.get(label).endTime = System.nanoTime();
+		timerArray.get(label).duration = timerArray.get(label).endTime - timerArray.get(label).startTime;
+		timerArray.get(label).cumulativeDuration += timerArray.get(label).duration;
 	}
 
 	/**
@@ -72,7 +76,7 @@ public class Timer {
 	 * @return The human readable sting for the duration in seconds.
 	 */
 	public String printDuration(String label) {
-		double duration = this.timerArray.get(label).duration / 1000000000.0;
+		double duration = timerArray.get(label).duration / 1000000000.0;
 		duration = round(duration, 2, BigDecimal.ROUND_HALF_UP);
 		return duration + "";
 	}
@@ -86,7 +90,7 @@ public class Timer {
 	 * @return The human readable sting for the cumulative duration in seconds.
 	 */
 	public String printCumulativeDuration(String label) {
-		double duration = this.timerArray.get(label).cumulativeDuration / 1000000000.0;
+		double duration = timerArray.get(label).cumulativeDuration / 1000000000.0;
 		duration = round(duration, 2, BigDecimal.ROUND_HALF_UP);
 		return duration + "";
 	}
@@ -100,7 +104,18 @@ public class Timer {
 	 * @return void
 	 */
 	public void clearCumulativeDuration(String label) {
-		this.timerArray.get(label).cumulativeDuration = 0;
+		timerArray.get(label).clearCumulativeDuration();
+	}
+	
+	/**
+	 * This will reset the cumulative duration being tracked for all labels.
+	 * 
+	 * @return void
+	 */
+	public void clearCumulativeDuration() {
+		for (Map.Entry<String, TimeSet> timeset : timerArray.entrySet()) {
+			timeset.getValue().clearCumulativeDuration();
+		}
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.BorderLayout;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -12,6 +13,7 @@ import ramsey.Timer;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -67,7 +69,11 @@ public class GenericFrame extends JFrame {
 		playButton.setIcon(new ImageIcon(GenericFrame.class.getResource("/com/sun/javafx/webkit/prism/resources/mediaPlayDisabled.png")));
 		playButton.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
-	        	 controller.runOneIteration();
+	        	 try {
+					controller.runOneIteration();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 	         }          
 		});
 		playButton.setBounds(39, 200, 33, 23);
