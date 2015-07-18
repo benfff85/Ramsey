@@ -17,7 +17,7 @@ public class Controller {
 	Timer timer;
 	CliqueChecker cliqueChecker;
 	GraphMutator mutator;
-	GraphRotator rotator;
+	//GraphRotator rotator;
 	boolean counterExampleFound;
 	
 	//GenericFrame frame;
@@ -43,7 +43,7 @@ public class Controller {
 		logger = new Logger(cayleyGraph, timer);
 		cliqueChecker = new CliqueChecker(cayleyGraph, Config.CLIQUE_SIZE);
 		mutator = new GraphMutator();
-		rotator = new GraphRotator();
+		//rotator = new GraphRotator();
 		counterExampleFound = false;
 		
 		//frame = new GenericFrame(cayleyGraph,logger,timer,this);
@@ -56,48 +56,23 @@ public class Controller {
 	}
 	
 	public void runSearch() throws Exception{
-		
 		while (!counterExampleFound) {
-
-			timer.startTimer("CLIQUE");
-			cliqueChecker.findCliqueParallel(Config.CLIQUE_SEARCH_THREAD_COUNT,"RED");
-			cliqueChecker.findCliqueParallel(Config.CLIQUE_SEARCH_THREAD_COUNT,"BLUE");
-			if (!cayleyGraph.isCliqueIdentified()) {
-				counterExampleFound = true;
-				logger.processPositiveCase(cayleyGraph);
-				logger.closeLogFile();
-				break;
-			}
-			timer.endTimer("CLIQUE");
-		
-			timer.startTimer("LOGGER");
-			logger.processNegativeCase();
-			timer.endTimer("LOGGER");
-
-			//frame.refreshData();
-			
-			timer.startTimer("MUTATE");
-			mutator.mutateGraph(cayleyGraph);
-			timer.endTimer("MUTATE");
-
-			timer.startTimer("ROTATE");
-			rotator.rotate(cayleyGraph);
-			timer.endTimer("ROTATE");
+			runIteration();
 		}
 	}
 	
-	public void runOneIteration() throws Exception{
+	public void runIteration() throws Exception{
 		timer.startTimer("CLIQUE");
-		cliqueChecker.findClique("RED");
-		cliqueChecker.findClique("BLUE");
-		if (!cayleyGraph.isCliqueIdentified()) {			
+		cliqueChecker.findCliqueParallel(Config.CLIQUE_SEARCH_THREAD_COUNT,"RED");
+		cliqueChecker.findCliqueParallel(Config.CLIQUE_SEARCH_THREAD_COUNT,"BLUE");
+		if (!cayleyGraph.isCliqueIdentified()) {
 			counterExampleFound = true;
 			logger.processPositiveCase(cayleyGraph);
 			logger.closeLogFile();
 			return;
 		}
 		timer.endTimer("CLIQUE");
-
+	
 		timer.startTimer("LOGGER");
 		logger.processNegativeCase();
 		timer.endTimer("LOGGER");
@@ -109,7 +84,7 @@ public class Controller {
 		timer.endTimer("MUTATE");
 
 		timer.startTimer("ROTATE");
-		rotator.rotate(cayleyGraph);
+		//rotator.rotate(cayleyGraph);
 		timer.endTimer("ROTATE");
 	}
 

@@ -63,6 +63,7 @@ public class Clique implements java.io.Serializable {
 			}
 			setColor();
 			if (validateClique() == false) {
+				Debug.write("Creating a clique that is not a complete subgraph!");
 				throw CliqueNotCompleteSubgraph;
 			}
 		} 

@@ -43,6 +43,33 @@ public class CayleyGraph implements java.io.Serializable {
 		initialize();
 	}
 	
+	// TODO get this working.
+	public void rollback(CayleyGraph cayleyGraph) {
+		Debug.write("Rolling back - CG Master Hash: " + this.hashCode());
+		Debug.write("Rolling back - CG Clone Hash: " + cayleyGraph.hashCode());
+		Debug.write("CC before rollback: " + getCliqueCollection().getCliqueCount());
+		cayleyGraphArray = cayleyGraph.getCayleyGraphArray();
+		cliqueCollection = cayleyGraph.getCliqueCollection();
+		Debug.write("CC after rollback: " + getCliqueCollection().getCliqueCount());
+		
+		Debug.write("Validating cliques after rollback I");
+		for(int i=0; i < getCliqueCollection().getCliqueCount(); i++){
+			if(!getCliqueCollection().getCliqueByIndex(i).validateClique()){
+				Debug.write("BAD CLIQUE");
+			}
+		}
+		
+		Debug.write("Validating cliques after rollback II");
+		for(int i=0; i < cliqueCollection.getCliqueCount(); i++){
+			if(!cliqueCollection.getCliqueByIndex(i).validateClique()){
+				Debug.write("BAD CLIQUE");
+			}
+		}
+		
+		
+		System.gc();
+	}
+	
 	/**
 	 * This will return the number of elements comprising this CayleyGraph. Said
 	 * another way it will return this.cayleyGraphArray.length.

@@ -16,16 +16,16 @@ public class Config {
 	public static final ROTATION_TYPE ROTATION_METHOD = ROTATION_TYPE.SERIAL;
 	public static final DIRECTION ROTATION_DIRECTION = DIRECTION.RIGHT; 
 	public static final int ROTATION_THREAD_COUNT = 1;
-	public static final int ROTATION_COUNT = 5;
+	public static final int ROTATION_COUNT = 0;
 		
 	public static final CLIQUE_SEARCH_TYPE CLIQUE_SEARCH_STRATAGY = CLIQUE_SEARCH_TYPE.ALL;
 	public static final int CLIQUE_SEARCH_THREAD_COUNT = 6;
 	 
 	public static final LOG_TYPE LOG_METHOD = LOG_TYPE.BOTH;
 	public static final int LOG_INTERVAL = 1;
-	public static final String CHKPT_FILE_PATH = "X:\\";
+	public static final String CHKPT_FILE_PATH = "S:\\Ramsey\\"; 
 	public static final String CHKPT_FILE_MASK = "Ramsey_";
-	public static final String LOG_FILE_PATH = "X:\\";
+	public static final String LOG_FILE_PATH = "S:\\Ramsey\\";
 	public static final String LOG_FILE_MASK = "Ramsey_";
 	public static final String SOLUTION_FILE_PATH = "S:\\";
 	public static final String SOLUTION_FILE_MASK = "Ramsey_";

@@ -26,7 +26,7 @@ public class Debug {
 	 *        call method, ...)
 	 * @return method name
 	 */
-	public static String getMethodName(final int depth)
+	private static String getMethodName(final int depth)
 	{
 		final StackTraceElement[] ste = Thread.currentThread().getStackTrace();
 		return ste[depth].getMethodName();

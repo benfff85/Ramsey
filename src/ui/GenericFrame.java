@@ -70,7 +70,7 @@ public class GenericFrame extends JFrame {
 		playButton.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
 	        	 try {
-					controller.runOneIteration();
+					controller.runIteration();
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}

@@ -89,17 +89,15 @@ public class CliqueChecker {
 
 
 	private void findCliqueRecursive(int StartingVertexID, String color) throws Exception {
-		Debug.write("Beginning findCliqueRecursive with Vertex ID " + StartingVertexID + " and color " + color);
+		Debug.write("CliqueChecker: " + StartingVertexID + " CC: " + cayleyGraph.getCliqueCollection().getCliqueCount());
 		ArrayList<Vertex> connectedVertices = new ArrayList<Vertex>();
 		connectedVertices.add(cayleyGraph.getVertexById(StartingVertexID));
 		findCliqueRecursive(connectedVertices,color);
-		Debug.write("Completed findCliqueRecursive with Vertex ID " + StartingVertexID + " and color " + color);
 		connectedVertices.clear();
 	}
 	
 	
 	private void findCliqueRecursive(ArrayList<Vertex> connectedVertices, String color) throws Exception {
-		Debug.write("Beginning findCliqueRecursive with vertex string: " + connectedVertices.size());
 		// Check if cliqueSearch style if "First" and we already found a clique
 		if (Config.CLIQUE_SEARCH_STRATAGY == CLIQUE_SEARCH_TYPE.FIRST && cayleyGraph.isCliqueIdentified()){
 			Debug.write("Returning since clique already found");

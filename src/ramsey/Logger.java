@@ -8,7 +8,8 @@ import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-//import org.apache.commons.lang3.SerializationUtils;
+
+import org.apache.commons.lang3.SerializationUtils;
 
 /**
  * This Class will help facilitate logging to a file as well as tracking various
@@ -141,6 +142,7 @@ public class Logger {
 
 		try {
 			bufferedLogWriter.append(content);
+			bufferedLogWriter.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -221,11 +223,21 @@ public class Logger {
 	private void processCheckpoint(){
 		if(minCliqueCount == cayleyGraph.getCliqueCollection().getCliqueCount()){			
 			writeGraphFile(cayleyGraph,Config.CHKPT_FILE_PATH + Config.CHKPT_FILE_MASK + getDateTimeStamp() +".chk");
-		//	cayleyGraphCheckpoint = SerializationUtils.clone(cayleyGraph);
+			//cayleyGraphCheckpoint = SerializationUtils.clone(cayleyGraph);
+			//Debug.write("New min CC - CG Master Hash: " + cayleyGraph.hashCode());
+			//Debug.write("New min CC - CG Clone Hash: " + cayleyGraphCheckpoint.hashCode());
 		}
-		//else {
-		//	cayleyGraph = cayleyGraphCheckpoint;
-		//}
+		else {
+			//Debug.write("Not Min CC - CG Master Hash: " + cayleyGraph.hashCode());
+			//Debug.write("Not Min CC - CG Clone Hash: " + cayleyGraphCheckpoint.hashCode());
+			//Debug.write("CC before rollback: " + cayleyGraph.getCliqueCollection().getCliqueCount());
+			//Debug.write("Clone CC before rollback: " + cayleyGraphCheckpoint.getCliqueCollection().getCliqueCount());
+			//cayleyGraph.rollback(cayleyGraphCheckpoint);
+			//Debug.write("Not Min CC - CG Master Hash after rollback: " + cayleyGraph.hashCode());
+			//Debug.write("Clone CC after rollback: " + cayleyGraphCheckpoint.getCliqueCollection().getCliqueCount());
+			//Debug.write("CC after rollback: " + cayleyGraph.getCliqueCollection().getCliqueCount());
+
+		}
 	}
 	
 	
@@ -269,7 +281,7 @@ public class Logger {
 	        timer.printCumulativeDuration("LOGGER")             +"|"+
 	        timer.printCumulativeDuration("CLIQUE")             +"|"+
 	        timer.printCumulativeDuration("ROTATE")             +"|"+
-			cayleyGraph.printDistribution("RED");
+			cayleyGraph.printDistribution("RED") + "\n";
 		
 		
 		
@@ -281,7 +293,7 @@ public class Logger {
 			writeToLogFile(content);
 		}
 		if (Config.LOG_METHOD == LOG_TYPE.CONSOLE || Config.LOG_METHOD == LOG_TYPE.BOTH) {
-			System.out.println(content);
+			System.out.print(content);
 		}
 	}
 	
