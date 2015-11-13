@@ -27,9 +27,8 @@ public class Logger {
 	private long analyzedGraphCount;
 	private BufferedWriter bufferedLogWriter;
 	private String formattedLogDate;
-	CayleyGraph cayleyGraph;
-	Timer timer;
-	CayleyGraph cayleyGraphCheckpoint;
+	private CayleyGraph cayleyGraph;
+	private Timer timer;
 
 	/**
 	 * This is the main Logger constructor which will initialize tracked values

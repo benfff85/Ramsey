@@ -17,6 +17,7 @@ public class Controller {
 	Timer timer;
 	CliqueChecker cliqueChecker;
 	GraphMutator mutator;
+	CumulativeStatistics stats;
 	//GraphRotator rotator;
 	boolean counterExampleFound;
 	
@@ -43,6 +44,7 @@ public class Controller {
 		logger = new Logger(cayleyGraph, timer);
 		cliqueChecker = new CliqueChecker(cayleyGraph, Config.CLIQUE_SIZE);
 		mutator = new GraphMutator();
+		stats = new CumulativeStatistics(cayleyGraph);
 		//rotator = new GraphRotator();
 		counterExampleFound = false;
 		
@@ -53,6 +55,8 @@ public class Controller {
 		timer.newTimeSet("LOGGER");
 		timer.newTimeSet("CLIQUE");
 		timer.newTimeSet("ROTATE");
+		timer.newTimeSet("STATS");
+
 	}
 	
 	public void runSearch() throws Exception{
@@ -73,6 +77,7 @@ public class Controller {
 			findCliques();
 		}
 		
+		processStatistics();
 		processLogging();
 		
 		if (!cayleyGraph.isCliqueIdentified()){
@@ -111,6 +116,12 @@ public class Controller {
 		timer.startTimer("ROTATE");
 		//rotator.rotate(cayleyGraph);
 		timer.endTimer("ROTATE");
+	}
+	
+	private void processStatistics(){
+		timer.startTimer("STATS");
+		stats.updateStatistics();
+		timer.endTimer("STATS");
 	}
 
 }

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="Ramsey.java" kind="src" path="src"/>
-	<classpathentry kind="lib" path="External Jars/mail.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/Ben Ferenchak/Documents/GitHub/Ramsey/External Jars/commons-lang3-3.3.2-javadoc.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ben Ferenchak/Documents/GitHub/Ramsey/External Jars/commons-lang3-3.3.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/admin/workspace/Ramsey/mail.jar"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/admin/workspace/Ramsey/commons-lang3-3.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
