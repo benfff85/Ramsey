@@ -20,9 +20,7 @@ public class Controller {
 	CumulativeStatistics stats;
 	//GraphRotator rotator;
 	boolean counterExampleFound;
-	
-	//GenericFrame frame;
-	
+		
 	/**
 	 * This is the main method for the application. It will initialize the
 	 * CayleyGraph object and begin searching for a counter example. A counter
@@ -47,9 +45,6 @@ public class Controller {
 		stats = new CumulativeStatistics(cayleyGraph);
 		//rotator = new GraphRotator();
 		counterExampleFound = false;
-		
-		//frame = new GenericFrame(cayleyGraph,logger,timer,this);
-		//frame.setVisible(true);
 		
 		timer.newTimeSet("MUTATE");
 		timer.newTimeSet("LOGGER");
@@ -87,9 +82,7 @@ public class Controller {
 		} else {
 			logger.processCheckpoint();
 		}
-		
-		//frame.refreshData();
-		
+
 	}
 	
 	private void findCliques(){
