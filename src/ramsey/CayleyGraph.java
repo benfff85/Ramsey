@@ -43,31 +43,13 @@ public class CayleyGraph implements java.io.Serializable {
 		initialize();
 	}
 	
-	// TODO get this working.
-	public void rollback(CayleyGraph cayleyGraph) {
-		Debug.write("Rolling back - CG Master Hash: " + this.hashCode());
-		Debug.write("Rolling back - CG Clone Hash: " + cayleyGraph.hashCode());
-		Debug.write("CC before rollback: " + getCliqueCollection().getCliqueCount());
-		cayleyGraphArray = cayleyGraph.getCayleyGraphArray();
-		cliqueCollection = cayleyGraph.getCliqueCollection();
-		Debug.write("CC after rollback: " + getCliqueCollection().getCliqueCount());
-		
-		Debug.write("Validating cliques after rollback I");
-		for(int i=0; i < getCliqueCollection().getCliqueCount(); i++){
-			if(!getCliqueCollection().getCliqueByIndex(i).validateClique()){
-				Debug.write("BAD CLIQUE");
-			}
-		}
-		
-		Debug.write("Validating cliques after rollback II");
-		for(int i=0; i < cliqueCollection.getCliqueCount(); i++){
-			if(!cliqueCollection.getCliqueByIndex(i).validateClique()){
-				Debug.write("BAD CLIQUE");
-			}
-		}
-		
-		
-		System.gc();
+	
+	public void rollback(String recoveryFile){
+		Debug.write("Rolling Back");
+		File file = new File(recoveryFile);
+		loadFromFile(file);
+		getCliqueCollection().clear();
+		Debug.write("Rollback Complete");
 	}
 	
 	/**
@@ -100,7 +82,7 @@ public class CayleyGraph implements java.io.Serializable {
 			generateRandomGraph();
 		} 
 		else if (Config.LAUNCH_METHOD == LAUNCH_TYPE.OPEN_FROM_FILE) {
-			loadFromFile();
+			loadFromFileInteractive();
 		}
 	}
 	
@@ -115,34 +97,23 @@ public class CayleyGraph implements java.io.Serializable {
 	public void generateRandomGraph() {
 		int redCount = ((getNumOfElements()) * (getNumOfElements() - 1)) / 4;
 		int blueCount = redCount;
-
-		// Initialize all vertices with valid IDs
-		for (int i = 0; i < getNumOfElements(); i++) {
-			cayleyGraphArray[i] = new Vertex(i, getNumOfElements());
-		}
+		
+		initializeVertices();
 
 		Random generator = new Random();
 		for (int i = 0; i < getNumOfElements(); i++) {
 			for (int j = (i + 1); j < getNumOfElements(); j++) {
 				if (redCount == 0) {
-					Edge edge = new Edge(cayleyGraphArray[i], cayleyGraphArray[j], "BLUE");
-					cayleyGraphArray[i].setEdge(edge);
-					cayleyGraphArray[j].setEdge(edge);
+					initializeEdgeBetweenVertices(cayleyGraphArray[i],cayleyGraphArray[j],"BLUE");
 				}
 				else if (blueCount == 0) {
-					Edge edge = new Edge(cayleyGraphArray[i], cayleyGraphArray[j], "RED");
-					cayleyGraphArray[i].setEdge(edge);
-					cayleyGraphArray[j].setEdge(edge);
+					initializeEdgeBetweenVertices(cayleyGraphArray[i],cayleyGraphArray[j],"RED");
 				} else {
 					if (generator.nextBoolean() == false) {
-						Edge edge = new Edge(cayleyGraphArray[i], cayleyGraphArray[j], "BLUE");
-						cayleyGraphArray[i].setEdge(edge);
-						cayleyGraphArray[j].setEdge(edge);
+						initializeEdgeBetweenVertices(cayleyGraphArray[i],cayleyGraphArray[j],"BLUE");
 						blueCount--;
 					} else {
-						Edge edge = new Edge(cayleyGraphArray[i], cayleyGraphArray[j], "RED");
-						cayleyGraphArray[i].setEdge(edge);
-						cayleyGraphArray[j].setEdge(edge);
+						initializeEdgeBetweenVertices(cayleyGraphArray[i],cayleyGraphArray[j],"RED");
 						redCount--;
 					}
 				}
@@ -390,54 +361,78 @@ public class CayleyGraph implements java.io.Serializable {
 	 * 
 	 * @return void
 	 */
-	public void loadFromFile() {
-		String inputLine;
-		StringTokenizer st;
+	public void loadFromFileInteractive() {
 		JFileChooser chooser = new JFileChooser();
 		int retval;
-		int nextInt;
 
-		// Initialize all vertices with valid IDs
-		for (int i = 0; i < getNumOfElements(); i++) {
-			cayleyGraphArray[i] = new Vertex(i, getNumOfElements());
-		}
+		initializeVertices();
 
 		// Select a file
 		retval = chooser.showOpenDialog(null);
 
 		if (retval == JFileChooser.APPROVE_OPTION) {
 			File file = chooser.getSelectedFile();
-			BufferedReader buffRead;
-			try {
-				buffRead = new BufferedReader(new FileReader(file));
+			loadFromFile(file);
+		}
+	}
+	
+	public void loadFromFile(File file) {
+		String inputLine;
+		StringTokenizer st;
+		int nextInt;
+		
+		initializeVertices();
+		
+		try {
+			BufferedReader buffRead = new BufferedReader(new FileReader(file));
 
-				// Loop through file creating edges as we go
-				for (int i = 0; i < getNumOfElements(); i++) {
-					inputLine = buffRead.readLine();
-					st = new StringTokenizer(inputLine, ",");
+			// Loop through file creating edges as we go
+			for (int i = 0; i < getNumOfElements(); i++) {
+				inputLine = buffRead.readLine();
+				st = new StringTokenizer(inputLine, ",");
 
-					for (int j = 0; j < getNumOfElements(); j++) {
-						nextInt = Integer.parseInt(st.nextToken());
-						if (j > i) {
-							if (nextInt == 0) {
-								Edge edge = new Edge(cayleyGraphArray[i], cayleyGraphArray[j], "BLUE");
-								cayleyGraphArray[i].setEdge(edge);
-								cayleyGraphArray[j].setEdge(edge);
-							}
-							else {
-								Edge edge = new Edge(cayleyGraphArray[i], cayleyGraphArray[j], "RED");
-								cayleyGraphArray[i].setEdge(edge);
-								cayleyGraphArray[j].setEdge(edge);
-							}
+				for (int j = 0; j < getNumOfElements(); j++) {
+					nextInt = Integer.parseInt(st.nextToken());
+					if (j > i) {
+						if (nextInt == 0) {
+							initializeEdgeBetweenVertices(cayleyGraphArray[i],cayleyGraphArray[j],"BLUE");
+						}
+						else {
+							initializeEdgeBetweenVertices(cayleyGraphArray[i],cayleyGraphArray[j],"RED");
 						}
 					}
 				}
-				buffRead.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("IO Error, returning null");
 			}
+			buffRead.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("IO Error, returning null");
 		}
+	}
+	
+	/**
+	 * Initialize all vertices with valid IDs
+	 * 
+	 * @return void
+	 */
+	private void initializeVertices(){
+		for (int i = 0; i < getNumOfElements(); i++) {
+			cayleyGraphArray[i] = new Vertex(i, getNumOfElements());
+		}
+	}
+	
+	/**
+	 * Given two input vertices and a color this method will initialize a new edge object and link it to both vertices.
+	 * 
+	 * @param vertexA First vertex of the edge.
+	 * @param vertexB Second vertex of the edge.
+	 * @param color Color of the edge.
+	 * @return void
+	 */
+	private void initializeEdgeBetweenVertices(Vertex vertexA, Vertex vertexB, String color){
+		Edge edge = new Edge(vertexA, vertexB, color);
+		vertexA.setEdge(edge);
+		vertexB.setEdge(edge);
 	}
 	
 	/**

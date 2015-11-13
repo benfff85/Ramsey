@@ -85,6 +85,11 @@ public class Edge implements java.io.Serializable {
 		}
 	}
 
+	/**
+	 * This will flip the color of the edge.
+	 * 
+	 * @return void
+	 */
 	public void flipColor() {
 		if (getColor().equals("RED")) {
 			setColor("BLUE");

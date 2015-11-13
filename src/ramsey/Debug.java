@@ -16,7 +16,6 @@ public class Debug {
 
 	}
 	
-	
 
 	/**
 	 * Get the method name for a depth in call stack. <br/>

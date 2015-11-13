@@ -62,27 +62,52 @@ public class Controller {
 	}
 	
 	public void runIteration() throws Exception{
+		
+		// If an initial load or rollback has occurred we will need to identify cliques.
+		if (!cayleyGraph.isCliqueIdentified()){
+			findCliques();
+		}
+		
+		if(logger.getAnalyzedGraphCount() > 0){
+			processMutation();
+			findCliques();
+		}
+		
+		processLogging();
+		
+		if (!cayleyGraph.isCliqueIdentified()){
+			counterExampleFound = true;
+			logger.processPositiveCase(cayleyGraph);
+			return;
+		} else {
+			logger.processCheckpoint();
+		}
+		
+		//frame.refreshData();
+		
+	}
+	
+	private void findCliques(){
 		timer.startTimer("CLIQUE");
 		cliqueChecker.findCliqueParallel(Config.CLIQUE_SEARCH_THREAD_COUNT,"RED");
 		cliqueChecker.findCliqueParallel(Config.CLIQUE_SEARCH_THREAD_COUNT,"BLUE");
-		if (!cayleyGraph.isCliqueIdentified()) {
-			counterExampleFound = true;
-			logger.processPositiveCase(cayleyGraph);
-			logger.closeLogFile();
-			return;
-		}
 		timer.endTimer("CLIQUE");
+	}
 	
+	private void processLogging(){
 		timer.startTimer("LOGGER");
-		logger.processNegativeCase();
+		logger.logIteration();
 		timer.endTimer("LOGGER");
-
-		//frame.refreshData();
-		
+	}
+	
+	private void processMutation(){
 		timer.startTimer("MUTATE");
+		System.out.println("Mutating");
 		mutator.mutateGraph(cayleyGraph);
 		timer.endTimer("MUTATE");
-
+	}
+	
+	private void processRotation(){
 		timer.startTimer("ROTATE");
 		//rotator.rotate(cayleyGraph);
 		timer.endTimer("ROTATE");

@@ -195,6 +195,7 @@ public class Logger {
 		writeToLogFile("SOLUTION:\n" + cayleyGraph.printCayleyGraphMathematica());
 		writeGraphFile(cayleyGraph,Config.SOLUTION_FILE_PATH + Config.SOLUTION_FILE_MASK + getDateTimeStamp() +".sol");
 		//cayleyGraph.emailCayleyGraph();
+		closeLogFile();
 	}
 	
 
@@ -220,23 +221,18 @@ public class Logger {
 	 * 
 	 * @return void
 	 */
-	private void processCheckpoint(){
-		if(minCliqueCount == cayleyGraph.getCliqueCollection().getCliqueCount()){			
-			writeGraphFile(cayleyGraph,Config.CHKPT_FILE_PATH + Config.CHKPT_FILE_MASK + getDateTimeStamp() +".chk");
-			//cayleyGraphCheckpoint = SerializationUtils.clone(cayleyGraph);
-			//Debug.write("New min CC - CG Master Hash: " + cayleyGraph.hashCode());
-			//Debug.write("New min CC - CG Clone Hash: " + cayleyGraphCheckpoint.hashCode());
+	public void processCheckpoint(){
+		if(minCliqueCount == cayleyGraph.getCliqueCollection().getCliqueCount()){	
+			System.out.println("Writing MAX File");
+			writeGraphFile(cayleyGraph,Config.CHKPT_FILE_PATH + Config.CHKPT_FILE_MASK + "MAX" +".chk");
+			if(Config.LAUNCH_METHOD != LAUNCH_TYPE.OPEN_FROM_FILE || analyzedGraphCount != 1){
+				System.out.println("Writing CHK File");
+				writeGraphFile(cayleyGraph,Config.CHKPT_FILE_PATH + Config.CHKPT_FILE_MASK + getDateTimeStamp() +".chk");
+			}
 		}
 		else {
-			//Debug.write("Not Min CC - CG Master Hash: " + cayleyGraph.hashCode());
-			//Debug.write("Not Min CC - CG Clone Hash: " + cayleyGraphCheckpoint.hashCode());
-			//Debug.write("CC before rollback: " + cayleyGraph.getCliqueCollection().getCliqueCount());
-			//Debug.write("Clone CC before rollback: " + cayleyGraphCheckpoint.getCliqueCollection().getCliqueCount());
-			//cayleyGraph.rollback(cayleyGraphCheckpoint);
-			//Debug.write("Not Min CC - CG Master Hash after rollback: " + cayleyGraph.hashCode());
-			//Debug.write("Clone CC after rollback: " + cayleyGraphCheckpoint.getCliqueCollection().getCliqueCount());
-			//Debug.write("CC after rollback: " + cayleyGraph.getCliqueCollection().getCliqueCount());
-
+			System.out.println("Rolling Back");
+			cayleyGraph.rollback("S:\\Ramsey\\Ramsey_MAX.chk");
 		}
 	}
 	
@@ -259,9 +255,19 @@ public class Logger {
 		processCheckpoint();
 	}
 	
+	public void logIteration(){
+		updateTrackingData();
+		
+		// Write to log if appropriate
+		if (this.analyzedGraphCount % Config.LOG_INTERVAL == 0) {
+			writeToLog(printSummaryInfo());		
+			timer.clearCumulativeDuration();
+		}
+	}
+	
 	
 	/**
-	 * This will generate a string with a series of data elemnts about the
+	 * This will generate a string with a series of data elements about the
 	 * clique to be logged.
 	 * 
 	 * @return String of various data elements to be logged.
@@ -277,6 +283,7 @@ public class Logger {
 			maxWeightedCliqueSum                                +"|"+
 			cayleyGraph.printDistributionSummary("RED")         +"|"+
 			cayleyGraph.getCliqueCollection().getCliqueCount()  +"|"+
+			minCliqueCount                                      +"|"+
 			timer.printCumulativeDuration("MUTATE")             +"|"+
 	        timer.printCumulativeDuration("LOGGER")             +"|"+
 	        timer.printCumulativeDuration("CLIQUE")             +"|"+
