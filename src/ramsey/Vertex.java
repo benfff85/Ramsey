@@ -141,35 +141,6 @@ public class Vertex implements java.io.Serializable {
 	}
 
 	/**
-	 * This method will rotate all Edges in this vertex's Edge array to the left
-	 * one position. Also moving the left most Edge to the right most position.
-	 * 
-	 * @return void
-	 */
-	public void rotateEdgesLeft() {
-		Edge swap;
-		
-		swap = this.edges[0];
-		System.arraycopy(this.edges, 1, this.edges, 0, this.edges.length - 1);
-		this.edges[this.edges.length - 1] = swap;
-	}
-
-	/**
-	 * This method will rotate all Edges in this vertex's Edge array to the right
-	 * one position. Also moving the right most Edge to the left most position.
-	 * 
-	 * @return void
-	 */
-	public void rotateEdgesRight() {
-		Edge swap;
-		
-		swap = this.edges[this.edges.length - 1];
-		System.arraycopy(this.edges, 0, this.edges, 1, this.edges.length - 1);
-		this.edges[0] = swap;
-	}
-
-
-	/**
 	 * This will return true if all of the edges in the edge array have
 	 * this.vertexID as one of their vertices. Otherwise it will return false.
 	 * This will be used for debugging only.

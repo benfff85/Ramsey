@@ -1,7 +1,5 @@
 package ramsey;
 
-//import ui.GenericFrame;
-
 /**
  * This is the main Controller Class where the program will initiate. It handles
  * the outermost loop of logic which encompasses a framework for the entire
@@ -18,7 +16,6 @@ public class Controller {
 	CliqueChecker cliqueChecker;
 	GraphMutator mutator;
 	CumulativeStatistics stats;
-	//GraphRotator rotator;
 	boolean counterExampleFound;
 		
 	/**
@@ -43,13 +40,11 @@ public class Controller {
 		cliqueChecker = new CliqueChecker(cayleyGraph, Config.CLIQUE_SIZE);
 		mutator = new GraphMutator();
 		stats = new CumulativeStatistics(cayleyGraph);
-		//rotator = new GraphRotator();
 		counterExampleFound = false;
 		
 		timer.newTimeSet("MUTATE");
 		timer.newTimeSet("LOGGER");
 		timer.newTimeSet("CLIQUE");
-		timer.newTimeSet("ROTATE");
 		timer.newTimeSet("STATS");
 
 	}
@@ -103,12 +98,6 @@ public class Controller {
 		System.out.println("Mutating");
 		mutator.mutateGraph(cayleyGraph);
 		timer.endTimer("MUTATE");
-	}
-	
-	private void processRotation(){
-		timer.startTimer("ROTATE");
-		//rotator.rotate(cayleyGraph);
-		timer.endTimer("ROTATE");
 	}
 	
 	private void processStatistics(){
