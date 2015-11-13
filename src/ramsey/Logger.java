@@ -8,8 +8,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.commons.lang3.SerializationUtils;
-
 /**
  * This Class will help facilitate logging to a file as well as tracking various
  * values to gauge performance and progress.
@@ -19,40 +17,21 @@ import org.apache.commons.lang3.SerializationUtils;
  */
 public class Logger {
 
-	private int minCliqueCount;
-	private long analyzedGraphCount;
 	private BufferedWriter bufferedLogWriter;
 	private String formattedLogDate;
 	private CayleyGraph cayleyGraph;
 	private Timer timer;
+	private CumulativeStatistics stats;
 
 	/**
 	 * This is the main Logger constructor which will initialize tracked values
 	 * to 0.
 	 */
-	public Logger(CayleyGraph cayleyGraph, Timer timer) {
-		minCliqueCount = 999999999;
-		analyzedGraphCount = 0;
+	public Logger(CayleyGraph cayleyGraph, Timer timer, CumulativeStatistics stats) {
 		formattedLogDate = getDateTimeStamp();
 		this.cayleyGraph = cayleyGraph;
 		this.timer = timer;
-	}
-	
-	/**
-	 * This will check the number of cliques found for the current CayleyGraph.
-	 * If the number of cliques found is a new lowest value than the
-	 * minCliqueCount values will be updated.
-	 * 
-	 * @return True if the current CayleyGraphs clique count was a new lowest
-	 *         value, otherwise false.
-	 */
-	private boolean updateMinCliqueCount(CliqueCollection cliqueCollection){
-		int cliquecount = cliqueCollection.getCliqueCount();
-		if (cliquecount < minCliqueCount) {
-			minCliqueCount = cliquecount;
-			return true;
-		}
-		return false;
+		this.stats = stats;
 	}
 
 	/**
@@ -126,19 +105,6 @@ public class Logger {
 		closeLogFile();
 	}
 	
-
-	/**
-	 * This will update all the global tracking information in the logger class
-	 * like the analyzed graph count and the max clique sum.
-	 * 
-	 * @return void
-	 */
-	private void updateTrackingData(){
-		analyzedGraphCount++;
-		updateMinCliqueCount(cayleyGraph.getCliqueCollection());
-	}
-	
-	
 	/**
 	 * This will determine if a checkpoint is required and if so create it. At
 	 * the moment checkpoints will be created when a CayleyGraph with a new
@@ -147,10 +113,10 @@ public class Logger {
 	 * @return void
 	 */
 	public void processCheckpoint(){
-		if(minCliqueCount == cayleyGraph.getCliqueCollection().getCliqueCount()){	
+		if(stats.getMinCliqueCount() == cayleyGraph.getCliqueCollection().getCliqueCount()){	
 			System.out.println("Writing MAX File");
 			writeGraphFile(cayleyGraph,Config.CHKPT_FILE_PATH + Config.CHKPT_FILE_MASK + "MAX" +".chk");
-			if(Config.LAUNCH_METHOD != LAUNCH_TYPE.OPEN_FROM_FILE || analyzedGraphCount != 1){
+			if(Config.LAUNCH_METHOD != LAUNCH_TYPE.OPEN_FROM_FILE || stats.getAnalyzedGraphCount() != 1){
 				System.out.println("Writing CHK File");
 				writeGraphFile(cayleyGraph,Config.CHKPT_FILE_PATH + Config.CHKPT_FILE_MASK + getDateTimeStamp() +".chk");
 			}
@@ -161,30 +127,9 @@ public class Logger {
 		}
 	}
 	
-	
-	/**
-	 * Outputs statistics in the event of a counter example not being found to
-	 * the console, a log file, or both.
-	 * 
-	 * @return void
-	 */
-	public void processNegativeCase() {
-		updateTrackingData();
-		
-		// Write to log if appropriate
-		if (this.analyzedGraphCount % Config.LOG_INTERVAL == 0) {
-			writeToLog(printSummaryInfo());
-			timer.clearCumulativeDuration();
-		}
-		
-		processCheckpoint();
-	}
-	
 	public void logIteration(){
-		updateTrackingData();
-		
 		// Write to log if appropriate
-		if (this.analyzedGraphCount % Config.LOG_INTERVAL == 0) {
+		if (stats.getAnalyzedGraphCount() % Config.LOG_INTERVAL == 0) {
 			writeToLog(printSummaryInfo());		
 			timer.clearCumulativeDuration();
 		}
@@ -199,17 +144,17 @@ public class Logger {
 	 */
 	private String printSummaryInfo() {
 		String content = 
-			analyzedGraphCount                                  +"|"+
+			stats.getAnalyzedGraphCount()                       +"|"+
 			cayleyGraph.getClique().getColor()                  +"|"+
 			cayleyGraph.getClique().printClique()               +"|"+
 			cayleyGraph.printRedBlueCount()                     +"|"+
 			cayleyGraph.printDistributionSummary("RED")         +"|"+
 			cayleyGraph.getCliqueCollection().getCliqueCount()  +"|"+
-			minCliqueCount                                      +"|"+
+			stats.getMinCliqueCount()                           +"|"+
 			timer.printCumulativeDuration("MUTATE")             +"|"+
 	        timer.printCumulativeDuration("LOGGER")             +"|"+
 	        timer.printCumulativeDuration("CLIQUE")             +"|"+
-	        timer.printCumulativeDuration("ROTATE")             +"|"+
+	        timer.printCumulativeDuration("STATS")             +"|"+
 			cayleyGraph.printDistribution("RED") + "\n";
 		
 		return content;		
@@ -255,9 +200,4 @@ public class Logger {
 		DateFormat df = new SimpleDateFormat("MMddyyyyHHmmss");
 		return df.format(new Date());
 	}
-	
-	public long getAnalyzedGraphCount(){
-		return analyzedGraphCount;
-	}
-
 }

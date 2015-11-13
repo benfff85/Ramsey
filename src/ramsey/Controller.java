@@ -36,10 +36,10 @@ public class Controller {
 	public Controller(){
 		cayleyGraph = new CayleyGraph();
 		timer = new Timer();
-		logger = new Logger(cayleyGraph, timer);
+		stats = new CumulativeStatistics(cayleyGraph);
+		logger = new Logger(cayleyGraph, timer, stats);
 		cliqueChecker = new CliqueChecker(cayleyGraph, Config.CLIQUE_SIZE);
 		mutator = new GraphMutator();
-		stats = new CumulativeStatistics(cayleyGraph);
 		counterExampleFound = false;
 		
 		timer.newTimeSet("MUTATE");
@@ -62,7 +62,7 @@ public class Controller {
 			findCliques();
 		}
 		
-		if(logger.getAnalyzedGraphCount() > 0){
+		if(stats.getAnalyzedGraphCount() > 0){
 			processMutation();
 			findCliques();
 		}
