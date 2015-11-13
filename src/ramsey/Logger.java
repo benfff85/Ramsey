@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,9 +19,6 @@ import org.apache.commons.lang3.SerializationUtils;
  */
 public class Logger {
 
-	private int maxCliqueSum;
-	private BigInteger maxWeightedCliqueSum;
-	private int maxFirstCliqueElement;
 	private int minCliqueCount;
 	private long analyzedGraphCount;
 	private BufferedWriter bufferedLogWriter;
@@ -35,10 +31,7 @@ public class Logger {
 	 * to 0.
 	 */
 	public Logger(CayleyGraph cayleyGraph, Timer timer) {
-		maxCliqueSum = 0;
 		minCliqueCount = 999999999;
-		maxWeightedCliqueSum = new BigInteger("0");
-		maxFirstCliqueElement = 0;
 		analyzedGraphCount = 0;
 		formattedLogDate = getDateTimeStamp();
 		this.cayleyGraph = cayleyGraph;
@@ -60,70 +53,6 @@ public class Logger {
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * This will take a Clique as input and update maxCliqueSum if the sum of
-	 * elements (Vertex IDs) of the input Clique is greater than the current
-	 * maximum Clique sum logged till now.
-	 * 
-	 * @param clique The Clique which will be checked to see if the sum of
-	 *        elements (Vertex IDs) is greater than the current maximum Clique
-	 *        sum logged till now.
-	 * @return True if this clique has the new largest cliqueSum, otherwise false.
-	 */
-	private boolean updateMaxCliqueSum(Clique clique) {
-		int cliqueSum = 0;
-		for (int i = 0; i < clique.getCliqueSize(); i++) {
-			cliqueSum += clique.getCliqueVertexByPosition(i).getId();
-		}
-
-		if (cliqueSum > maxCliqueSum) {
-			maxCliqueSum = cliqueSum;
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * This will take a Clique as input and update maxWeightedCliqueSum if the
-	 * sum of elements (Vertex IDs) of the input Clique is greater than the
-	 * current maximum weighted Clique sum logged till now.
-	 * 
-	 * @param clique The Clique which will be checked to see if the sum of
-	 *        elements (Vertex IDs) is greater than the current maximum weighted
-	 *        Clique sum logged till now.
-	 * @return True if this clique has the new largest weighted clique sum, otherwise false.
-	 */
-	private boolean updateMaxWeightedCliqueSum(Clique clique) {
-		BigInteger cliqueSum = new BigInteger("0");
-
-		for (int i = 0; i < Config.CLIQUE_SIZE; i++) {
-			cliqueSum = cliqueSum.add(BigInteger.valueOf(Config.NUM_OF_ELEMENTS).pow(Config.CLIQUE_SIZE - (i + 1)).multiply(BigInteger.valueOf(clique.getCliqueVertexByPosition(i).getId())));
-		}
-
-		if (cliqueSum.compareTo(maxWeightedCliqueSum) > 0) {
-			maxWeightedCliqueSum = cliqueSum;
-			return true;
-		}
-		return false;
-	}
-	
-	/**
-	 * This will take a Clique as input and update maxFirstCliqueElement if the
-	 * first element of the input Clique is greater than the current maximum
-	 * first clique element logged till now.
-	 * 
-	 * @param clique The Clique which will be checked to see if the first
-	 *        element is greater than the current maximum first clique element
-	 *        logged till now.
-	 * @return void
-	 */
-	private void updateMaxFirstCliqueElement(Clique clique) {
-		Debug.write("Beginning updateMaxFirstCliqueElement");
-		if (clique.getCliqueVertexByPosition(0).getId() > maxFirstCliqueElement) {
-			maxFirstCliqueElement = clique.getCliqueVertexByPosition(0).getId();
-		}
 	}
 
 	/**
@@ -206,9 +135,6 @@ public class Logger {
 	 */
 	private void updateTrackingData(){
 		analyzedGraphCount++;
-		updateMaxFirstCliqueElement(cayleyGraph.getCliqueCollection().getCliqueByIndex(0));
-		updateMaxCliqueSum(cayleyGraph.getCliqueCollection().getCliqueByIndex(0));
-		updateMaxWeightedCliqueSum(cayleyGraph.getCliqueCollection().getCliqueByIndex(0));
 		updateMinCliqueCount(cayleyGraph.getCliqueCollection());
 	}
 	
@@ -277,9 +203,6 @@ public class Logger {
 			cayleyGraph.getClique().getColor()                  +"|"+
 			cayleyGraph.getClique().printClique()               +"|"+
 			cayleyGraph.printRedBlueCount()                     +"|"+
-			maxFirstCliqueElement                               +"|"+
-			maxCliqueSum                                        +"|"+ 
-			maxWeightedCliqueSum                                +"|"+
 			cayleyGraph.printDistributionSummary("RED")         +"|"+
 			cayleyGraph.getCliqueCollection().getCliqueCount()  +"|"+
 			minCliqueCount                                      +"|"+
@@ -288,8 +211,6 @@ public class Logger {
 	        timer.printCumulativeDuration("CLIQUE")             +"|"+
 	        timer.printCumulativeDuration("ROTATE")             +"|"+
 			cayleyGraph.printDistribution("RED") + "\n";
-		
-		
 		
 		return content;		
 	}
