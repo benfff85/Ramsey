@@ -72,6 +72,7 @@ public class Clique implements java.io.Serializable {
 			throw e;
 		}
 	}
+	
 
 	/**
 	 * This will validate if the clique is a complete subgraph or now.
@@ -196,5 +197,18 @@ public class Clique implements java.io.Serializable {
 			output += "\n";
 		}
 		return output;
+	}
+	
+	/**
+	 * This will return the given clique as an integer array.
+	 * 
+	 * @return This clique as an integer array.
+	 */
+	public int[] getCliqueAsIntArray(){
+		int[] intArray = new int[getCliqueSize()];
+		for(int i=0;i<getCliqueSize();i++){
+			intArray[i] = getCliqueVertexByPosition(i).getId();
+		}
+		return intArray;
 	}
 }

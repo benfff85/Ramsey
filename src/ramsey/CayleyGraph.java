@@ -44,11 +44,24 @@ public class CayleyGraph implements java.io.Serializable {
 	}
 	
 	
-	public void rollback(String recoveryFile){
+	public void rollback(String recoveryFile, CliqueCollectionSnapshot cliqueCollectionSnapshot){
 		Debug.write("Rolling Back");
 		File file = new File(recoveryFile);
 		loadFromFile(file);
 		getCliqueCollection().clear();
+		Vertex[] vertices = new Vertex[cliqueCollectionSnapshot.getCliqueByPosition(0).length];
+		
+		for(int i=0; i < cliqueCollectionSnapshot.getCliqueCount(); i++){
+			for(int j=0; j<cliqueCollectionSnapshot.getCliqueByPosition(i).length; j++){
+				vertices[j] = getVertexById(cliqueCollectionSnapshot.getCliqueByPosition(i)[j]);
+			}
+			try {
+				getCliqueCollection().addClique(new Clique(vertices));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
 		Debug.write("Rollback Complete");
 	}
 	

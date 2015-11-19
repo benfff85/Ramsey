@@ -22,6 +22,7 @@ public class Logger {
 	private CayleyGraph cayleyGraph;
 	private Timer timer;
 	private CumulativeStatistics stats;
+	private CliqueCollectionSnapshot cliqueCollectionSnapshot;
 
 	/**
 	 * This is the main Logger constructor which will initialize tracked values
@@ -32,6 +33,7 @@ public class Logger {
 		this.cayleyGraph = cayleyGraph;
 		this.timer = timer;
 		this.stats = stats;
+		cliqueCollectionSnapshot = new CliqueCollectionSnapshot();
 	}
 
 	/**
@@ -116,6 +118,8 @@ public class Logger {
 		if(stats.getMinCliqueCount() == cayleyGraph.getCliqueCollection().getCliqueCount()){	
 			System.out.println("Writing MAX File");
 			writeGraphFile(cayleyGraph,Config.CHKPT_FILE_PATH + Config.CHKPT_FILE_MASK + "MAX" +".chk");
+			cliqueCollectionSnapshot.clearCliqueCollectionArray();
+			cliqueCollectionSnapshot.populateSnapshot(cayleyGraph.getCliqueCollection());
 			if(Config.LAUNCH_METHOD != LAUNCH_TYPE.OPEN_FROM_FILE || stats.getAnalyzedGraphCount() != 1){
 				System.out.println("Writing CHK File");
 				writeGraphFile(cayleyGraph,Config.CHKPT_FILE_PATH + Config.CHKPT_FILE_MASK + getDateTimeStamp() +".chk");
@@ -123,7 +127,8 @@ public class Logger {
 		}
 		else {
 			System.out.println("Rolling Back");
-			cayleyGraph.rollback("S:\\Ramsey\\Ramsey_MAX.chk");
+			cayleyGraph.rollback(Config.CHKPT_FILE_PATH + "Ramsey_MAX.chk",cliqueCollectionSnapshot);
+			System.gc();
 		}
 	}
 	

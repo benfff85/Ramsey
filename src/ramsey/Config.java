@@ -17,11 +17,11 @@ public class Config {
 	 
 	public static final LOG_TYPE LOG_METHOD = LOG_TYPE.BOTH;
 	public static final int LOG_INTERVAL = 1;
-	public static final String CHKPT_FILE_PATH = "S:\\Ramsey\\"; 
+	public static final String CHKPT_FILE_PATH = "C:\\Users\\admin\\Google Drive\\RamseySearch\\output\\";
 	public static final String CHKPT_FILE_MASK = "Ramsey_";
-	public static final String LOG_FILE_PATH = "S:\\Ramsey\\";
+	public static final String LOG_FILE_PATH = "C:\\Users\\admin\\Google Drive\\RamseySearch\\output\\";
 	public static final String LOG_FILE_MASK = "Ramsey_";
-	public static final String SOLUTION_FILE_PATH = "S:\\";
+	public static final String SOLUTION_FILE_PATH = "C:\\Users\\admin\\Google Drive\\RamseySearch\\output\\";
 	public static final String SOLUTION_FILE_MASK = "Ramsey_";
 	
 	public static final boolean EMAIL_SOLUTION_IND = true;
