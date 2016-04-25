@@ -124,12 +124,25 @@ public class GraphMutator {
 	private void mutateGraphBalanced() {
 		mutateGraphBalanced(cayleyGraph.getCliqueCollection().getRandomClique());
 	}
-	
+	/*
 	private void mutateGraphBalancedAll(){
 		for (int i = 0; i < cayleyGraph.getCliqueCollection().getCliqueCount(); i++){
 			if (cayleyGraph.getCliqueCollection().getCliqueByIndex(i).validateClique()){
 				mutateGraphBalanced(cayleyGraph.getCliqueCollection().getCliqueByIndex(i));
 			} 
+		}
+	}*/
+	
+	private void mutateGraphBalancedAll() {
+		int mutateCnt = 1;
+
+		while (mutateCnt != 0) {
+			mutateCnt = 0;
+			for (int i = 0; i < cayleyGraph.getCliqueCollection().getCliqueCount(); i++) {
+				if (cayleyGraph.getCliqueCollection().getCliqueByIndex(i).validateClique()) {
+					mutateGraphBalanced(cayleyGraph.getCliqueCollection().getCliqueByIndex(i));
+				}
+			}
 		}
 	}
 	
@@ -163,7 +176,7 @@ public class GraphMutator {
 		Debug.write("Edges Flipped, exiting mutateGraphBalanced");
 
 	}
-	
+	 
 	@SuppressWarnings("unchecked")
 	private Edge getCliqueEdgeOfHighestRank(Clique clique) {
 		ArrayList<Vertex> vertexListA = new ArrayList<Vertex>();

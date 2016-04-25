@@ -1,18 +1,16 @@
 package ramsey;
 
 public enum CLIQUE_SEARCH_TYPE {
-    ALL("A"),
-    FIRST("F"),
-    ;
-    
-    private CLIQUE_SEARCH_TYPE(final String text) {
-        this.text = text;
-    }
+	ALL("A"), FIRST("F"),;
 
-    private final String text;
+	private CLIQUE_SEARCH_TYPE(final String text) {
+		this.text = text;
+	}
 
-    @Override
-    public String toString() {
-        return text;
-    }
+	private final String text;
+
+	@Override
+	public String toString() {
+		return text;
+	}
 }

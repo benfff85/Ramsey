@@ -1,18 +1,16 @@
 package ramsey;
 
 public enum DIRECTION {
-    LEFT("L"),
-    RIGHT("R")
-    ;
-    
-    private DIRECTION(final String text) { 
-        this.text = text;
-    }
+	LEFT("L"), RIGHT("R");
 
-    private final String text;
+	private DIRECTION(final String text) {
+		this.text = text;
+	}
 
-    @Override
-    public String toString() {
-        return text;
-    }
+	private final String text;
+
+	@Override
+	public String toString() {
+		return text;
+	}
 }

@@ -1,19 +1,16 @@
 package ramsey;
 
 public enum MUTATION_TYPE {
-    RANDOM("R"),
-    TARGETED("T"),
-    BALANCED("B")
-    ;
-    
-    private MUTATION_TYPE(final String text) {
-        this.text = text;
-    }
+	RANDOM("R"), TARGETED("T"), BALANCED("B");
 
-    private final String text;
+	private MUTATION_TYPE(final String text) {
+		this.text = text;
+	}
 
-    @Override
-    public String toString() {
-        return text;
-    }
+	private final String text;
+
+	@Override
+	public String toString() {
+		return text;
+	}
 }

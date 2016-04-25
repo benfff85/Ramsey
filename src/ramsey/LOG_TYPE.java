@@ -1,19 +1,16 @@
 package ramsey;
 
 public enum LOG_TYPE {
-    FILE("F"),
-    CONSOLE("C"),
-    BOTH("B")
-    ;
-    
-    private LOG_TYPE(final String text) {
-        this.text = text;
-    }
+	FILE("F"), CONSOLE("C"), BOTH("B");
 
-    private final String text;
+	private LOG_TYPE(final String text) {
+		this.text = text;
+	}
 
-    @Override
-    public String toString() {
-        return text;
-    }
+	private final String text;
+
+	@Override
+	public String toString() {
+		return text;
+	}
 }
