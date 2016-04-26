@@ -5,33 +5,39 @@ import java.util.List;
 
 public class CliqueCollectionSnapshot {
 
-	private List<int[]> cliqueCollectionArray;
+    private List<int[]> cliqueCollectionArray;
 
-	public CliqueCollectionSnapshot() {
-		cliqueCollectionArray = new ArrayList<int[]>();
-	}
 
-	public void populateSnapshot(CliqueCollection cliqueCollection) {
-		for (int i = 0; i < cliqueCollection.getCliqueCount(); i++) {
-			addClique(cliqueCollection.getCliqueByIndex(i));
-		}
-	}
+    public CliqueCollectionSnapshot() {
+        cliqueCollectionArray = new ArrayList<int[]>();
+    }
 
-	private void addClique(Clique clique) {
-		cliqueCollectionArray.add(clique.getCliqueAsIntArray());
 
-	}
+    public void populateSnapshot(CliqueCollection cliqueCollection) {
+        for (int i = 0; i < cliqueCollection.getCliqueCount(); i++) {
+            addClique(cliqueCollection.getCliqueByIndex(i));
+        }
+    }
 
-	public void clearCliqueCollectionArray() {
-		cliqueCollectionArray.clear();
-	}
 
-	public int getCliqueCount() {
-		return cliqueCollectionArray.size();
-	}
+    private void addClique(Clique clique) {
+        cliqueCollectionArray.add(clique.getCliqueAsIntArray());
 
-	public int[] getCliqueByPosition(int index) {
-		return cliqueCollectionArray.get(index);
-	}
+    }
+
+
+    public void clearCliqueCollectionArray() {
+        cliqueCollectionArray.clear();
+    }
+
+
+    public int getCliqueCount() {
+        return cliqueCollectionArray.size();
+    }
+
+
+    public int[] getCliqueByPosition(int index) {
+        return cliqueCollectionArray.get(index);
+    }
 
 }
