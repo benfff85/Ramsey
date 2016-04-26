@@ -1,4 +1,4 @@
-package ramsey;
+package com.benajaminleephoto.ramsey.common;
 
 /**
  * This Class represents a vertex within a CayleyGraph.

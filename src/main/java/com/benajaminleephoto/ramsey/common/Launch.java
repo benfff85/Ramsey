@@ -1,4 +1,4 @@
-package ramsey;
+package com.benajaminleephoto.ramsey.common;
 
 public class Launch {
 

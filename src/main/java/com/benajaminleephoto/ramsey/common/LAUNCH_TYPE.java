@@ -1,4 +1,4 @@
-package ramsey;
+package com.benajaminleephoto.ramsey.common;
 
 public enum LAUNCH_TYPE {
 	OPEN_FROM_FILE("F"), GENERATE_RANDOM("R");

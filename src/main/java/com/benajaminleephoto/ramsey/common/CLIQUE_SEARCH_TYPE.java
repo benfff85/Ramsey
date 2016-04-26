@@ -1,4 +1,4 @@
-package ramsey;
+package com.benajaminleephoto.ramsey.common;
 
 public enum CLIQUE_SEARCH_TYPE {
 	ALL("A"), FIRST("F"),;

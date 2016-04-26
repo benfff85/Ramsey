@@ -1,4 +1,4 @@
-package ramsey;
+package com.benajaminleephoto.ramsey.common;
 
 public enum LOG_TYPE {
 	FILE("F"), CONSOLE("C"), BOTH("B");

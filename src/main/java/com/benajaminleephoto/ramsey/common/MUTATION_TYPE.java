@@ -1,4 +1,4 @@
-package ramsey;
+package com.benajaminleephoto.ramsey.common;
 
 public enum MUTATION_TYPE {
 	RANDOM("R"), TARGETED("T"), BALANCED("B");

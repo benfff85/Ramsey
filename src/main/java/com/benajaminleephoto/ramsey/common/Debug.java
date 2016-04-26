@@ -1,4 +1,4 @@
-package ramsey;
+package com.benajaminleephoto.ramsey.common;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
