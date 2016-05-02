@@ -27,9 +27,6 @@ public class Controller {
      * It is noted the passing of Strings to methods as done below for the purposes of switch
      * statements is generally poor practice, however it has done here to allow for quick
      * modifications and testing of the code without the use of a GUI.
-     * 
-     * @param args
-     * @return void
      */
     public Controller() {
         cayleyGraph = new CayleyGraph();

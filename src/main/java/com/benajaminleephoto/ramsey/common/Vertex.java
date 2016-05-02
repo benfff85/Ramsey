@@ -25,7 +25,6 @@ public class Vertex implements java.io.Serializable {
      * @param ID The new ID to be set for this vertex
      * @param numOfElements The number of elements in the CayleyGraph including this one. This is
      *        used to initialize the Edge array.
-     * @return void
      */
     public Vertex(int ID, int numOfElements) {
         setId(ID);
@@ -37,7 +36,6 @@ public class Vertex implements java.io.Serializable {
      * This will update the numeric ID of this vertex [0...numOfElements-1]
      * 
      * @param ID The new ID to be set for this vertex
-     * @return void
      */
     public void setId(int ID) {
         this.vertexId = ID;
@@ -60,7 +58,6 @@ public class Vertex implements java.io.Serializable {
      * initialization.
      * 
      * @param edge This is the edge to add to the local array of edges.
-     * @return void
      */
     public void setEdge(Edge edge) {
 
@@ -78,7 +75,6 @@ public class Vertex implements java.io.Serializable {
      * 
      * @param linkedVertex This is the remote vertex used to identify the edge to be updated
      * @param color This is the color to update the edge to
-     * @return void
      */
     public void updateEdgeColor(Vertex linkedVertex, String color) {
         this.getEdge(linkedVertex).setColor(color);
@@ -164,25 +160,16 @@ public class Vertex implements java.io.Serializable {
 
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + vertexId;
-        return result;
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (Edge edge : edges) {
+            if (edge != null) {
+                builder.append(edge.toString());
+            } else {
+                builder.append("0");
+            }
+        }
+        return builder.toString();
     }
 
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Vertex other = (Vertex) obj;
-        if (vertexId != other.vertexId)
-            return false;
-        return true;
-    }
 }

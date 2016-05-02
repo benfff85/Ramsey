@@ -29,10 +29,6 @@ public class CayleyGraph implements java.io.Serializable {
     /**
      * This is the main constructor for the CayleyGraph. It will initialize all global variables
      * given.
-     * 
-     * @param getNumOfElements() The total number of elements (vertices) comprising the CayleyGraph.
-     * @param cliqueSize The number of elements (vertices) in the complete subgraph (clique) we will
-     *        be searching for.
      */
     public CayleyGraph() {
         numOfElements = Config.NUM_OF_ELEMENTS;
@@ -89,8 +85,6 @@ public class CayleyGraph implements java.io.Serializable {
     /**
      * This will initialize the vertices and edges of the CayleyGraph based on the LAUNCH_METHOD
      * specified in the Config class.
-     * 
-     * @return void
      */
     public void initialize() {
         if (Config.LAUNCH_METHOD == LAUNCH_TYPE.GENERATE_RANDOM) {
@@ -105,8 +99,6 @@ public class CayleyGraph implements java.io.Serializable {
      * This will Generate a random CayleyGraph where the total number of edges of each color will be
      * equal. This is generally only done once at the beginning of processing after which the
      * initialized graph will simply be mutated.
-     * 
-     * @return void
      */
     public void generateRandomGraph() {
         int redCount = ((getNumOfElements()) * (getNumOfElements() - 1)) / 4;
@@ -192,8 +184,6 @@ public class CayleyGraph implements java.io.Serializable {
 
     /**
      * This will email a representation of the CayleyGraph in a format compatible with Mathematica.
-     * 
-     * @return void
      */
     public void emailCayleyGraph() {
         String[] arguments = new String[3];
@@ -366,8 +356,6 @@ public class CayleyGraph implements java.io.Serializable {
     /**
      * This method will initialize the cayleyGraph from a checkpoint file assuming the data in the
      * checkpoint file is formatted as defined in the printCayleyGraphBasic() method in this Class.
-     * 
-     * @return void
      */
     public void loadFromFileInteractive() {
         JFileChooser chooser = new JFileChooser();
@@ -421,8 +409,6 @@ public class CayleyGraph implements java.io.Serializable {
 
     /**
      * Initialize all vertices with valid IDs
-     * 
-     * @return void
      */
     private void initializeVertices() {
         for (int i = 0; i < getNumOfElements(); i++) {
@@ -438,7 +424,6 @@ public class CayleyGraph implements java.io.Serializable {
      * @param vertexA First vertex of the edge.
      * @param vertexB Second vertex of the edge.
      * @param color Color of the edge.
-     * @return void
      */
     private void initializeEdgeBetweenVertices(Vertex vertexA, Vertex vertexB, String color) {
         Edge edge = new Edge(vertexA, vertexB, color);
@@ -469,8 +454,6 @@ public class CayleyGraph implements java.io.Serializable {
 
     /**
      * This will clear the cliqueCollection once it is no longer relevant after mutation.
-     * 
-     * @return void
      */
     public void clearClique() {
         getCliqueCollection().clear();

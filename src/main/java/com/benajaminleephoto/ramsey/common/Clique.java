@@ -24,8 +24,8 @@ public class Clique implements java.io.Serializable {
      * with the Vertex array received as input.
      * 
      * @param vertices The array of vertices representing the clique.
-     * @return void
-     * @throws Exception
+     * @throws Exception Throws an InvalidCliqueSize exception if a clique is added of invalid size.
+     *         Size should always match the CLIQUE_SIZE property in the Config class.
      */
     public Clique(Vertex[] vertices) throws Exception {
         try {
@@ -49,8 +49,8 @@ public class Clique implements java.io.Serializable {
      * with the Vertex ArrayList received as input.
      * 
      * @param vertices The array of vertices representing the clique.
-     * @return void
-     * @throws Exception
+     * @throws Exception Throws an InvalidCliqueSize exception if a clique is added of invalid size.
+     *         Size should always match the CLIQUE_SIZE property in the Config class.
      */
     public Clique(ArrayList<Vertex> vertices) throws Exception {
         try {
@@ -99,7 +99,6 @@ public class Clique implements java.io.Serializable {
      * This will update Clique objects Vertex array to represent the identified subgraph.
      * 
      * @param vertices This is the Vertex array of all vertices in the identified complete subgraph.
-     * @return void
      */
     public void updateClique(Vertex[] vertices) {
         cliqueVertexArray = vertices;
@@ -141,7 +140,7 @@ public class Clique implements java.io.Serializable {
     /**
      * This will return a vertex from within the Clique based on the ID of the Vertex.
      * 
-     * @param Integer value of the ID expected on the Vertex in the Clique to be returned.
+     * @param vertexId Integer value of the ID expected on the Vertex in the Clique to be returned.
      * @return Vertex from the Clique with the Vertex ID specified in the input. *
      */
     public Vertex getCliqueVertexById(int vertexId) {

@@ -23,7 +23,6 @@ public class CliqueCollection implements java.io.Serializable {
      * This will add one Clique object to the CliqueCollection.
      * 
      * @param clique Clique to be added to the CliqueCollection.
-     * @return void
      */
     public void addClique(Clique clique) {
         cliqueList.add(clique);
@@ -32,8 +31,6 @@ public class CliqueCollection implements java.io.Serializable {
 
     /**
      * Remove all cliques from the CliqueCollection.
-     * 
-     * @return void
      */
     public void clear() {
         cliqueList.clear();

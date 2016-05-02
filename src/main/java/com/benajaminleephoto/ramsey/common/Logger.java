@@ -27,6 +27,10 @@ public class Logger {
 
     /**
      * This is the main Logger constructor which will initialize tracked values to 0.
+     * 
+     * @param cayleyGraph The Cayley Graph being checked.
+     * @param timer A time which can be polled to query performance.
+     * @param stats Statistics object which can be pulled for cumulative statistics of the run.
      */
     public Logger(CayleyGraph cayleyGraph, Timer timer, CumulativeStatistics stats) {
         formattedLogDate = getDateTimeStamp();
@@ -43,7 +47,6 @@ public class Logger {
      * opened.
      * 
      * @param content The String content which will be written to the log file.
-     * @return void
      */
     private void writeToLogFile(String content) {
         if (bufferedLogWriter == null) {
@@ -61,8 +64,6 @@ public class Logger {
 
     /**
      * This is a public method to close the BufferedWritter used by this class.
-     * 
-     * @return void
      */
     public void closeLogFile() {
         try {
@@ -76,8 +77,6 @@ public class Logger {
     /**
      * This is a local method used to open a new file if the public BufferedWriter is not already
      * opened.
-     * 
-     * @return void
      */
     private void openLogFile() {
         String fileName = Config.LOG_FILE_PATH + Config.LOG_FILE_MASK + formattedLogDate + ".log";
@@ -98,8 +97,7 @@ public class Logger {
      * be comma separated digits so that it may be used as input to the CayleyGraph.loadFromFile
      * method later.
      * 
-     * @param cg The CayleyGraph object the process is being applied to (Counter Example)
-     * @return void
+     * @param cayleyGraph The CayleyGraph object the process is being applied to (Counter Example)
      */
     public void processPositiveCase(CayleyGraph cayleyGraph) {
         System.out.println(cayleyGraph.printCayleyGraphMathematica());
@@ -113,8 +111,6 @@ public class Logger {
     /**
      * This will determine if a checkpoint is required and if so create it. At the moment
      * checkpoints will be created when a CayleyGraph with a new minimum number of cliques is found.
-     * 
-     * @return void
      */
     public void processCheckpoint() {
         if (stats.getMinCliqueCount() == cayleyGraph.getCliqueCollection().getCliqueCount()) {

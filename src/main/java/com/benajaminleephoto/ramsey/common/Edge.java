@@ -27,7 +27,7 @@ public class Edge implements java.io.Serializable {
     public Edge(Vertex A, Vertex B, String color) {
         this.vertexA = A;
         this.vertexB = B;
-        this.color = color;
+        setColor(color);
 
     }
 
@@ -48,7 +48,7 @@ public class Edge implements java.io.Serializable {
      * @return VertexA.
      */
     public Vertex getVertexA() {
-        return this.vertexA;
+        return vertexA;
     }
 
 
@@ -58,7 +58,7 @@ public class Edge implements java.io.Serializable {
      * @return VertexB.
      */
     public Vertex getVertexB() {
-        return this.vertexB;
+        return vertexB;
     }
 
 
@@ -68,7 +68,7 @@ public class Edge implements java.io.Serializable {
      * @return This is the String value of the color of the edge.
      */
     public String getColor() {
-        return this.color;
+        return color;
     }
 
 
@@ -79,23 +79,27 @@ public class Edge implements java.io.Serializable {
      * @return A human readable string representing the Edge.
      */
     public String printEdge() {
-        return "[" + this.vertexA.getId() + ":" + this.vertexB.getId() + ":" + this.color + "]";
+        return "[" + getVertexA().getId() + ":" + getVertexB().getId() + ":" + getColor() + "]";
     }
 
 
+    /**
+     * This will return the vertex of an edge not equal to the provided vertex.
+     * 
+     * @param vertex Provided vertex of this edge for which the other vertex is requested.
+     * @return The vertex attached to this edge which is not equal to the provided vertex.
+     */
     public Vertex getOtherVertex(Vertex vertex) {
-        if (this.vertexA == vertex) {
-            return this.vertexB;
+        if (vertexA.getId() == vertex.getId()) {
+            return vertexB;
         } else {
-            return this.vertexA;
+            return vertexA;
         }
     }
 
 
     /**
      * This will flip the color of the edge.
-     * 
-     * @return void
      */
     public void flipColor() {
         if (getColor().equals("RED")) {
@@ -103,6 +107,45 @@ public class Edge implements java.io.Serializable {
         } else if (getColor().equals("BLUE")) {
             setColor("RED");
         }
+    }
+
+
+    @Override
+    public String toString() {
+        if (getColor().equals("BLUE")) {
+            return "0";
+        } else {
+            return "1";
+        }
+    }
+
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((color == null) ? 0 : color.hashCode());
+        return result;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof Edge))
+            return false;
+        Edge other = (Edge) obj;
+        if (color == null) {
+            if (other.color != null) {
+                return false;
+            }
+        } else if (!color.equals(other.color)) {
+            return false;
+        }
+        return true;
     }
 
 }

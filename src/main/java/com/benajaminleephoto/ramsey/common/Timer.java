@@ -36,7 +36,6 @@ public class Timer {
      * 
      * @param label This is the label applied to the TimeSet and is how the TimeSet will be
      *        referenced going forward.
-     * @return void
      */
     public void newTimeSet(String label) {
         timerArray.put(label, new TimeSet());
@@ -48,7 +47,6 @@ public class Timer {
      * reset the endTime and Duration to 0;
      * 
      * @param label This is the label for which the timer should be started.
-     * @return void
      */
     public void startTimer(String label) {
         timerArray.get(label).startTime = System.nanoTime();
@@ -63,7 +61,6 @@ public class Timer {
      * duration.
      * 
      * @param label This is the label for which the timer should be stopped.
-     * @return void
      */
     public void endTimer(String label) {
         timerArray.get(label).endTime = System.nanoTime();
@@ -105,7 +102,6 @@ public class Timer {
      * input.
      * 
      * @param label This is the label for which the cumulative duration will be cleared.
-     * @return void
      */
     public void clearCumulativeDuration(String label) {
         timerArray.get(label).clearCumulativeDuration();
@@ -114,8 +110,6 @@ public class Timer {
 
     /**
      * This will reset the cumulative duration being tracked for all labels.
-     * 
-     * @return void
      */
     public void clearCumulativeDuration() {
         for (Map.Entry<String, TimeSet> timeset : timerArray.entrySet()) {

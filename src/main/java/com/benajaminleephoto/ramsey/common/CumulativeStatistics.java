@@ -40,6 +40,8 @@ public class CumulativeStatistics {
     /**
      * This will check the number of cliques found for the current CayleyGraph. If the number of
      * cliques found is a new lowest value than the minCliqueCount values will be updated.
+     * 
+     * @param cliqueCollection Collection of cliques to be checked for a new minimum clique count.
      */
     private void updateMinCliqueCount(CliqueCollection cliqueCollection) {
         int cliquecount = cliqueCollection.getCliqueCount();

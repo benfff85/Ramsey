@@ -44,7 +44,6 @@ public class GraphMutator {
      * this particular mutation.
      * 
      * @param mutateType The type of mutation to be used this mutation.
-     * @return void
      */
     private void mutateGraph(MUTATION_TYPE mutateType) {
         if (mutateType == MUTATION_TYPE.RANDOM) {
@@ -59,8 +58,6 @@ public class GraphMutator {
 
     /**
      * Randomly flip one pair of edges, one edge of each color per pair to maintain balance.
-     * 
-     * @return void
      */
     private void mutateGraphRandom() {
         Edge redEdge = cayleyGraph.getRandomEdge("RED");
@@ -74,8 +71,6 @@ public class GraphMutator {
     /**
      * This will flip the color of one edge from the identified clique along with one random edge of
      * the opposite color to maintain balance.
-     * 
-     * @return void
      */
     private void mutateGraphTargeted() {
         Random generator = new Random();
@@ -152,7 +147,7 @@ public class GraphMutator {
      * This will flip the color of one edge from the identified clique along with one other edge of
      * opposite color logically selected based off of color distribution.
      * 
-     * @return void
+     * @param clique The clique to be mutated.
      */
     private void mutateGraphBalanced(Clique clique) {
 
@@ -220,6 +215,7 @@ public class GraphMutator {
     }
 
 
+    @SuppressWarnings("unused")
     private Edge getCayleyGraphEdgeOfHighestRank(CayleyGraph cayleyGraph, String color) {
         ArrayList<Vertex> vertexListA = new ArrayList<Vertex>();
         ArrayList<Vertex> vertexListB = new ArrayList<Vertex>();

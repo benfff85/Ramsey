@@ -21,6 +21,7 @@ public class CliqueChecker {
      * Clique we will be searching for.
      * 
      * @param cayleyGraph The CayleyGraph object we will be looking for cliques in.
+     * @param cliqueSize The size of the clique to find.
      */
     public CliqueChecker(CayleyGraph cayleyGraph, int cliqueSize) {
         this.cayleyGraph = cayleyGraph;
