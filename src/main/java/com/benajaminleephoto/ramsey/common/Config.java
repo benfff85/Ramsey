@@ -1,5 +1,7 @@
 package com.benajaminleephoto.ramsey.common;
 
+import com.benajaminleephoto.ramsey.mutate.MUTATION_TYPE;
+
 public class Config {
 
     public static final int NUM_OF_ELEMENTS = 288;

@@ -19,6 +19,11 @@ public class CliqueCollection implements java.io.Serializable {
     }
 
 
+    public List<Clique> getCliqueList() {
+        return cliqueList;
+    }
+
+
     /**
      * This will add one Clique object to the CliqueCollection.
      * 

@@ -1,5 +1,7 @@
 package com.benajaminleephoto.ramsey.common;
 
+import com.benajaminleephoto.ramsey.mutate.GraphMutatorFactory;
+
 /**
  * This is the main Controller Class where the program will initiate. It handles the outermost loop
  * of logic which encompasses a framework for the entire application.
@@ -13,7 +15,7 @@ public class Controller {
     Logger logger;
     Timer timer;
     CliqueChecker cliqueChecker;
-    GraphMutator mutator;
+    GraphMutatorFactory graphMutatorFactory;
     CumulativeStatistics stats;
     boolean counterExampleFound;
 
@@ -34,7 +36,7 @@ public class Controller {
         stats = new CumulativeStatistics(cayleyGraph);
         logger = new Logger(cayleyGraph, timer, stats);
         cliqueChecker = new CliqueChecker(cayleyGraph, Config.CLIQUE_SIZE);
-        mutator = new GraphMutator();
+        graphMutatorFactory = new GraphMutatorFactory(cayleyGraph);
         counterExampleFound = false;
 
         timer.newTimeSet("MUTATE");
@@ -95,8 +97,7 @@ public class Controller {
 
     private void processMutation() {
         timer.startTimer("MUTATE");
-        System.out.println("Mutating");
-        mutator.mutateGraph(cayleyGraph);
+        graphMutatorFactory.getGraphMutator().mutateGraph();
         timer.endTimer("MUTATE");
     }
 
