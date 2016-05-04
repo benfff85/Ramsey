@@ -1,5 +1,8 @@
 package com.benajaminleephoto.ramsey.common;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.benajaminleephoto.ramsey.mutate.GraphMutatorFactory;
 
 /**
@@ -11,13 +14,14 @@ import com.benajaminleephoto.ramsey.mutate.GraphMutatorFactory;
  */
 public class Controller {
 
-    CayleyGraph cayleyGraph;
-    Logger logger;
-    Timer timer;
-    CliqueChecker cliqueChecker;
-    GraphMutatorFactory graphMutatorFactory;
-    CumulativeStatistics stats;
-    boolean counterExampleFound;
+    private CayleyGraph cayleyGraph;
+    private RamseyLogger ramseyLogger;
+    private Timer timer;
+    private CliqueChecker cliqueChecker;
+    private GraphMutatorFactory graphMutatorFactory;
+    private CumulativeStatistics stats;
+    private boolean counterExampleFound;
+    private static final Logger logger = LoggerFactory.getLogger(Controller.class.getName());
 
 
     /**
@@ -31,10 +35,13 @@ public class Controller {
      * modifications and testing of the code without the use of a GUI.
      */
     public Controller() {
+
+        logger.info("Beginning Controller initialization.");
+
         cayleyGraph = new CayleyGraph();
         timer = new Timer();
         stats = new CumulativeStatistics(cayleyGraph);
-        logger = new Logger(cayleyGraph, timer, stats);
+        ramseyLogger = new RamseyLogger(cayleyGraph, timer, stats);
         cliqueChecker = new CliqueChecker(cayleyGraph, Config.CLIQUE_SIZE);
         graphMutatorFactory = new GraphMutatorFactory(cayleyGraph);
         counterExampleFound = false;
@@ -44,10 +51,12 @@ public class Controller {
         timer.newTimeSet("CLIQUE");
         timer.newTimeSet("STATS");
 
+        logger.info("Logger initialization successful.");
     }
 
 
     public void runSearch() throws Exception {
+        logger.info("Beginning search...");
         while (!counterExampleFound) {
             runIteration();
         }
@@ -71,10 +80,10 @@ public class Controller {
 
         if (!cayleyGraph.isCliqueIdentified()) {
             counterExampleFound = true;
-            logger.processPositiveCase(cayleyGraph);
+            ramseyLogger.processPositiveCase(cayleyGraph);
             return;
         } else {
-            logger.processCheckpoint();
+            ramseyLogger.processCheckpoint();
         }
 
     }
@@ -90,7 +99,7 @@ public class Controller {
 
     private void processLogging() {
         timer.startTimer("LOGGER");
-        logger.logIteration();
+        ramseyLogger.logIteration();
         timer.endTimer("LOGGER");
     }
 

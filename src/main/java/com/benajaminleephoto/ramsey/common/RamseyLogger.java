@@ -15,7 +15,7 @@ import java.util.Date;
  * @author Ben Ferenchak
  * @version 1.0
  */
-public class Logger {
+public class RamseyLogger {
 
     private BufferedWriter bufferedLogWriter;
     private String formattedLogDate;
@@ -32,7 +32,7 @@ public class Logger {
      * @param timer A time which can be polled to query performance.
      * @param stats Statistics object which can be pulled for cumulative statistics of the run.
      */
-    public Logger(CayleyGraph cayleyGraph, Timer timer, CumulativeStatistics stats) {
+    public RamseyLogger(CayleyGraph cayleyGraph, Timer timer, CumulativeStatistics stats) {
         formattedLogDate = getDateTimeStamp();
         this.cayleyGraph = cayleyGraph;
         this.timer = timer;

@@ -1,25 +1,29 @@
 package com.benajaminleephoto.ramsey.mutate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.benajaminleephoto.ramsey.common.CayleyGraph;
 import com.benajaminleephoto.ramsey.common.Clique;
-import com.benajaminleephoto.ramsey.common.Debug;
 import com.benajaminleephoto.ramsey.common.Edge;
 
 public class GraphMutatorBalanced implements GraphMutator {
 
     private CayleyGraph cayleyGraph;
-    Edge cliqueEdge;
-    Edge nonCliqueEdge;
-    String nonCliqueColor;
+    private Edge cliqueEdge;
+    private Edge nonCliqueEdge;
+    private String nonCliqueColor;
+    private static final Logger logger = LoggerFactory.getLogger(GraphMutatorBalanced.class.getName());
 
 
     public GraphMutatorBalanced(CayleyGraph cayleyGraph) {
+        logger.info("Initializing GraphMutatorBalanced");
         this.cayleyGraph = cayleyGraph;
     }
 
 
     public void mutateGraph() {
-        System.out.println("Mutating Balanced");
+        logger.info("Mutating Balanced");
         mutateGraphBalanced(cayleyGraph.getCliqueCollection().getRandomClique());
     }
 
@@ -43,7 +47,7 @@ public class GraphMutatorBalanced implements GraphMutator {
      */
     private void mutateGraphBalanced(Clique clique) {
 
-        Debug.write("Beginning mutateGraphBalanced method. Clique Color is " + clique.getColor());
+        logger.debug("Beginning mutateGraphBalanced method. Clique Color is {}", clique.getColor());
 
         if (clique.getColor().equals("BLUE")) {
             nonCliqueColor = "RED";
@@ -51,15 +55,19 @@ public class GraphMutatorBalanced implements GraphMutator {
             nonCliqueColor = "BLUE";
         }
         cliqueEdge = EdgeRanker.getCliqueEdgeOfHighestRank(clique);
+        logger.debug("Clique Edge is : {}", cliqueEdge.printEdge());
         // nonCliqueEdge = EdgeRanker.getCayleyGraphEdgeOfHighestRank(cayleyGraph, nonCliqueColor);
         nonCliqueEdge = cayleyGraph.getRandomEdge(nonCliqueColor);
+        logger.debug("Non-Clique Edge is : {}", nonCliqueEdge.printEdge());
 
+        logger.debug("Flipping edge colors");
         cliqueEdge.flipColor();
         nonCliqueEdge.flipColor();
 
+        logger.debug("Clearing clique collection post mutation.");
         cayleyGraph.getCliqueCollection().clear();
 
-        Debug.write("Edges Flipped, exiting mutateGraphBalanced");
+        logger.debug("Edges Flipped, exiting mutateGraphBalanced");
 
     }
 

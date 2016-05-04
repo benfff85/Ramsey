@@ -1,22 +1,28 @@
 package com.benajaminleephoto.ramsey.mutate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.benajaminleephoto.ramsey.common.CayleyGraph;
 import com.benajaminleephoto.ramsey.common.Config;
 
 public class GraphMutatorFactory {
 
-    GraphMutatorBalanced graphMutatorBalanced;
-    GraphMutatorTargeted graphMutatorTargeted;
-    GraphMutatorRandom graphMutatorRandom;
-    GraphMutator graphMutator;
+    private GraphMutatorBalanced graphMutatorBalanced;
+    private GraphMutatorTargeted graphMutatorTargeted;
+    private GraphMutatorRandom graphMutatorRandom;
+    private GraphMutator graphMutator;
+    private static final Logger logger = LoggerFactory.getLogger(GraphMutatorFactory.class.getName());
 
-    int count;
+    private int count;
 
 
     public GraphMutatorFactory(CayleyGraph cayleyGraph) {
+        logger.info("Beginning GraphMutatorFactory initialization");
         graphMutatorBalanced = new GraphMutatorBalanced(cayleyGraph);
         graphMutatorTargeted = new GraphMutatorTargeted(cayleyGraph);
         graphMutatorRandom = new GraphMutatorRandom(cayleyGraph);
+        logger.info("GraphMutatorFactory initialization successful.");
     }
 
 

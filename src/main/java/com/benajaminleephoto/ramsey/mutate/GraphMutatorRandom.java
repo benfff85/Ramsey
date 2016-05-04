@@ -1,22 +1,27 @@
 package com.benajaminleephoto.ramsey.mutate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.benajaminleephoto.ramsey.common.CayleyGraph;
 import com.benajaminleephoto.ramsey.common.Edge;
 
 public class GraphMutatorRandom implements GraphMutator {
 
     private CayleyGraph cayleyGraph;
-    Edge redEdge;
-    Edge blueEdge;
+    private Edge redEdge;
+    private Edge blueEdge;
+    private static final Logger logger = LoggerFactory.getLogger(GraphMutatorRandom.class.getName());
 
 
     public GraphMutatorRandom(CayleyGraph cayleyGraph) {
+        logger.info("Initializing GraphMutatorRandom");
         this.cayleyGraph = cayleyGraph;
     }
 
 
     public void mutateGraph() {
-        System.out.println("Mutating Random");
+        logger.info("Mutating Random");
         mutateGraphRandom();
     }
 
