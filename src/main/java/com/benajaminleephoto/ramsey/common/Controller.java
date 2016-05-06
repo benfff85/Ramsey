@@ -3,6 +3,7 @@ package com.benajaminleephoto.ramsey.common;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.benajaminleephoto.ramsey.cliqueChecker.CliqueCheckerFactory;
 import com.benajaminleephoto.ramsey.mutate.GraphMutatorFactory;
 
 /**
@@ -17,7 +18,7 @@ public class Controller {
     private CayleyGraph cayleyGraph;
     private RamseyLogger ramseyLogger;
     private Timer timer;
-    private CliqueChecker cliqueChecker;
+    private CliqueCheckerFactory cliqueCheckerFactory;
     private GraphMutatorFactory graphMutatorFactory;
     private CumulativeStatistics stats;
     private boolean counterExampleFound;
@@ -42,7 +43,7 @@ public class Controller {
         timer = new Timer();
         stats = new CumulativeStatistics(cayleyGraph);
         ramseyLogger = new RamseyLogger(cayleyGraph, timer, stats);
-        cliqueChecker = new CliqueChecker(cayleyGraph, Config.CLIQUE_SIZE);
+        cliqueCheckerFactory = new CliqueCheckerFactory(cayleyGraph);
         graphMutatorFactory = new GraphMutatorFactory(cayleyGraph);
         counterExampleFound = false;
 
@@ -89,10 +90,10 @@ public class Controller {
     }
 
 
-    private void findCliques() {
+    private void findCliques() throws Exception {
         timer.startTimer("CLIQUE");
-        cliqueChecker.findCliqueParallel(Config.CLIQUE_SEARCH_THREAD_COUNT, "RED");
-        cliqueChecker.findCliqueParallel(Config.CLIQUE_SEARCH_THREAD_COUNT, "BLUE");
+        cliqueCheckerFactory.getCliqueChecker().findClique("RED");
+        cliqueCheckerFactory.getCliqueChecker().findClique("BLUE");
         timer.endTimer("CLIQUE");
     }
 

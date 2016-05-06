@@ -1,4 +1,4 @@
-package com.benajaminleephoto.ramsey.common;
+package com.benajaminleephoto.ramsey.cliqueChecker;
 
 public enum CLIQUE_SEARCH_TYPE {
     ALL("A"), FIRST("F"),;

@@ -1,5 +1,6 @@
 package com.benajaminleephoto.ramsey.common;
 
+import com.benajaminleephoto.ramsey.cliqueChecker.CLIQUE_SEARCH_TYPE;
 import com.benajaminleephoto.ramsey.mutate.MUTATION_TYPE;
 
 public class Config {
