@@ -44,8 +44,8 @@ public class Controller {
         timer = new Timer();
         stats = new CumulativeStatistics(cayleyGraph);
         ramseyLogger = new RamseyLogger(cayleyGraph, timer, stats);
-        cliqueCheckerFactory = new CliqueCheckerFactory(cayleyGraph);
-        graphMutatorFactory = new GraphMutatorFactory(cayleyGraph);
+        cliqueCheckerFactory = new CliqueCheckerFactory();
+        graphMutatorFactory = new GraphMutatorFactory();
         counterExampleFound = false;
 
         timer.newTimeSet("MUTATE");

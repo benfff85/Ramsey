@@ -5,6 +5,7 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.benajaminleephoto.ramsey.common.ApplicationContext;
 import com.benajaminleephoto.ramsey.common.CayleyGraph;
 import com.benajaminleephoto.ramsey.common.Config;
 import com.benajaminleephoto.ramsey.common.Debug;
@@ -23,9 +24,9 @@ public class GraphMutatorTargeted implements GraphMutator {
     private static final Logger logger = LoggerFactory.getLogger(GraphMutatorTargeted.class.getName());
 
 
-    public GraphMutatorTargeted(CayleyGraph cayleyGraph) {
+    public GraphMutatorTargeted() {
         logger.info("Initializing GraphMutatorTargeted");
-        this.cayleyGraph = cayleyGraph;
+        this.cayleyGraph = ApplicationContext.getCayleyGraph();
         generator = new Random();
     }
 

@@ -3,6 +3,7 @@ package com.benajaminleephoto.ramsey.mutate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.benajaminleephoto.ramsey.common.ApplicationContext;
 import com.benajaminleephoto.ramsey.common.CayleyGraph;
 import com.benajaminleephoto.ramsey.common.Edge;
 
@@ -14,9 +15,9 @@ public class GraphMutatorRandom implements GraphMutator {
     private static final Logger logger = LoggerFactory.getLogger(GraphMutatorRandom.class.getName());
 
 
-    public GraphMutatorRandom(CayleyGraph cayleyGraph) {
+    public GraphMutatorRandom() {
         logger.info("Initializing GraphMutatorRandom");
-        this.cayleyGraph = cayleyGraph;
+        this.cayleyGraph = ApplicationContext.getCayleyGraph();
     }
 
 

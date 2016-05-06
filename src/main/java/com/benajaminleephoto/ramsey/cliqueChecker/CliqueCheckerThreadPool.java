@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.benajaminleephoto.ramsey.common.CayleyGraph;
+import com.benajaminleephoto.ramsey.common.ApplicationContext;
 import com.benajaminleephoto.ramsey.common.Config;
 
 public class CliqueCheckerThreadPool {
@@ -19,12 +19,12 @@ public class CliqueCheckerThreadPool {
     private static final Logger logger = LoggerFactory.getLogger(CliqueCheckerThreadPool.class.getName());
 
 
-    public CliqueCheckerThreadPool(CayleyGraph cayleyGraph) {
+    public CliqueCheckerThreadPool() {
         logger.info("Creating new clique checker thread pool");
         threads = new HashSet<Callable<Integer>>(Config.CLIQUE_SEARCH_THREAD_COUNT);
         initializeThreads();
         initializeExecutor();
-        CliqueCheckerThread.cayleyGraph = cayleyGraph;
+        CliqueCheckerThread.cayleyGraph = ApplicationContext.getCayleyGraph();
         logger.info("Clique checker thread pool created successfully");
     }
 

@@ -3,7 +3,6 @@ package com.benajaminleephoto.ramsey.mutate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.benajaminleephoto.ramsey.common.CayleyGraph;
 import com.benajaminleephoto.ramsey.common.Config;
 
 public class GraphMutatorFactory {
@@ -17,11 +16,11 @@ public class GraphMutatorFactory {
     private int count;
 
 
-    public GraphMutatorFactory(CayleyGraph cayleyGraph) {
+    public GraphMutatorFactory() {
         logger.info("Beginning GraphMutatorFactory initialization");
-        graphMutatorBalanced = new GraphMutatorBalanced(cayleyGraph);
-        graphMutatorTargeted = new GraphMutatorTargeted(cayleyGraph);
-        graphMutatorRandom = new GraphMutatorRandom(cayleyGraph);
+        graphMutatorBalanced = new GraphMutatorBalanced();
+        graphMutatorTargeted = new GraphMutatorTargeted();
+        graphMutatorRandom = new GraphMutatorRandom();
         logger.info("GraphMutatorFactory initialization successful.");
     }
 

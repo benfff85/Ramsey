@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.benajaminleephoto.ramsey.common.ApplicationContext;
-import com.benajaminleephoto.ramsey.common.CayleyGraph;
 
 public class CliqueCheckerParallel implements CliqueChecker {
 
@@ -12,9 +11,9 @@ public class CliqueCheckerParallel implements CliqueChecker {
     private static final Logger logger = LoggerFactory.getLogger(CliqueCheckerParallel.class.getName());
 
 
-    public CliqueCheckerParallel(CayleyGraph cayleyGraph) {
+    public CliqueCheckerParallel() {
         logger.info("Initializing CliqueCheckerParallel");
-        cliqueCheckerThreadPool = new CliqueCheckerThreadPool(cayleyGraph);
+        cliqueCheckerThreadPool = new CliqueCheckerThreadPool();
         logger.info("CliqueCheckerParallel successfully initialized");
     }
 
