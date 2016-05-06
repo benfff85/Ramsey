@@ -52,6 +52,17 @@ public class CliqueCollection implements java.io.Serializable {
     }
 
 
+    public int getCliqueCount(String color) {
+        int count = 0;
+        for (Clique clique : cliqueList) {
+            if (clique.getColor().equals(color)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+
     /**
      * Return the Clique object in the CliqueCollection found at a given index.
      * 

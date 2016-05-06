@@ -3,6 +3,7 @@ package com.benajaminleephoto.ramsey.cliqueChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.benajaminleephoto.ramsey.common.ApplicationContext;
 import com.benajaminleephoto.ramsey.common.CayleyGraph;
 
 public class CliqueCheckerParallel implements CliqueChecker {
@@ -23,6 +24,7 @@ public class CliqueCheckerParallel implements CliqueChecker {
         cliqueCheckerThreadPool.setThreadColor(color);
         cliqueCheckerThreadPool.runAllThreads();
         logger.info("Graph search for {} cliques complete", color);
+        logger.debug("{} clique count : {}", color, ApplicationContext.getCayleyGraph().getCliqueCollection().getCliqueCount(color));
     }
 
 }
