@@ -1,5 +1,7 @@
 package com.benajaminleephoto.ramsey.common;
 
+import com.google.common.base.Strings;
+
 /**
  * This Class represents an edge within a CayleyGraph connecting two vertices.
  * 
@@ -112,11 +114,15 @@ public class Edge implements java.io.Serializable {
 
     @Override
     public String toString() {
-        if (getColor().equals("BLUE")) {
-            return "0";
-        } else {
-            return "1";
-        }
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        builder.append(Strings.padStart(Integer.toString(getVertexA().getId()), 3, '0'));
+        builder.append(":");
+        builder.append(Strings.padStart(Integer.toString(getVertexB().getId()), 3, '0'));
+        builder.append(":");
+        builder.append(Strings.padEnd(getColor(), 4, ' '));
+        builder.append("]");
+        return builder.toString();
     }
 
 
@@ -125,24 +131,43 @@ public class Edge implements java.io.Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((color == null) ? 0 : color.hashCode());
+        result = prime * result + ((vertexA == null) ? 0 : vertexA.hashCode());
+        result = prime * result + ((vertexB == null) ? 0 : vertexB.hashCode());
         return result;
     }
 
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (!(obj instanceof Edge))
+        }
+        if (!(obj instanceof Edge)) {
             return false;
+        }
         Edge other = (Edge) obj;
         if (color == null) {
             if (other.color != null) {
                 return false;
             }
         } else if (!color.equals(other.color)) {
+            return false;
+        }
+        if (vertexA == null) {
+            if (other.vertexA != null) {
+                return false;
+            }
+        } else if (!vertexA.equals(other.vertexA)) {
+            return false;
+        }
+        if (vertexB == null) {
+            if (other.vertexB != null) {
+                return false;
+            }
+        } else if (!vertexB.equals(other.vertexB)) {
             return false;
         }
         return true;
