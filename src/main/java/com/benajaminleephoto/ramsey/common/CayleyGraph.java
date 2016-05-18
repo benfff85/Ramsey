@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Random;
 import java.util.StringTokenizer;
 
 import javax.swing.JFileChooser;
@@ -106,7 +105,6 @@ public class CayleyGraph implements java.io.Serializable {
 
         initializeVertices();
 
-        Random generator = new Random();
         for (int i = 0; i < getNumOfElements(); i++) {
             for (int j = (i + 1); j < getNumOfElements(); j++) {
                 if (redCount == 0) {
@@ -114,7 +112,7 @@ public class CayleyGraph implements java.io.Serializable {
                 } else if (blueCount == 0) {
                     initializeEdgeBetweenVertices(cayleyGraphArray[i], cayleyGraphArray[j], "RED");
                 } else {
-                    if (generator.nextBoolean() == false) {
+                    if (ApplicationContext.getGenerator().nextBoolean() == false) {
                         initializeEdgeBetweenVertices(cayleyGraphArray[i], cayleyGraphArray[j], "BLUE");
                         blueCount--;
                     } else {
@@ -342,12 +340,11 @@ public class CayleyGraph implements java.io.Serializable {
      * @return A random edge of the given color specified by the input.
      */
     public Edge getRandomEdge(String color) {
-        Random generator = new Random();
         int x = 0;
         int y = 0;
         while (x == y || !getEdgeByVertexIds(x, y).getColor().equals(color)) {
-            x = generator.nextInt(getNumOfElements());
-            y = generator.nextInt(getNumOfElements());
+            x = ApplicationContext.getGenerator().nextInt(getNumOfElements());
+            y = ApplicationContext.getGenerator().nextInt(getNumOfElements());
         }
         return getEdgeByVertexIds(x, y);
     }

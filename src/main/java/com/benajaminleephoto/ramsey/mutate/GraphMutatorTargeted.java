@@ -1,7 +1,5 @@
 package com.benajaminleephoto.ramsey.mutate;
 
-import java.util.Random;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +13,6 @@ import com.benajaminleephoto.ramsey.common.Vertex;
 public class GraphMutatorTargeted implements GraphMutator {
 
     private CayleyGraph cayleyGraph;
-    private Random generator;
     int vertexIdA, vertexIdB;
     private Vertex vertexA;
     private Vertex vertexB;
@@ -27,7 +24,6 @@ public class GraphMutatorTargeted implements GraphMutator {
     public GraphMutatorTargeted() {
         logger.info("Initializing GraphMutatorTargeted");
         this.cayleyGraph = ApplicationContext.getCayleyGraph();
-        generator = new Random();
     }
 
 
@@ -50,8 +46,8 @@ public class GraphMutatorTargeted implements GraphMutator {
         vertexIdB = 0;
 
         while (vertexIdA == vertexIdB) {
-            vertexIdA = generator.nextInt(Config.CLIQUE_SIZE);
-            vertexIdB = generator.nextInt(Config.CLIQUE_SIZE);
+            vertexIdA = ApplicationContext.getGenerator().nextInt(Config.CLIQUE_SIZE);
+            vertexIdB = ApplicationContext.getGenerator().nextInt(Config.CLIQUE_SIZE);
         }
 
         vertexA = cayleyGraph.getClique().getCliqueVertexByPosition(vertexIdA);

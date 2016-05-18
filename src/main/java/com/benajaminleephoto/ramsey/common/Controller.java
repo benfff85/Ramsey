@@ -1,5 +1,7 @@
 package com.benajaminleephoto.ramsey.common;
 
+import java.util.Random;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +43,7 @@ public class Controller {
 
         cayleyGraph = new CayleyGraph();
         ApplicationContext.setCayleyGraph(cayleyGraph);
+        ApplicationContext.setGenerator(new Random());
         timer = new Timer();
         stats = new CumulativeStatistics(cayleyGraph);
         ramseyLogger = new RamseyLogger(cayleyGraph, timer, stats);
