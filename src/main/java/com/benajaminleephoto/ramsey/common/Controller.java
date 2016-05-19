@@ -41,9 +41,11 @@ public class Controller {
 
         logger.info("Beginning Controller initialization.");
 
+        ApplicationContext.setGenerator(new Random());
+
         cayleyGraph = new CayleyGraph();
         ApplicationContext.setCayleyGraph(cayleyGraph);
-        ApplicationContext.setGenerator(new Random());
+
         timer = new Timer();
         stats = new CumulativeStatistics();
         ramseyLogger = new RamseyLogger(cayleyGraph, timer, stats);

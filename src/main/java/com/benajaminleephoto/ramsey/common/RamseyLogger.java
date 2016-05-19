@@ -48,7 +48,7 @@ public class RamseyLogger {
      * @param cayleyGraph The CayleyGraph object the process is being applied to (Counter Example)
      */
     public void processPositiveCase(CayleyGraph cayleyGraph) {
-        logger.info("SOLUTION:\n" + cayleyGraph.printCayleyGraphMathematica());
+        logger.info("SOLUTION: " + cayleyGraph.printCayleyGraphMathematica());
         GraphFileWriter.writeSolutionFile();
         // cayleyGraph.emailCayleyGraph();
     }
