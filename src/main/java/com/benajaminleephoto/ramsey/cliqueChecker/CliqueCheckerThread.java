@@ -53,10 +53,6 @@ class CliqueCheckerThread implements Callable<Integer> {
 
 
     private void findCliqueRecursive(ArrayList<Vertex> connectedVertices, String color) throws Exception {
-        // Check if cliqueSearch style if "First" and we already found a clique
-        if (Config.CLIQUE_SEARCH_STRATAGY == CLIQUE_SEARCH_TYPE.FIRST && cayleyGraph.isCliqueIdentified()) {
-            return;
-        }
 
         // Loop through all vertices starting with the one after the last vertex in the chain
         for (int i = connectedVertices.get(connectedVertices.size() - 1).getId() + 1; i < cayleyGraph.getNumOfElements(); i++) {

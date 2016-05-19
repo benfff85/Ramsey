@@ -74,11 +74,8 @@ public class RamseyLogger {
 
 
     public void logIteration() {
-        // Write to log if appropriate
-        if (stats.getAnalyzedGraphCount() % Config.LOG_INTERVAL == 0) {
-            logger.info(getSummaryInfo());
-            timer.clearCumulativeDuration();
-        }
+        logger.info(getSummaryInfo());
+        timer.clearCumulativeDuration();
     }
 
 
