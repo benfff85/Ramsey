@@ -134,25 +134,25 @@ public class CayleyGraph implements java.io.Serializable {
      * @return String representing the CayleyGraph in a format compatible with Mathematica.
      */
     public String printCayleyGraphMathematica() {
-        String output = "";
-        output += "GraphPlot[{";
+        StringBuilder output = new StringBuilder();
+        output.append("GraphPlot[{");
 
         for (int i = 0; i < getNumOfElements(); i++) {
-            output += "{";
+            output.append("{");
             for (int j = 0; j < getNumOfElements(); j++) {
 
                 if (i != j && cayleyGraphArray[i].getEdge(cayleyGraphArray[j]).getColor() == "RED") {
-                    output += "1, ";
+                    output.append("1, ");
                 } else {
-                    output += "0, ";
+                    output.append("0, ");
                 }
             }
-            output = output.substring(0, output.length() - 2);
-            output += "},";
+            output.setLength(output.length() - 2);
+            output.append("},");
         }
-        output = output.substring(0, output.length() - 1);
-        output += "}, Method -> CircularEmbedding]";
-        return output;
+        output.setLength(output.length() - 1);
+        output.append("}, Method -> CircularEmbedding]");
+        return output.toString();
     }
 
 
@@ -163,22 +163,21 @@ public class CayleyGraph implements java.io.Serializable {
      * @return String representing the CayleyGraph in a basic common separated value format.
      */
     public String printCayleyGraphBasic() {
-        String output = "";
+        StringBuilder output = new StringBuilder();
 
         for (int i = 0; i < getNumOfElements(); i++) {
-            output += "";
             for (int j = 0; j < getNumOfElements(); j++) {
 
                 if (i != j && cayleyGraphArray[i].getEdge(cayleyGraphArray[j]).getColor() == "RED") {
-                    output += "1,";
+                    output.append("1,");
                 } else {
-                    output += "0,";
+                    output.append("0,");
                 }
             }
-            output = output.substring(0, output.length() - 1);
-            output += "\n";
+            output.setLength(output.length() - 1);
+            output.append("\n");
         }
-        return output;
+        return output.toString();
     }
 
 
