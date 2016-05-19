@@ -186,13 +186,12 @@ public class CayleyGraph implements java.io.Serializable {
      * This will email a representation of the CayleyGraph in a format compatible with Mathematica.
      */
     public void emailCayleyGraph() {
-        String[] arguments = new String[3];
+        String[] arguments = new String[2];
 
         arguments[0] = "Ramsey Solution found to R[" + getNumOfElements() + "," + getNumOfElements() + "]";
         arguments[1] = printCayleyGraphMathematica();
 
-        @SuppressWarnings("unused")
-        SendEmail email = new SendEmail(arguments);
+        Email.send(arguments);
     }
 
 
@@ -385,6 +384,9 @@ public class CayleyGraph implements java.io.Serializable {
             // Loop through file creating edges as we go
             for (int i = 0; i < getNumOfElements(); i++) {
                 inputLine = buffRead.readLine();
+                if (inputLine == null) {
+                    return;
+                }
                 st = new StringTokenizer(inputLine, ",");
 
                 for (int j = 0; j < getNumOfElements(); j++) {
@@ -482,7 +484,6 @@ public class CayleyGraph implements java.io.Serializable {
      *         provided ID.
      */
     public Vertex getVertexById(int id) {
-        // TODO throw exception if vertex id doesn't match position.
         return cayleyGraphArray[id];
     }
 }

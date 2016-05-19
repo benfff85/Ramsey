@@ -20,7 +20,7 @@ public class CliqueCheckerParallel implements CliqueChecker {
 
     public void findClique(String color) throws Exception {
         logger.info("Starting graph search for {} cliques", color);
-        cliqueCheckerThreadPool.setThreadColor(color);
+        CliqueCheckerThreadPool.setThreadColor(color);
         cliqueCheckerThreadPool.runAllThreads();
         logger.info("Graph search for {} cliques complete", color);
         logger.debug("{} clique count : {}", color, ApplicationContext.getCayleyGraph().getCliqueCollection().getCliqueCount(color));

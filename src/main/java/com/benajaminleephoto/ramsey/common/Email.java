@@ -10,8 +10,8 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-public class SendEmail {
-    public SendEmail(String[] arguments) {
+public class Email {
+    public static void send(String[] arguments) {
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.socketFactory.port", "465");
@@ -23,6 +23,7 @@ public class SendEmail {
         String body = arguments[1];
 
         Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+            @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(Config.EMAIL_USER_ID, Config.EMAIL_PASSWORD);
             }

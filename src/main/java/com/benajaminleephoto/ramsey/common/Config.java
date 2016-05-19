@@ -10,7 +10,7 @@ public class Config {
     public static final LAUNCH_TYPE LAUNCH_METHOD = LAUNCH_TYPE.OPEN_FROM_FILE;
 
     public static final MUTATION_TYPE MUTATE_METHOD_PRIMARY = MUTATION_TYPE.BALANCED;
-    public static final MUTATION_TYPE MUTATE_METHOD_SECONDARY = MUTATION_TYPE.COMPREHENSIVE;
+    public static final MUTATION_TYPE MUTATE_METHOD_SECONDARY = MUTATION_TYPE.BALANCED;
     public static final int MUTATE_COUNT = 1;
     public static final int MUTATE_INTERVAL = 2;
     public static final int MUTATE_COMPREHENSIVE_EDGE_RANGE = 1;

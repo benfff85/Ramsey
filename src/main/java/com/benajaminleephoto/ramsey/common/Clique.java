@@ -87,7 +87,7 @@ public class Clique implements java.io.Serializable {
     public boolean validateClique() {
         for (int i = 0; i < getCliqueSize(); i++) {
             for (int j = i + 1; j < getCliqueSize(); j++) {
-                if (getCliqueVertexByPosition(i).getEdge(getCliqueVertexByPosition(j)).getColor() != getColor()) {
+                if (!getCliqueVertexByPosition(i).getEdge(getCliqueVertexByPosition(j)).getColor().equals(getColor())) {
                     return false;
                 }
             }

@@ -52,7 +52,7 @@ public class CliqueCheckerThreadPool {
     }
 
 
-    public void setThreadColor(String color) {
+    public static void setThreadColor(String color) {
         CliqueCheckerThread.color = color;
     }
 
