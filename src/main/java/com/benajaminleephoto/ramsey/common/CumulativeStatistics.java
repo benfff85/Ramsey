@@ -9,12 +9,10 @@ public class CumulativeStatistics {
 
     /**
      * Main constructor for the CumulativeStatistics class.
-     * 
-     * @param cg Cayley Graph for which statistics are being tracked.
      */
-    public CumulativeStatistics(CayleyGraph cg) {
+    public CumulativeStatistics() {
         setAnalyzedGraphCount(0);
-        setCayleyGraph(cg);
+        setCayleyGraph(ApplicationContext.getCayleyGraph());
         setMinCliqueCount(999999999);
     }
 

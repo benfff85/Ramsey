@@ -45,7 +45,7 @@ public class Controller {
         ApplicationContext.setCayleyGraph(cayleyGraph);
         ApplicationContext.setGenerator(new Random());
         timer = new Timer();
-        stats = new CumulativeStatistics(cayleyGraph);
+        stats = new CumulativeStatistics();
         ramseyLogger = new RamseyLogger(cayleyGraph, timer, stats);
         cliqueCheckerFactory = new CliqueCheckerFactory();
         graphMutatorFactory = new GraphMutatorFactory();
