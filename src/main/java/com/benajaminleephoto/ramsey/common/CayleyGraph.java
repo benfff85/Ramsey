@@ -8,6 +8,9 @@ import java.util.StringTokenizer;
 
 import javax.swing.JFileChooser;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class represents the cayley graph which is a graph comprised of getNumOfElements() elements.
  * Each elements (also referred to as vertex) is connected to every other element via an edge. The
@@ -23,6 +26,7 @@ public class CayleyGraph implements java.io.Serializable {
     private int numOfElements;
     private Vertex[] cayleyGraphArray;
     private CliqueCollection cliqueCollection;
+    private static final Logger logger = LoggerFactory.getLogger(CayleyGraph.class.getName());
 
 
     /**
@@ -38,12 +42,11 @@ public class CayleyGraph implements java.io.Serializable {
 
 
     public void rollback(String recoveryFile, CliqueCollectionSnapshot cliqueCollectionSnapshot) {
-        Debug.write("Rolling Back");
         File file = new File(recoveryFile);
         loadFromFile(file);
         getCliqueCollection().clear();
         Vertex[] vertices;
-
+        logger.debug("Rolling Back");
         for (int i = 0; i < cliqueCollectionSnapshot.getCliqueCount(); i++) {
             vertices = new Vertex[cliqueCollectionSnapshot.getCliqueByPosition(0).length];
             for (int j = 0; j < cliqueCollectionSnapshot.getCliqueByPosition(i).length; j++) {
@@ -55,8 +58,7 @@ public class CayleyGraph implements java.io.Serializable {
                 e.printStackTrace();
             }
         }
-
-        Debug.write("Rollback Complete");
+        logger.debug("Rollback Complete");
     }
 
 

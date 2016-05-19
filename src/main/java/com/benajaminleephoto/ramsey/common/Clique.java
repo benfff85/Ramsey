@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This graph represents a clique or complete subgraph identified within a given CayleyGraph. This
  * complete subgraph indicates we cannot raise the lower bound for the Ramsey Number we are
@@ -19,6 +22,7 @@ public class Clique implements java.io.Serializable {
     private static final Exception InvalidCliqueSize = null;
     private Vertex[] cliqueVertexArray;
     private String color;
+    private static final Logger logger = LoggerFactory.getLogger(Clique.class.getName());
 
 
     /**
@@ -65,7 +69,7 @@ public class Clique implements java.io.Serializable {
             }
             setColor();
             if (validateClique() == false) {
-                Debug.write("Creating a clique that is not a complete subgraph!");
+                logger.error("Creating a clique that is not a complete subgraph!");
                 throw CliqueNotCompleteSubgraph;
             }
         } catch (Exception e) {

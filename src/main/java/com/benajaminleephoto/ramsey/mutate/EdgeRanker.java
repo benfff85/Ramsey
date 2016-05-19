@@ -2,14 +2,19 @@ package com.benajaminleephoto.ramsey.mutate;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.benajaminleephoto.ramsey.common.CayleyGraph;
 import com.benajaminleephoto.ramsey.common.Clique;
 import com.benajaminleephoto.ramsey.common.Config;
-import com.benajaminleephoto.ramsey.common.Debug;
 import com.benajaminleephoto.ramsey.common.Edge;
 import com.benajaminleephoto.ramsey.common.Vertex;
 
 public class EdgeRanker {
+
+    private static final Logger logger = LoggerFactory.getLogger(EdgeRanker.class.getName());
+
 
     @SuppressWarnings("unchecked")
     protected static Edge getCliqueEdgeOfHighestRank(Clique clique) {
@@ -43,7 +48,7 @@ public class EdgeRanker {
 
         vertexPair = RandomVertexIdentifier.getRandomVertices(vertexListA, vertexListB);
         cliqueEdge = vertexPair.vertexA.getEdge(vertexPair.vertexB);
-        Debug.write("Clique edge selected [" + cliqueEdge.getVertexA().getId() + "," + cliqueEdge.getVertexB().getId() + "," + cliqueEdge.getColor() + "].");
+        logger.trace("Clique edge selected [" + cliqueEdge.getVertexA().getId() + "," + cliqueEdge.getVertexB().getId() + "," + cliqueEdge.getColor() + "].");
 
         vertexListA.clear();
         vertexListB.clear();
@@ -87,7 +92,7 @@ public class EdgeRanker {
         vertexB = RandomVertexIdentifier.getRandomVertex(vertexListB);
 
         nonCliqueEdge = cayleyGraph.getEdgeByVertices(vertexA, vertexB);
-        Debug.write("Non-clique edge selected [" + nonCliqueEdge.getVertexA().getId() + "," + nonCliqueEdge.getVertexB().getId() + "," + nonCliqueEdge.getColor() + "].");
+        logger.trace("Non-clique edge selected [" + nonCliqueEdge.getVertexA().getId() + "," + nonCliqueEdge.getVertexB().getId() + "," + nonCliqueEdge.getColor() + "].");
 
         vertexListA.clear();
         vertexListB.clear();

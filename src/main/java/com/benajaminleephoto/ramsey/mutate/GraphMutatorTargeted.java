@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import com.benajaminleephoto.ramsey.common.ApplicationContext;
 import com.benajaminleephoto.ramsey.common.CayleyGraph;
 import com.benajaminleephoto.ramsey.common.Config;
-import com.benajaminleephoto.ramsey.common.Debug;
 import com.benajaminleephoto.ramsey.common.Edge;
 import com.benajaminleephoto.ramsey.common.Vertex;
 
@@ -39,7 +38,7 @@ public class GraphMutatorTargeted implements GraphMutator {
      */
     private void mutateGraphTargeted() {
 
-        Debug.write("Beginning mutateGraphTargeted method. Clique Color is " + cayleyGraph.getClique().getColor());
+        logger.debug("Beginning mutateGraphTargeted method. Clique Color is {}", cayleyGraph.getClique().getColor());
 
         // Select the edge from clique to swap
         vertexIdA = 0;
@@ -65,7 +64,7 @@ public class GraphMutatorTargeted implements GraphMutator {
 
         cayleyGraph.getCliqueCollection().clear();
 
-        Debug.write("Edges Flipped, exiting mutateGraphTargeted");
+        logger.debug("Edges Flipped, exiting mutateGraphTargeted");
 
     }
 

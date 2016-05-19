@@ -33,6 +33,6 @@ public class Config {
     public static final String EMAIL_USER_ID = "ben.ferenchak";
     public static final String EMAIL_PASSWORD = "";
 
-    public static final boolean DEBUG_MODE = false;
+    // public static final boolean DEBUG_MODE = false;
 
 }
