@@ -55,6 +55,7 @@ public class GraphMutatorBalanced implements GraphMutator {
         } else {
             nonCliqueColor = "BLUE";
         }
+
         cliqueEdge = EdgeRanker.getCliqueEdgeOfHighestRank(clique);
         logger.debug("Clique Edge is : {}", cliqueEdge.printEdge());
         // nonCliqueEdge = EdgeRanker.getCayleyGraphEdgeOfHighestRank(cayleyGraph, nonCliqueColor);

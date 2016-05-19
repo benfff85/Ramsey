@@ -1,6 +1,8 @@
 package com.benajaminleephoto.ramsey.common;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This graph represents a clique or complete subgraph identified within a given CayleyGraph. This
@@ -209,5 +211,18 @@ public class Clique implements java.io.Serializable {
             intArray[i] = getCliqueVertexByPosition(i).getId();
         }
         return intArray;
+    }
+
+
+    public List<Edge> getAllCliqueEdges() {
+
+        List<Edge> edges = new LinkedList<Edge>();
+
+        for (int i = 0; i < getCliqueSize(); i++) {
+            for (int j = (i + 1); j < getCliqueSize(); j++) {
+                edges.add(getCliqueVertexByPosition(i).getEdge(getCliqueVertexByPosition(j)));
+            }
+        }
+        return edges;
     }
 }

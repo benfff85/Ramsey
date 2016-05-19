@@ -3,7 +3,9 @@ package com.benajaminleephoto.ramsey.common;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
+
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multisets;
 
 public class CliqueCollection implements java.io.Serializable {
 
@@ -80,8 +82,60 @@ public class CliqueCollection implements java.io.Serializable {
      * @return A random clique from within the CliqueCollection.
      */
     public Clique getRandomClique() {
-        Random generator = new Random();
-        return getCliqueByIndex(generator.nextInt(getCliqueCount()));
+        return getCliqueByIndex(ApplicationContext.getGenerator().nextInt(getCliqueCount()));
+    }
+
+
+    public HashMultiset<Edge> getAllCliqueCollectionEdges(String color) {
+
+        HashMultiset<Edge> edges = HashMultiset.create();
+
+        for (Clique clique : cliqueList) {
+            if (clique.getColor().equals(color)) {
+                for (Edge edge : clique.getAllCliqueEdges()) {
+                    edges.add(edge);
+                }
+            }
+        }
+        return edges;
+    }
+
+
+    public HashMultiset<Edge> getAllCliqueCollectionEdges() {
+        HashMultiset<Edge> edges = HashMultiset.create();
+        edges.addAll(getAllCliqueCollectionEdges("RED"));
+        edges.addAll(getAllCliqueCollectionEdges("BLUE"));
+        return edges;
+    }
+
+
+    public void printAllCliqueCollectionEdges() {
+        HashMultiset<Edge> edges = getAllCliqueCollectionEdges();
+        int count = 0;
+        for (Edge edge : Multisets.copyHighestCountFirst(getAllCliqueCollectionEdges()).elementSet()) {
+            if (count < 100) {
+                System.out.println(edge + ":" + edges.count(edge));
+            }
+            count++;
+        }
+    }
+
+
+    public Edge getMostCommonEdge(String color, int range) {
+        int randomIndex = ApplicationContext.getGenerator().nextInt(range);
+        int count = 0;
+        Edge returnEdge = null;
+
+        for (Edge edge : Multisets.copyHighestCountFirst(getAllCliqueCollectionEdges(color)).elementSet()) {
+            if (count == randomIndex) {
+                returnEdge = edge;
+                break;
+            }
+            count++;
+        }
+
+        return returnEdge;
+
     }
 
 }

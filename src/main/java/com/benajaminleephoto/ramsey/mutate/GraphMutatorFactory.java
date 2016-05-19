@@ -10,6 +10,7 @@ public class GraphMutatorFactory {
     private GraphMutatorBalanced graphMutatorBalanced;
     private GraphMutatorTargeted graphMutatorTargeted;
     private GraphMutatorRandom graphMutatorRandom;
+    private GraphMutatorComprehensive graphMutatorComprehensive;
     private GraphMutator graphMutator;
     private static final Logger logger = LoggerFactory.getLogger(GraphMutatorFactory.class.getName());
 
@@ -21,6 +22,7 @@ public class GraphMutatorFactory {
         graphMutatorBalanced = new GraphMutatorBalanced();
         graphMutatorTargeted = new GraphMutatorTargeted();
         graphMutatorRandom = new GraphMutatorRandom();
+        graphMutatorComprehensive = new GraphMutatorComprehensive();
         logger.info("GraphMutatorFactory initialization successful.");
     }
 
@@ -39,6 +41,8 @@ public class GraphMutatorFactory {
             graphMutator = graphMutatorTargeted;
         } else if (mutateType == MUTATION_TYPE.BALANCED) {
             graphMutator = graphMutatorBalanced;
+        } else if (mutateType == MUTATION_TYPE.COMPREHENSIVE) {
+            graphMutator = graphMutatorComprehensive;
         }
         return graphMutator;
     }
