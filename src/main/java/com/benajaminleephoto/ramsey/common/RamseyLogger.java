@@ -102,7 +102,7 @@ public class RamseyLogger {
     public void processPositiveCase(CayleyGraph cayleyGraph) {
         System.out.println(cayleyGraph.printCayleyGraphMathematica());
         writeToLogFile("SOLUTION:\n" + cayleyGraph.printCayleyGraphMathematica());
-        writeGraphFile(cayleyGraph, Config.SOLUTION_FILE_PATH + Config.SOLUTION_FILE_MASK + getDateTimeStamp() + ".sol");
+        GraphFileWriter.writeSolutionFile();
         // cayleyGraph.emailCayleyGraph();
         closeLogFile();
     }
@@ -115,12 +115,12 @@ public class RamseyLogger {
     public void processCheckpoint() {
         if (stats.getMinCliqueCount() == cayleyGraph.getCliqueCollection().getCliqueCount()) {
             System.out.println("Writing MAX File");
-            writeGraphFile(cayleyGraph, Config.CHKPT_FILE_PATH + Config.CHKPT_FILE_MASK + "MAX" + ".chk");
+            GraphFileWriter.writeMaxFile();
             cliqueCollectionSnapshot.clearCliqueCollectionArray();
             cliqueCollectionSnapshot.populateSnapshot(cayleyGraph.getCliqueCollection());
             if (Config.LAUNCH_METHOD != LAUNCH_TYPE.OPEN_FROM_FILE || stats.getAnalyzedGraphCount() != 1) {
                 System.out.println("Writing CHK File");
-                writeGraphFile(cayleyGraph, Config.CHKPT_FILE_PATH + Config.CHKPT_FILE_MASK + getDateTimeStamp() + ".chk");
+                GraphFileWriter.writeCheckpointFile();
             }
         } else {
             System.out.println("Rolling Back");
@@ -162,34 +162,11 @@ public class RamseyLogger {
 
 
     /**
-     * This is used to write a basic representation of an input CayleyGraph to a given file which
-     * can later be loaded into this program.
-     * 
-     * @param cayleyGraph The CayleyGraph to be written to a file.
-     * @param qualifiedFileName The file path and name where the CayleyGraph representation is to be
-     *        written.
-     */
-    private void writeGraphFile(CayleyGraph cayleyGraph, String qualifiedFileName) {
-        String content = cayleyGraph.printCayleyGraphBasic();
-
-        // Write the "content" string to file
-        try {
-            File file = new File(qualifiedFileName);
-            FileWriter fw = new FileWriter(file.getAbsoluteFile());
-            fw.write(content);
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    /**
      * This is used for generating the date time stamps in file names.
      * 
      * @return String value of the current date time.
      */
-    private String getDateTimeStamp() {
+    static String getDateTimeStamp() {
         DateFormat df = new SimpleDateFormat("MMddyyyyHHmmss");
         return df.format(new Date());
     }
