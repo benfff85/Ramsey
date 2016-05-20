@@ -85,7 +85,7 @@ public class CayleyGraph implements java.io.Serializable {
      * 
      * @throws Exception
      */
-    public void initialize() throws Exception {
+    private void initialize() throws Exception {
         String loaderString = "";
 
         initializeVertices();
@@ -105,7 +105,7 @@ public class CayleyGraph implements java.io.Serializable {
      * equal. This is generally only done once at the beginning of processing after which the
      * initialized graph will simply be mutated.
      */
-    public String generateRandomLoaderString() {
+    private String generateRandomLoaderString() {
         int redCount = getEdgeCount() / 2;
         StringBuilder loaderString = new StringBuilder();
 
@@ -362,7 +362,7 @@ public class CayleyGraph implements java.io.Serializable {
     }
 
 
-    public void loadFromString(String data) {
+    private void loadFromString(String data) {
         if (data.length() != getEdgeCount()) {
             logger.error("Attempting to load graph with {} edges but only {} are defined.", getEdgeCount(), data.length());
             throw new IllegalArgumentException("Invalid number of edges in String");
@@ -386,7 +386,7 @@ public class CayleyGraph implements java.io.Serializable {
     /**
      * Initialize all vertices with valid IDs
      */
-    void initializeVertices() {
+    private void initializeVertices() {
         // TODO have this only create new objects if null
         for (int i = 0; i < getNumOfElements(); i++) {
             cayleyGraphArray[i] = new Vertex(i, getNumOfElements());
@@ -402,7 +402,7 @@ public class CayleyGraph implements java.io.Serializable {
      * @param vertexB Second vertex of the edge.
      * @param color Color of the edge.
      */
-    void initializeEdgeBetweenVertices(Vertex vertexA, Vertex vertexB, String color) {
+    private void initializeEdgeBetweenVertices(Vertex vertexA, Vertex vertexB, String color) {
         if (vertexA.getEdge(vertexB) == null) {
             Edge edge = new Edge(vertexA, vertexB, color);
             vertexA.setEdge(edge);
