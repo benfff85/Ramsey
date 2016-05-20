@@ -43,7 +43,13 @@ public class Controller {
 
         ApplicationContext.setGenerator(new Random());
 
-        cayleyGraph = new CayleyGraph();
+        try {
+            cayleyGraph = new CayleyGraph();
+        } catch (Exception e) {
+            logger.error("Failed to initialize CayleyGraph", e);
+            System.exit(1);
+        }
+
         ApplicationContext.setCayleyGraph(cayleyGraph);
 
         timer = new Timer();

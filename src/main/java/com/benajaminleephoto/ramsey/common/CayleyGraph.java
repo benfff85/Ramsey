@@ -1,12 +1,6 @@
 package com.benajaminleephoto.ramsey.common;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.StringTokenizer;
-
-import javax.swing.JFileChooser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +26,10 @@ public class CayleyGraph implements java.io.Serializable {
     /**
      * This is the main constructor for the CayleyGraph. It will initialize all global variables
      * given.
+     * 
+     * @throws Exception
      */
-    public CayleyGraph() {
+    public CayleyGraph() throws Exception {
         numOfElements = Config.NUM_OF_ELEMENTS;
         cayleyGraphArray = new Vertex[getNumOfElements()];
         cliqueCollection = new CliqueCollection();
@@ -41,9 +37,9 @@ public class CayleyGraph implements java.io.Serializable {
     }
 
 
-    public void rollback(String recoveryFile, CliqueCollectionSnapshot cliqueCollectionSnapshot) {
+    public void rollback(String recoveryFile, CliqueCollectionSnapshot cliqueCollectionSnapshot) throws Exception {
         File file = new File(recoveryFile);
-        loadFromFile(file);
+        loadFromString(GraphFileReader.getLoaderStringFromFile(file));
         getCliqueCollection().clear();
         Vertex[] vertices;
         logger.debug("Rolling Back");
@@ -86,13 +82,21 @@ public class CayleyGraph implements java.io.Serializable {
     /**
      * This will initialize the vertices and edges of the CayleyGraph based on the LAUNCH_METHOD
      * specified in the Config class.
+     * 
+     * @throws Exception
      */
-    public void initialize() {
+    public void initialize() throws Exception {
+        String loaderString = "";
+
+        initializeVertices();
+
         if (Config.LAUNCH_METHOD == LAUNCH_TYPE.GENERATE_RANDOM) {
-            generateRandomGraph();
+            loaderString = generateRandomLoaderString();
         } else if (Config.LAUNCH_METHOD == LAUNCH_TYPE.OPEN_FROM_FILE) {
-            loadFromFileInteractive();
+            loaderString = GraphFileReader.getLoaderStringFromFileInteractive();
         }
+
+        loadFromString(loaderString);
     }
 
 
@@ -101,29 +105,27 @@ public class CayleyGraph implements java.io.Serializable {
      * equal. This is generally only done once at the beginning of processing after which the
      * initialized graph will simply be mutated.
      */
-    public void generateRandomGraph() {
-        int redCount = ((getNumOfElements()) * (getNumOfElements() - 1)) / 4;
-        int blueCount = redCount;
+    public String generateRandomLoaderString() {
+        int redCount = getEdgeCount() / 2;
+        StringBuilder loaderString = new StringBuilder();
 
         initializeVertices();
 
         for (int i = 0; i < getNumOfElements(); i++) {
             for (int j = (i + 1); j < getNumOfElements(); j++) {
-                if (redCount == 0) {
-                    initializeEdgeBetweenVertices(cayleyGraphArray[i], cayleyGraphArray[j], "BLUE");
-                } else if (blueCount == 0) {
-                    initializeEdgeBetweenVertices(cayleyGraphArray[i], cayleyGraphArray[j], "RED");
-                } else {
-                    if (ApplicationContext.getGenerator().nextBoolean() == false) {
-                        initializeEdgeBetweenVertices(cayleyGraphArray[i], cayleyGraphArray[j], "BLUE");
-                        blueCount--;
-                    } else {
-                        initializeEdgeBetweenVertices(cayleyGraphArray[i], cayleyGraphArray[j], "RED");
+                if (redCount > 0) {
+                    if (ApplicationContext.getGenerator().nextBoolean() == true) {
+                        loaderString.append("1");
                         redCount--;
+                    } else {
+                        loaderString.append("0");
                     }
                 }
             }
         }
+
+        return loaderString.toString();
+
     }
 
 
@@ -351,58 +353,32 @@ public class CayleyGraph implements java.io.Serializable {
 
 
     /**
-     * This method will initialize the cayleyGraph from a checkpoint file assuming the data in the
-     * checkpoint file is formatted as defined in the printCayleyGraphBasic() method in this Class.
+     * This will get a count of the total number of edges in the CayleyGraph.
+     * 
+     * @return Total number of edges in the CayleyGraph.
      */
-    public void loadFromFileInteractive() {
-        JFileChooser chooser = new JFileChooser();
-        int retval;
-
-        initializeVertices();
-
-        // Select a file
-        retval = chooser.showOpenDialog(null);
-
-        if (retval == JFileChooser.APPROVE_OPTION) {
-            File file = chooser.getSelectedFile();
-            loadFromFile(file);
-        }
+    public int getEdgeCount() {
+        return ((getNumOfElements()) * (getNumOfElements() - 1)) / 2;
     }
 
 
-    public void loadFromFile(File file) {
-        String inputLine;
-        StringTokenizer st;
-        int nextInt;
+    public void loadFromString(String data) {
+        if (data.length() != getEdgeCount()) {
+            logger.error("Attempting to load graph with {} edges but only {} are defined.", getEdgeCount(), data.length());
+            throw new IllegalArgumentException("Invalid number of edges in String");
+        }
 
-        initializeVertices();
+        int index = 0;
 
-        try {
-            BufferedReader buffRead = new BufferedReader(new FileReader(file));
-
-            // Loop through file creating edges as we go
-            for (int i = 0; i < getNumOfElements(); i++) {
-                inputLine = buffRead.readLine();
-                if (inputLine == null) {
-                    return;
+        for (int i = 0; i < getNumOfElements(); i++) {
+            for (int j = (i + 1); j < getNumOfElements(); j++) {
+                if (data.charAt(index) == '0') {
+                    initializeEdgeBetweenVertices(cayleyGraphArray[i], cayleyGraphArray[j], "BLUE");
+                } else {
+                    initializeEdgeBetweenVertices(cayleyGraphArray[i], cayleyGraphArray[j], "RED");
                 }
-                st = new StringTokenizer(inputLine, ",");
-
-                for (int j = 0; j < getNumOfElements(); j++) {
-                    nextInt = Integer.parseInt(st.nextToken());
-                    if (j > i) {
-                        if (nextInt == 0) {
-                            initializeEdgeBetweenVertices(cayleyGraphArray[i], cayleyGraphArray[j], "BLUE");
-                        } else {
-                            initializeEdgeBetweenVertices(cayleyGraphArray[i], cayleyGraphArray[j], "RED");
-                        }
-                    }
-                }
+                index++;
             }
-            buffRead.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("IO Error, returning null");
         }
     }
 
@@ -410,7 +386,8 @@ public class CayleyGraph implements java.io.Serializable {
     /**
      * Initialize all vertices with valid IDs
      */
-    private void initializeVertices() {
+    void initializeVertices() {
+        // TODO have this only create new objects if null
         for (int i = 0; i < getNumOfElements(); i++) {
             cayleyGraphArray[i] = new Vertex(i, getNumOfElements());
         }
@@ -425,11 +402,14 @@ public class CayleyGraph implements java.io.Serializable {
      * @param vertexB Second vertex of the edge.
      * @param color Color of the edge.
      */
-    private void initializeEdgeBetweenVertices(Vertex vertexA, Vertex vertexB, String color) {
-        Edge edge = new Edge(vertexA, vertexB, color);
-
-        vertexA.setEdge(edge);
-        vertexB.setEdge(edge);
+    void initializeEdgeBetweenVertices(Vertex vertexA, Vertex vertexB, String color) {
+        if (vertexA.getEdge(vertexB) == null) {
+            Edge edge = new Edge(vertexA, vertexB, color);
+            vertexA.setEdge(edge);
+            vertexB.setEdge(edge);
+        } else {
+            vertexA.getEdge(vertexB).setColor(color);
+        }
     }
 
 

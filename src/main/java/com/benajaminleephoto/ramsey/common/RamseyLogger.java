@@ -57,8 +57,10 @@ public class RamseyLogger {
     /**
      * This will determine if a checkpoint is required and if so create it. At the moment
      * checkpoints will be created when a CayleyGraph with a new minimum number of cliques is found.
+     * 
+     * @throws Exception
      */
-    public void processCheckpoint() {
+    public void processCheckpoint() throws Exception {
         if (stats.getMinCliqueCount() == cayleyGraph.getCliqueCollection().getCliqueCount()) {
             GraphFileWriter.writeMaxFile();
             cliqueCollectionSnapshot.clearCliqueCollectionArray();
