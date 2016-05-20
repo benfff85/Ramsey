@@ -109,8 +109,6 @@ public class CayleyGraph implements java.io.Serializable {
         int redCount = getEdgeCount() / 2;
         StringBuilder loaderString = new StringBuilder();
 
-        initializeVertices();
-
         for (int i = 0; i < getNumOfElements(); i++) {
             for (int j = (i + 1); j < getNumOfElements(); j++) {
                 if (redCount > 0) {
