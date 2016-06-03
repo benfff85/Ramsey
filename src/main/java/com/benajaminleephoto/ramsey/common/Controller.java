@@ -1,5 +1,6 @@
 package com.benajaminleephoto.ramsey.common;
 
+import java.io.IOException;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ public class Controller {
     private GraphMutatorFactory graphMutatorFactory;
     private CumulativeStatistics stats;
     private boolean counterExampleFound;
+    private ConfigFileReader configFileReader;
     private static final Logger logger = LoggerFactory.getLogger(Controller.class.getName());
 
 
@@ -36,10 +38,15 @@ public class Controller {
      * It is noted the passing of Strings to methods as done below for the purposes of switch
      * statements is generally poor practice, however it has done here to allow for quick
      * modifications and testing of the code without the use of a GUI.
+     * 
+     * @throws IOException
      */
-    public Controller() {
+    public Controller() throws IOException {
 
         logger.info("Beginning Controller initialization.");
+
+        configFileReader = new ConfigFileReader();
+        configFileReader.initializeConfig();
 
         ApplicationContext.setGenerator(new Random());
 

@@ -23,7 +23,7 @@ public class GraphFileWriter {
 
 
     public static void writeMaxFile() {
-        writeGraphFile(Config.CHKPT_FILE_PATH + Config.CHKPT_FILE_MASK + "MAX" + ".chk");
+        writeGraphFile(Config.MAX_FILE_PATH + Config.MAX_FILE_MASK + "MAX" + ".chk");
     }
 
 

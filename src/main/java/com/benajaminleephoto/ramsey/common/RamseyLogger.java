@@ -69,7 +69,7 @@ public class RamseyLogger {
                 GraphFileWriter.writeCheckpointFile();
             }
         } else {
-            cayleyGraph.rollback(Config.CHKPT_FILE_PATH + "Ramsey_MAX.chk", cliqueCollectionSnapshot);
+            cayleyGraph.rollback(Config.MAX_FILE_PATH + Config.MAX_FILE_MASK + "MAX.chk", cliqueCollectionSnapshot);
             System.gc();
         }
     }
